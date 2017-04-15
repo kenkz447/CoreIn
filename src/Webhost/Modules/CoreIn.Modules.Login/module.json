@@ -1,0 +1,13 @@
+﻿{
+  "name": "CoreIn.Modules.Login.dll",
+  "type": "Module",
+  "active": true,
+
+  "scripts": [
+
+  ],
+
+  "styles": [
+    "~/css/login.css"
+  ]
+}

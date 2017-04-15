@@ -1,0 +1,25 @@
+{
+  "version": "1.0.0",
+  "name": "ci0682",
+  "private": true,
+  "devDependencies": {
+    "gulp-browserify": "0.5.1",
+    "gulp": "3.8.11",
+    "gulp-concat": "2.6.1",
+    "gulp-react": "3.1.0",
+    "gulp-sass": "3.1.0",
+    "gulp-rename": "1.2.2",
+    "gulp-watch": "4.3.11",
+    "gulp-uglify": "2.1.0",
+    "vinyl-source-stream": "1.1.0",
+    "reactify": "1.1.1",
+    "rimraf": "2.3.2"
+  },
+  "dependencies": {
+    "react": "^15.4.2",
+    "react-dom": "15.4.2",
+    "react-redux": "5.0.3",
+    "redux": "3.6.0",
+    "jquery": "3.1.1"
+  }
+}

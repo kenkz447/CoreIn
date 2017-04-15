@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp1.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CoreIn.DataProvider\CoreIn.DataProvider.csproj" />
+    <ProjectReference Include="..\CoreIn.Models\CoreIn.Models.csproj" />
+    <ProjectReference Include="..\CoreIn.Modular\CoreIn.Modular.csproj" />
+    <ProjectReference Include="..\CoreIn.Package\CoreIn.Package.csproj" />
+    <ProjectReference Include="..\CoreIn.Resources\CoreIn.Resources.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="System.DirectoryServices.Protocols">
+      <HintPath>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.6.1\System.DirectoryServices.Protocols.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>

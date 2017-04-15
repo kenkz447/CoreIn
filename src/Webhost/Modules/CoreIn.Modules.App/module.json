@@ -1,0 +1,12 @@
+﻿{
+  "name": "CoreIn.Modules.App.dll",
+  "type": "Module",
+  "active": true,
+
+  "scripts": [
+
+  ],
+
+  "styles": [
+  ]
+}

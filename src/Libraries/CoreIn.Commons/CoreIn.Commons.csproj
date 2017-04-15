@@ -1,0 +1,32 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp1.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="MenuHelper\**" />
+    <EmbeddedResource Remove="MenuHelper\**" />
+    <None Remove="MenuHelper\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Unidecode.NET" Version="1.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CoreIn.Models\CoreIn.Models.csproj" />
+    <ProjectReference Include="..\CoreIn.Package\CoreIn.Package.csproj" />
+    <ProjectReference Include="..\CoreIn.Resources\CoreIn.Resources.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="System.DirectoryServices.Protocols">
+      <HintPath>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.6.1\System.DirectoryServices.Protocols.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Windows.Forms">
+      <HintPath>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.6.1\System.Windows.Forms.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>

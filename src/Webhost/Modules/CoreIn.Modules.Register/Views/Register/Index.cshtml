@@ -1,0 +1,8 @@
+﻿@using CoreIn.App.Helpers
+@model ActionViewModel
+
+@{
+    Html.AddStyle("/css/ci1856.css");
+    Html.AddJavaScript("/js/ci1856.js");
+}
+@Html.React("Register", new {index = Model.GetRawData()}, clientOnly : true)

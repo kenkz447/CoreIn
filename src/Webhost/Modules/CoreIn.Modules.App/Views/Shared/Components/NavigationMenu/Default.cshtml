@@ -1,0 +1,37 @@
+﻿@using CoreIn.Models
+
+@model MenuViewModel
+@{
+    var args = ViewData["Args"] as Dictionary<string, string>;
+}
+
+<ul class="@args.GetValue("menu_Class")">
+    @foreach (var item in Model.Items)
+    {
+        var hasChildren = item.Items.Count() != 0;
+        var hasLink = item.Details.ContainsKey("url");
+
+        var itemClass = (!hasLink ? "nav-title" : "nav-item") + (hasChildren ? " nav-dropdown" : "") + (item.IsCurrent ? " current-item" : (item.HasCurrentChild ? "current" : ""));
+        var linkClass = "nav-link" + (hasChildren ? " nav-dropdown-toggle" : "");
+        <li class="@itemClass">
+            @if (hasLink)
+            {
+                <a class="@linkClass" href="@item.Details.GetValue("url")">
+                    @Html.Raw(item.Details.GetValue("icon"))
+                    <span>@item.Details.GetValue("title")</span>
+                </a>
+            }
+            else
+            {
+                <span>@item.Details.GetValue("title")</span>
+            }
+
+            @{
+                if (hasChildren)
+                {
+                    @await Component.InvokeAsync("CoreIn_Modules_App/NavigationMenu", new { menuViewModel = item, args = new { menu_Class = "nav-dropdown-items" } })
+                }
+            }
+        </li>
+    }
+</ul>

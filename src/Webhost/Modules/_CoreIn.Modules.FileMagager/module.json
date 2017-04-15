@@ -1,0 +1,16 @@
+﻿{
+  "name": "CoreIn.Modules.FileMagager.dll",
+  "type": "Module",
+  "active": false,
+
+  "lib": [
+
+  ],
+
+  "scripts": [
+
+  ],
+
+  "styles": [
+  ]
+}

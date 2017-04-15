@@ -1,0 +1,7 @@
+﻿@model ActionViewModel
+@{
+    Html.AddJavaScript("/js/ci0786.js");
+}
+
+
+@Html.React("Login", new { index = Model.GetRawData() }, clientOnly: true)

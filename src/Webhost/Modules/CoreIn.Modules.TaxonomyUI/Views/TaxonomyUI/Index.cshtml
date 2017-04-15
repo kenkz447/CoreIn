@@ -1,0 +1,6 @@
+﻿@{
+    Html.AddStyle("/css/react-ui-tree.css");
+    Html.AddJavaScript("/js/taxonomy-ui.js");
+}
+
+@Html.React("TaxonomyUIIndex", new { }, clientOnly: true)

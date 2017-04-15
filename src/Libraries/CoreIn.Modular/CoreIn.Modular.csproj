@@ -1,0 +1,13 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp1.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CoreIn.Commons\CoreIn.Commons.csproj" />
+    <ProjectReference Include="..\CoreIn.DataProvider\CoreIn.DataProvider.csproj" />
+    <ProjectReference Include="..\CoreIn.Package\CoreIn.Package.csproj" />
+  </ItemGroup>
+
+</Project>

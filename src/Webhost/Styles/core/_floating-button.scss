@@ -1,0 +1,182 @@
+$btn-width: 55px;
+$btn-height: 55px;
+$btn-action-height: 44px;
+$btn-action-width:44px;
+$btn-border-radius: 50%;
+$bottom: 30px;
+$right:30px;
+
+.container-floating {
+    position: fixed;
+    width: $btn-width;
+    height: $btn-height;
+    bottom: $bottom;
+    right: $right;
+    outline: none;
+    z-index: 1;
+    display: flex;
+    justify-content: center;
+
+    .btn-float {
+        width: $btn-width;
+        height: $btn-height;
+        border-radius: $btn-border-radius;
+        background: $btn-primary-bg;
+        cursor: pointer;
+        box-shadow: 0px 2px 5px #666;
+        color: white;
+
+        .plus, .edit {
+            position: absolute;
+            display: block;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            text-align: center;
+            line-height: $btn-height;
+            font-size: 28px;
+            font-family: 'Roboto';
+            font-weight: 300;
+            transition: all 0.3s;
+        }
+
+        .plus {
+            animation: plus-out 0.3s;
+        }
+
+        .edit {
+            opacity: 0;
+            transform: rotateZ(-70deg);
+            animation: edit-out 0.3s;
+        }
+    }
+
+    .nds {
+        $nds-height: $btn-height - (($btn-height - $btn-action-height) / 2);
+        width: $btn-width;
+        height: $nds-height;
+        position: fixed;
+        z-index: 300;
+        transform: scale(0);
+        cursor: pointer;
+        background: transparent;
+        display: flex;
+        justify-content: center;
+
+        .floating-action {
+            width: $btn-action-width;
+            height: $btn-action-height;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            background: $btn-primary-bg;
+            box-shadow: 0px 2px 5px #666;
+            border-radius: $btn-border-radius;
+        }
+
+        @for $i from 1 through 3 {
+            &:nth-child(#{$i}) {
+                bottom: $bottom + $btn-height + ($nds-height * ($i - 1));
+                animation: bounce-out-nds 0.25s - ($i*0.05) linear forwards;
+            }
+        }
+    }
+
+    &:hover,
+    &:focus {
+        .plus {
+            animation: plus-in 0.15s linear;
+            animation-fill-mode: forwards;
+        }
+
+        .edit {
+            animation: edit-in 0.2s;
+            animation-delay: 0.1s;
+            animation-fill-mode: forwards;
+        }
+
+        .nds {
+            animation: bounce-nds 0.1s linear;
+            animation-fill-mode: forwards;
+            @for $i from 1 through 3 {
+                &:nth-child(#{$i}) {
+                    animation-delay: 0.1s + (($i - 1) * 0.05 )
+                }
+            }
+        }
+    }
+}
+
+@keyframes edit-in {
+    from {
+        opacity: 0;
+        transform: rotateZ(-70deg);
+    }
+
+    to {
+        opacity: 1;
+        transform: rotateZ(0deg);
+    }
+}
+
+@keyframes edit-out {
+    from {
+        opacity: 1;
+        transform: rotateZ(0deg);
+    }
+
+    to {
+        opacity: 0;
+        transform: rotateZ(-70deg);
+    }
+}
+
+@keyframes plus-in {
+    from {
+        opacity: 1;
+        transform: rotateZ(0deg);
+    }
+
+    to {
+        opacity: 0;
+        transform: rotateZ(180deg);
+    }
+}
+
+@keyframes plus-out {
+    from {
+        opacity: 0;
+        transform: rotateZ(180deg);
+    }
+
+    to {
+        opacity: 1;
+        transform: rotateZ(0deg);
+    }
+}
+
+@keyframes bounce-nds {
+    from {
+        opacity: 0;
+        transform: scale(0);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes bounce-out-nds {
+    from {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    to {
+        opacity: 0;
+        transform: scale(0);
+    }
+}

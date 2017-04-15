@@ -1,0 +1,30 @@
+﻿<header class="app-header navbar">
+    <button class="navbar-toggler mobile-sidebar-toggler hidden-lg-up" type="button">☰</button>
+    <a class="navbar-brand" href="#"></a>
+    <ul class="nav navbar-nav hidden-md-down">
+        <li class="nav-item">
+            <a class="nav-link navbar-toggler sidebar-toggler" href="#">☰</a>
+        </li>
+
+        <li class="nav-item px-1">
+            <a class="nav-link" href="@Url.Action("Index", "Dashboard")">Dashboard</a>
+        </li>
+    </ul>
+    <ul class="nav navbar-nav ml-auto">
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle nav-link" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                <img src="~/img/avatars/user.png" class="img-avatar" alt="admin@bootstrapmaster.com">
+                <span class="hidden-md-down">@User.Identity.Name</span>
+            </a>
+            <div class="dropdown-menu dropdown-menu-right">
+                <div class="dropdown-header text-center">
+                    <strong>Account</strong>
+                </div>
+                <a class="dropdown-item" href="@Url.Action("Logout","Account")"><i class="fa fa-lock"></i> Logout</a>
+            </div>
+        </li>
+        <li class="nav-item hidden-md-down">
+            <a class="nav-link navbar-toggler aside-menu-toggler" href="#"><i class="icon-settings"></i></a>
+        </li>
+    </ul>
+</header>

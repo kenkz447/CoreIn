@@ -39,11 +39,19 @@ const deleteTaxonomies = (handler, taxonomyIds) => {
 
 const updateTaxonomies = (handler, taxonomies) => {
     $.ajax({
-        url: "/taxonomyui/UpdateTaxonomies",
+        url: "/taxonomyui/UpdateTaxonomyTree",
         data: { viewModels: taxonomies },
         method: 'PUT',
         success: handler
     });
-}
+};
 
-module.exports = { getTaxonomyTypes, getNewTaxonomyForm, getTaxonomies, deleteTaxonomies, updateTaxonomies };
+const getTaxonomyFormFor = (handler, taxonomyId) => {
+    $.ajax({
+        url: "/taxonomyui/GetTaxonomyFormFor",
+        data: { taxonomyId},
+        success: handler
+    });
+};
+
+module.exports = { getTaxonomyTypes, getNewTaxonomyForm, getTaxonomies, deleteTaxonomies, updateTaxonomies, getTaxonomyFormFor };

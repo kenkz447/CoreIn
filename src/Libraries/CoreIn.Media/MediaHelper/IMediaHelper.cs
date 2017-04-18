@@ -14,8 +14,8 @@ namespace CoreIn.Media.MediaHelper
         object GetFileObject(string fileName);
         IEnumerable<object> GetFileObjects(bool orderByAsc, int selectFrom, int take);
         FileEntityResult DeleteFile(string fileName);
-        FileEntityResult UpdateDetails(string entity, Dictionary<string, string> detailDictionary, User byUser);
-        DynamicForm GetEntityForm();
+        FileEntityResult UpdateFile(long fileId, Dictionary<string, string> detailDictionary, Dictionary<long, long[]> taxonomyTypeTaxonomies, User byUser = null);
+        DynamicForm GetEntityForm(long entityTypeId);
         FileEntityResult GetEntityForm(string fileName);
     }
 }

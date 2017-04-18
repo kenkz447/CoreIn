@@ -3,9 +3,9 @@ const { Provider } = require('react-redux');
 const formReducer = require('redux-form').reducer;
 const { tabControlReducer } = require('corein');
 const tuReducer = require('./redux/tu-reducer');
-const EntityTypeList = require('./components/tu-entityTypeList');
-const Tabs = require('./components/tu-tabs');
-const TaxonomyTree = require('./components/tu-taxonomies');
+const EntityTypeList = require('./components/tu-taxonomyTypeList');
+const Tabs = require('./components/tu-actionTabControl');
+const TaxonomyTree = require('./components/tu-taxonomyList');
 const reducers = {
     form: formReducer,
     tu: tuReducer,

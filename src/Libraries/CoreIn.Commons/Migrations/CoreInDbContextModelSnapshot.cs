@@ -110,7 +110,8 @@ namespace CoreIn.Commons.Migrations
 
                     b.Property<long?>("EntityTypeId");
 
-                    b.Property<string>("Name");
+                    b.Property<string>("Name")
+                        .IsRequired();
 
                     b.Property<long?>("OwnerId");
 
@@ -134,9 +135,15 @@ namespace CoreIn.Commons.Migrations
 
                     b.Property<string>("Field");
 
+                    b.Property<string>("Group");
+
                     b.Property<DateTime?>("Modified");
 
                     b.Property<long?>("ModifiedById");
+
+                    b.Property<string>("Prefix");
+
+                    b.Property<string>("Suffix");
 
                     b.Property<string>("Value");
 
@@ -160,7 +167,8 @@ namespace CoreIn.Commons.Migrations
 
                     b.Property<long?>("FileEntityId");
 
-                    b.Property<string>("Name");
+                    b.Property<string>("Name")
+                        .IsRequired();
 
                     b.Property<long?>("OwnerId");
 
@@ -186,9 +194,15 @@ namespace CoreIn.Commons.Migrations
 
                     b.Property<string>("Field");
 
+                    b.Property<string>("Group");
+
                     b.Property<DateTime?>("Modified");
 
                     b.Property<long?>("ModifiedById");
+
+                    b.Property<string>("Prefix");
+
+                    b.Property<string>("Suffix");
 
                     b.Property<string>("Value");
 
@@ -201,22 +215,22 @@ namespace CoreIn.Commons.Migrations
                     b.ToTable("CoreIn_FileEntityDetail");
                 });
 
-            modelBuilder.Entity("CoreIn.Models.FileEntityInTaxonomy", b =>
+            modelBuilder.Entity("CoreIn.Models.FileEntityTaxonomy", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<long>("FileEntityId");
+                    b.Property<long>("EntityId");
 
                     b.Property<long>("TaxonomyId");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("FileEntityId");
+                    b.HasIndex("EntityId");
 
                     b.HasIndex("TaxonomyId");
 
-                    b.ToTable("CoreIn_FileEntityInTaxonomy");
+                    b.ToTable("CoreIn_FileEntityTaxonomy");
                 });
 
             modelBuilder.Entity("CoreIn.Models.Menu", b =>
@@ -228,7 +242,8 @@ namespace CoreIn.Commons.Migrations
 
                     b.Property<long?>("EntityTypeId");
 
-                    b.Property<string>("Name");
+                    b.Property<string>("Name")
+                        .IsRequired();
 
                     b.Property<long?>("OwnerId");
 
@@ -254,9 +269,15 @@ namespace CoreIn.Commons.Migrations
 
                     b.Property<string>("Field");
 
+                    b.Property<string>("Group");
+
                     b.Property<DateTime?>("Modified");
 
                     b.Property<long?>("ModifiedById");
+
+                    b.Property<string>("Prefix");
+
+                    b.Property<string>("Suffix");
 
                     b.Property<string>("Value");
 
@@ -278,7 +299,8 @@ namespace CoreIn.Commons.Migrations
 
                     b.Property<long?>("EntityTypeId");
 
-                    b.Property<string>("Name");
+                    b.Property<string>("Name")
+                        .IsRequired();
 
                     b.Property<long?>("OwnerId");
 
@@ -308,9 +330,15 @@ namespace CoreIn.Commons.Migrations
 
                     b.Property<string>("Field");
 
+                    b.Property<string>("Group");
+
                     b.Property<DateTime?>("Modified");
 
                     b.Property<long?>("ModifiedById");
+
+                    b.Property<string>("Prefix");
+
+                    b.Property<string>("Suffix");
 
                     b.Property<string>("Value");
 
@@ -332,7 +360,8 @@ namespace CoreIn.Commons.Migrations
 
                     b.Property<long?>("EntityTypeId");
 
-                    b.Property<string>("Name");
+                    b.Property<string>("Name")
+                        .IsRequired();
 
                     b.Property<long?>("OwnerId");
 
@@ -360,9 +389,15 @@ namespace CoreIn.Commons.Migrations
 
                     b.Property<string>("Field");
 
+                    b.Property<string>("Group");
+
                     b.Property<DateTime?>("Modified");
 
                     b.Property<long?>("ModifiedById");
+
+                    b.Property<string>("Prefix");
+
+                    b.Property<string>("Suffix");
 
                     b.Property<string>("Value");
 
@@ -517,11 +552,11 @@ namespace CoreIn.Commons.Migrations
                         .HasForeignKey("ModifiedById");
                 });
 
-            modelBuilder.Entity("CoreIn.Models.FileEntityInTaxonomy", b =>
+            modelBuilder.Entity("CoreIn.Models.FileEntityTaxonomy", b =>
                 {
-                    b.HasOne("CoreIn.Models.FileEntity", "FileEntity")
+                    b.HasOne("CoreIn.Models.FileEntity", "Entity")
                         .WithMany("Taxonomies")
-                        .HasForeignKey("FileEntityId")
+                        .HasForeignKey("EntityId")
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("CoreIn.Models.Taxonomy", "Taxonomy")

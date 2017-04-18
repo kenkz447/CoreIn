@@ -10,14 +10,14 @@ const RenderInput = (props) => {
 }
 
 const RenderInputGroup = (props) => {
-    const {input, display: {id, type, label, displayName, placeholder, prompt}, meta: {touched, error, warning}, status} = props;
+    const {input, display: {id, type, title, displayName, placeholder, prompt}, meta: {touched, error, warning}, status} = props;
 
     var validationState = touched ? (error ? 'danger' : (warning ? 'warning' : 'success')) : undefined;
 
     return (
         <FormGroup color={validationState} className="mb-1">
             <InputGroup>
-                <InputGroupAddon dangerouslySetInnerHTML={{ __html: label }} />
+                <InputGroupAddon dangerouslySetInnerHTML={{ __html: title }} />
                 <Input {...input} id={id} state={validationState} type={type} placeholder={placeholder ? placeholder : displayName} readOnly={status === 'ReadOnly'} />
             </InputGroup>
             {prompt && <FormText color="muted">{prompt}</FormText>}
@@ -27,13 +27,13 @@ const RenderInputGroup = (props) => {
 }
 
 const RenderFormGroup = (props) => {
-    const {input, display: {id, type, label, displayName, placeholder, prompt}, meta: {touched, error, warning}, status} = props;
+    const {input, display: {id, type, title, displayName, placeholder, prompt}, meta: {touched, error, warning}, status} = props;
 
     var validationState = touched ? (error ? 'danger' : (warning ? 'warning' : 'success')) : undefined;
 
     return (
         <FormGroup color={validationState} className="mb-1">
-            <Label for={id} dangerouslySetInnerHTML={{ __html: label }}/>
+            <Label for={id} dangerouslySetInnerHTML={{ __html: title }}/>
             <Input {...input} id={id} state={validationState} type={type} placeholder={placeholder ? placeholder : displayName} readOnly={status === 'ReadOnly'} />
             {prompt && <FormText color="muted">{prompt}</FormText>}
             {touched && ((error && <FormFeedback>{error}</FormFeedback>) || (warning && <FormFeedback>{warning}</FormFeedback>))}
@@ -46,7 +46,7 @@ const RenderCheckBox = (props) => {
     return (
         <FormGroup check>
             <Label check>
-                <Input {...input} id={id} type="checkbox" />
+                <Input {...input} id={id} type="checkbox" checked={input.value} />
                 {' ' + (title ? title : placeholder)}
             </Label>
         </FormGroup>
@@ -63,7 +63,7 @@ const RenderHidden = (props) => {
 const renderField = props => {
     const {display, status } = props;
 
-    if (status.toLowerCase() == 'hidden')
+    if (status && status.toLowerCase() == 'hidden')
         return RenderHidden(props);
 
     var rt = display.renderType.toLowerCase();

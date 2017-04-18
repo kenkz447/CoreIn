@@ -10,7 +10,9 @@
     taxonomiesDeleted: "TAXONOMIES_DELETED",
     taxonomySelect: "TAXONOMY_SELECT",
     taxonomiesUpdating: "TAXONOMIES_UPDATING",
-    taxonomiesUpdated: "TAXONOMIES_UPDATED"
+    taxonomiesUpdated: "TAXONOMIES_UPDATED",
+    taxonomyUpdated: "TAXONOMY_UPDATED",
+    componentLoaded: "COMPONENT_LOADED"
 };
 
 module.exports = keys;

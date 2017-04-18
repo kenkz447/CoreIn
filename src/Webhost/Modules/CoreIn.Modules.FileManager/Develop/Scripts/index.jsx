@@ -2,12 +2,14 @@
 const { combineReducers, createStore } = require('redux');
 var { Provider } = require('react-redux');
 const formReducer = require('redux-form').reducer;
+const { tabControlReducer } = require('corein');
 
 var { FileManager, fmReducer } = require('./components/fm-index.jsx');
 
 const reducers = {
     form: formReducer,
-    fm: fmReducer
+    fm: fmReducer,
+    fmTabControl: tabControlReducer
 }
 
 const reducer = combineReducers(reducers);

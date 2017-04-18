@@ -5,8 +5,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\CoreIn.EntityCore\CoreIn.EntityCore.csproj" />
     <ProjectReference Include="..\CoreIn.Commons\CoreIn.Commons.csproj" />
+    <ProjectReference Include="..\CoreIn.EntityCore\CoreIn.EntityCore.csproj" />
     <ProjectReference Include="..\CoreIn.Models\CoreIn.Models.csproj" />
     <ProjectReference Include="..\CoreIn.Package\CoreIn.Package.csproj" />
   </ItemGroup>

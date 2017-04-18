@@ -24,7 +24,7 @@ namespace CoreIn.Commons.Form
 
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public bool? ContainLower { get; set; }
-
+        
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public bool? ContainUpper { get; set; }
 
@@ -33,5 +33,11 @@ namespace CoreIn.Commons.Form
 
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public bool? ContainNumber { get; set; }
+
+        public Dictionary<string, Dictionary<string, object>> ToDictionary()
+            => new Dictionary<string, Dictionary<string, object>>
+            {
+                { "require", new Dictionary<string, object> { { "value", Required.ContainsKey("value") ? Required["value"] : null }, { "error", Required.ContainsKey("error") ? Required["error"] : null } } }
+            };
     }
 }

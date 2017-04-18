@@ -9,11 +9,11 @@ namespace CoreIn.Models
         {
             Details = new HashSet<FileEntityDetail>();
             Children = new HashSet<FileEntity>();
-            Taxonomies = new HashSet<FileEntityInTaxonomy>();
+            Taxonomies = new HashSet<FileEntityTaxonomy>();
         }
 
         public virtual ICollection<FileEntityDetail> Details { get; set; }
         public virtual ICollection<FileEntity> Children { get; set; }
-        public virtual ICollection<FileEntityInTaxonomy> Taxonomies { get; set; }
+        public virtual ICollection<FileEntityTaxonomy> Taxonomies { get; set; }
     }
 }

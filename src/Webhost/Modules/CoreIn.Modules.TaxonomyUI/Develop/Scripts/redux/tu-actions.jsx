@@ -53,6 +53,16 @@ const taxonomiesUpdated = (updateResult) => ({
     updateResult
 });
 
+const taxonomyUpdated = (updateResult) => ({
+    type: keys.taxonomyUpdated,
+    updateResult
+});
+
+const componentLoaded = (componentName) => ({
+    type: keys.componentLoaded,
+    componentName
+});
+
 module.exports = {
     loadTaxonomyTypes,
     entityTypeChange,
@@ -64,5 +74,7 @@ module.exports = {
     taxonomiesDeleted,
     taxonomySelect,
     taxonomiesUpdating,
-    taxonomiesUpdated
+    taxonomiesUpdated,
+    taxonomyUpdated,
+    componentLoaded
 };

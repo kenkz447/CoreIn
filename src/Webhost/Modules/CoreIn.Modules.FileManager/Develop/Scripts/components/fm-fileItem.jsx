@@ -1,15 +1,14 @@
 ﻿const react = require('react');
 const $ = require('jquery');
 const { connect } = require('react-redux');
-const { fileChecked, asideTabAdd, asideTabRemove } = require('./fm-actions');
+const { fileChecked, toggleAside} = require('./fm-actions');
 const { getFormInfoFromServer } = require('./fm-ajaxs');
 const { bindActionCreators } = require('redux');
-const { validator } = require('corein');
 const { reduxForm } = require('redux-form');
+const { dynamicFormValidator, DynamicForm, tabControlActions: { tabAdd, tabRemove } } = require('corein');
+const { updateFileSubmit } = require('./fm-formSubmits');
 
 const fmKeys = require('./fm-keys');
-
-var DynamicForm = require('./dynamicForm.jsx');
 
 class FileItem extends react.Component {
     onClick(event) {
@@ -57,33 +56,22 @@ class FileItem extends react.Component {
     }
 
     onInfoClick() {
-        const { asideTabAdd, asideTabRemove } = this.props;
-        const { updateFileSubmit } = require('./fm-formSubmits');
-        const formName = "properties";
+        const { tabAdd, tabRemove, toggleAside } = this.props;
+        getFormInfoFromServer((formResult) => {
+            const form = formResult.result;
+            const formId = "properties";
 
-        getFormInfoFromServer((formInfoResult) => {
-            const fields = formInfoResult.result.details;
-            const validate = validator(fields);
-            const fieldValues = {}; 
-            $.map(fields, (field) => {
-                const name = field.input.name;
-                const value = field.input.value;
-                fieldValues[name] = value;
-            });
-            DynamicForm = reduxForm({ form: 'fileProperty', validate })(DynamicForm);
-            DynamicForm = connect((state) => ({
-                initialValues: fieldValues,
-                formName,
-                formData: formInfoResult.result,
-                submitFunc: updateFileSubmit
-            }), (dispatch) => (bindActionCreators({ close: asideTabRemove}, dispatch)))(DynamicForm);
+            const validate = dynamicFormValidator({ details: form.details, meta: form.meta });
+            const submit = updateFileSubmit({ successAction: {}});
+            const ReduxDynamicForm = reduxForm({ form: formId, validate, initialValues: form.initialValues })(DynamicForm);
 
-            asideTabRemove(formName); 
-            asideTabAdd(
-                formName,
-                '<i class="icon-wrench icons"></i> ' + formInfoResult.fileName,
-                <DynamicForm />
+            tabRemove(formId); 
+            tabAdd(
+                formId,
+                '<i class="icon-wrench icons"></i> ' + form.fileName,
+                <ReduxDynamicForm formData={form} onSubmit={submit} onClose={() => { toggleAside(false); tabRemove(formId); }} />
             );
+            toggleAside(true);
         }, this.props.data.fileName);
     }
 
@@ -116,7 +104,7 @@ const stateToProps = (state) => ({
 });
 
 const dispatchToProps = (dispatch) => (
-    bindActionCreators({ onChecked: fileChecked, asideTabAdd, asideTabRemove }, dispatch)
+    bindActionCreators({ onChecked: fileChecked, toggleAside, tabAdd, tabRemove }, dispatch)
 );
 
 module.exports = connect(stateToProps, dispatchToProps)(FileItem);

@@ -33,9 +33,14 @@ const reducer = (state = initState, action) => {
             newState.taxonomyTypeChanged = false;
             break;
         case keys.loadTaxonomies:
-            newState.current.taxonomies = action.taxonomies;
+            if (action.taxonomies.length === 0)
+                newState.current.taxonomies = null;
+            else
+                newState.current.taxonomies = action.taxonomies;
             break;
         case keys.newTaxonomy:
+            if (!newState.current.taxonomies)
+                newState.current.taxonomies = [];
             newState.current.taxonomies.push(action.taxonomy);
             break;
         case keys.taxonomyClick:
@@ -59,6 +64,11 @@ const reducer = (state = initState, action) => {
         case keys.taxonomiesUpdated:
             newState.isTaxonomiesUpdating = false;
             newState.current.taxonomies = action.updateResult.result;
+            break;
+        case keys.taxonomyUpdated:
+            var taxonomyIndex = _.findIndex(newState.current.taxonomies, { id: action.updateResult.result.id });
+            if (taxonomyIndex >= 0)
+                newState.current.taxonomies[taxonomyIndex] = action.updateResult.result;
             break;
         default:
             return state;

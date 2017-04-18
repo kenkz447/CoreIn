@@ -3,7 +3,7 @@
 const updateFileRequest = data => new Promise((resolve, reject) =>
     global.jQuery.ajax({
         url: '/filemanager/update',
-        method: 'POST',
+        method: 'PUT',
         data: data,
         success: (response) => {
             if (response.result === "success") {
@@ -18,18 +18,21 @@ const updateFileRequest = data => new Promise((resolve, reject) =>
     })
 );
 
-function updateFileSubmit(values) {
-    return updateFileRequest(values)
-        .then((response) => {
-            window.location.href = response.returnUrl;
-        })
-        .catch((response) => {
-            if (response.result && response.result === "error") {
-                throw new SubmissionError(response.errors);
-            } else {
-                throw new SubmissionError({ _error: 'Update failed!' });
-            }
-        });
+function updateFileSubmit(props) {
+    const { successAction } = props;
+    return function (values) {
+        return updateFileRequest(values)
+            .then((response) => {
+                successAction(response);
+            })
+            .catch((response) => {
+                if (response.result && response.result === "error") {
+                    throw new SubmissionError(response.errors);
+                } else {
+                    throw new SubmissionError({ _error: 'Update failed!' });
+                }
+            });
+    }
 }
 
 module.exports = {

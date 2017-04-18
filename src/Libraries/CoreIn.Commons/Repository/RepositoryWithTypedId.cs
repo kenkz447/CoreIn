@@ -8,25 +8,19 @@ namespace CoreIn.Commons
 {
     public class RepositoryWithTypedId<T, TId> : IRepositoryWithTypedId<T, TId> where T : class, IEntityWithTypedId<TId>
     {
-        public RepositoryWithTypedId(CoreInDbContext context)
+        public void SetContext(DbContext context)
         {
             Context = context;
             DbSet = Context.Set<T>();
         }
 
-        private DbContext Context { get; }
+        private DbContext Context { get; set; }
 
-        private DbSet<T> DbSet { get; }
+        private DbSet<T> DbSet { get; set; }
 
         public void Add(T entity)
         {
             DbSet.Add(entity);
-        }
-
-        public int AddAndSave(T entity)
-        {
-            Add(entity);
-            return SaveChange();
         }
 
         public int SaveChange()
@@ -42,10 +36,9 @@ namespace CoreIn.Commons
             return DbSet.Where(@where);
         }
 
-        public int Delete(T entity)
+        public void Delete(T entity)
         {
             DbSet.Remove(entity);
-            return SaveChange();
         }
 
         public void SetState(T entity, EntityState state)
@@ -61,12 +54,11 @@ namespace CoreIn.Commons
             return DbSet.FirstOrDefault(pre);
         }
 
-        public T UpdateAndSave(T entity)
+        public T Update(T entity)
         {
             DbSet.Attach(entity);
             var entry = Context.Entry(entity);
             entry.State = EntityState.Modified;
-            SaveChange();
             return entity;
         }
     }

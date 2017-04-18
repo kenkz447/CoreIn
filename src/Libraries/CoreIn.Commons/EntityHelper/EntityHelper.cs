@@ -4,6 +4,7 @@ using System.Linq;
 using CoreIn.Models;
 using CoreIn.Models.Authentication;
 using CoreIn.Models.Infrastructure;
+using Microsoft.EntityFrameworkCore;
 
 namespace CoreIn.Commons.EntityHelper
 {
@@ -51,7 +52,7 @@ namespace CoreIn.Commons.EntityHelper
                 Created = created ?? DateTime.UtcNow,
                 EntityTypeId = entityTypeId
             };
-            _entityRepository.AddAndSave(entity);
+            _entityRepository.Add(entity);
             return entity;
         }
 
@@ -76,10 +77,13 @@ namespace CoreIn.Commons.EntityHelper
         public IQueryable<TEntity> GetChildrenEntities(TEntity parentEntity)
             => _entityRepository.Query(e => e.ParentId == parentEntity.Id);
 
-        public TDetail CreateDetail(TEntity enitity, string field, object value, User owner, DateTime? dateTime = null)
+        public TDetail CreateDetail(TEntity enitity, string field, object value, string group, string prefix, string suffix, User owner, DateTime? dateTime = null)
         {
             var detail = new TDetail()
             {
+                Group = group,
+                Prefix = prefix,
+                Suffix = suffix,
                 Field = field,
                 EntityId = enitity.Id,
                 Value = value.ToString(),
@@ -87,7 +91,7 @@ namespace CoreIn.Commons.EntityHelper
                 Modified = dateTime ?? DateTime.UtcNow
             };
 
-            _detailRepository.AddAndSave(detail);
+            _detailRepository.Add(detail);
             return detail;
         }
 
@@ -98,7 +102,7 @@ namespace CoreIn.Commons.EntityHelper
             {
                 if (kv.Value == null)
                     continue;
-                result.Add(CreateDetail(enitity, kv.Key, kv.Value, owner, dateTime));
+                result.Add(CreateDetail(enitity, kv.Key, kv.Value, null, null, null, owner, dateTime));
             }
             return result;
         }
@@ -109,7 +113,7 @@ namespace CoreIn.Commons.EntityHelper
         public TDetail Detail(TEntity entity, string field)
             => Details(entity).FirstOrDefault(o => o.Field == field);
 
-        public int UpdateDetails(TEntity entity, Dictionary<string, string> detailsDictionary, User byUser)
+        public void UpdateDetails(TEntity entity, Dictionary<string, string> detailsDictionary, User byUser)
         {
             var details = Details(entity);
             foreach (var kv in detailsDictionary)
@@ -128,23 +132,32 @@ namespace CoreIn.Commons.EntityHelper
                 }
                 if (!detailPresent && kv.Value != null)
                 {
-                    CreateDetail(entity, kv.Key, kv.Value, byUser);
+                    CreateDetail(entity, kv.Key, kv.Value, null, null, null, byUser);
                 }
             }
-
-            return _detailRepository.SaveChange();
         }
 
-        public int Add(TEntity entity)
-            => _entityRepository.AddAndSave(entity); 
+        public void Add(TEntity entity)
+            => _entityRepository.Add(entity); 
 
         public IQueryable<TEntity> Entities()
             => _entityRepository.Query();
 
-        public int Delete(TEntity entity)
-            => _entityRepository.Delete(entity);
+        public void Delete(TEntity entity)
+        {
+            var children = _entityRepository.Query(o => o.ParentId == entity.Id).ToList();
+            children.ForEach(child => child.ParentId = null);
+
+            _entityRepository.Delete(entity);
+        }
 
         public TEntity Update(TEntity entity)
-           => _entityRepository.UpdateAndSave(entity);
+           => _entityRepository.Update(entity);
+
+        public void SetContext(DbContext dbContext)
+        {
+            _entityRepository.SetContext(dbContext);
+            _detailRepository.SetContext(dbContext);
+        }
     }
 }

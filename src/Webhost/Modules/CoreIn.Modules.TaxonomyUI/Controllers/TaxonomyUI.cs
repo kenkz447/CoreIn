@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using CoreIn.EntityCore;
 using CoreIn.Commons.Form;
@@ -10,7 +9,7 @@ using CoreIn.Models.Authentication;
 using CoreIn.Commons;
 using Microsoft.AspNetCore.Authorization;
 using CoreIn.Resources.ConstantKeys;
-using System.Net;
+using CoreIn.Models;
 
 namespace CoreIn.Modules.TaxonomyUI.Controllers
 {
@@ -35,9 +34,7 @@ namespace CoreIn.Modules.TaxonomyUI.Controllers
         public JsonResult NewTaxonomy(FormValues formValues)
         {
             var taxonomyTypeId = formValues.Meta[AppKey.TaxonomyTypeId];
-            long? parentId = null;
-            if (formValues.Meta.ContainsKey(AppKey.ParentId))
-                parentId = Int64.Parse(formValues.Meta[AppKey.ParentId]);
+            var parentId = formValues.GetMetaValueAsLong(AppKey.ParentId);
 
             var user = _userManager.FindByNameAsync(User.Identity.Name).Result;
             var taxonomy = _taxonomyHelper.CreateTaxonomy(Int64.Parse(taxonomyTypeId), parentId, null, formValues.Details, user);
@@ -55,6 +52,12 @@ namespace CoreIn.Modules.TaxonomyUI.Controllers
         {
             var form = _taxonomyHelper.GetForm(taxonomyTypeId);
             return Json(form);
+        }
+
+        public JsonResult GetTaxonomyFormFor(long taxonomyId)
+        {
+            var result = _taxonomyHelper.GetFormFor(taxonomyId);
+            return Json(result);
         }
 
         public JsonResult GetTaxonomies(long taxonomyTypeId)
@@ -90,38 +93,29 @@ namespace CoreIn.Modules.TaxonomyUI.Controllers
         [HttpPut]
         public JsonResult UpdateTaxonomy(FormValues formValues)
         {
-            var id = formValues.Meta["id"];
-            var parentId = formValues.Meta["parentId"];
+            var id = formValues.GetMetaValueAsLong("id") ?? 0;
+            var parentId = formValues.GetMetaValueAsLong(AppKey.ParentId);
 
             var user = _userManager.FindByNameAsync(User.Identity.Name).Result;
-            var taxonomy = _taxonomyHelper.UpdateTaxonomy(Int64.Parse(parentId), Int64.Parse(id), formValues.Details, user);
+            var taxonomy = _taxonomyHelper.UpdateTaxonomy(parentId, id, formValues.Details, user);
             var taxonomyViewModel = _taxonomyHelper.TaxonomyToViewModel(taxonomy);
 
             var result = new BaseAjaxResult(JsonResultState.Success, "The taxonomy was deleted.", taxonomyViewModel);
-            return Json(taxonomyViewModel);
+            return Json(result);
         }
 
         [HttpPut]
-        public JsonResult UpdateTaxonomies(TaxonomyViewModel[] viewModels)
+        public JsonResult UpdateTaxonomyTree(TaxonomyViewModel[] viewModels)
         {
             var result = new List<TaxonomyViewModel>();
             if (viewModels != null)
             {
-                var user = _userManager.FindByNameAsync(User.Identity.Name).Result;
+                var idParentId = new Dictionary<long, long?>();
                 foreach (var viewModel in viewModels)
                 {
-                    try
-                    {
-                       var taxonomy = _taxonomyHelper.UpdateTaxonomy(viewModel.ParentId, viewModel.Id, null, user);
-                        result.Add(_taxonomyHelper.TaxonomyToViewModel(taxonomy));
-                    }
-                    catch (Exception)
-                    {
-                        result.Add(viewModel);
-                        continue;
-                    }
-    
+                    idParentId.Add(viewModel.Id, viewModel.ParentId);
                 }
+                _taxonomyHelper.UpdateTaxonomyTree(idParentId);
             }
 
             return Json(new BaseAjaxResult(JsonResultState.Success, "Update successfuly.", result));

@@ -31,25 +31,9 @@ const fileUpdate = (file) => ({
     file
 });
 
-const sidePanelToggle = (isOpen) => ({
-    type: fmKeys.sidePanelToggle,
-    isToggle: isOpen
+const toggleAside = (isOpen) => ({
+    type: fmKeys.toggleAside,
+    isOpen
 });
 
-
-const asideTabAdd = (tabId, tabTitle, tabContent) => ({
-    type: fmKeys.asideTabAdd,
-    tabId, tabTitle, tabContent
-});
-
-const asideTabRemove = (tabId) => ({
-    type: fmKeys.asideTabRemove,
-    tabId
-});
-
-const asideTabChange = (tab) => ({
-    type: fmKeys.asideTabChange,
-    tab
-});
-
-module.exports = { fileUploaded, loadFiles, fileChecked, fileDelete, fileClick, fileUpdate, sidePanelToggle, asideTabAdd, asideTabRemove, asideTabChange };
+module.exports = { fileUploaded, loadFiles, fileChecked, fileDelete, fileClick, fileUpdate, toggleAside };

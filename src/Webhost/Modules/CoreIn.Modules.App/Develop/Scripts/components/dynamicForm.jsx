@@ -1,52 +1,75 @@
-﻿const { connect } = require('react-redux');
+﻿const $ = require('jquery');
+const { connect } = require('react-redux');
 const { bindActionCreators } = require('redux');
 const { reduxForm, Field, FieldArray} = require('redux-form');
 const renderField = require('./formField.jsx');
 const { FormGroup, Label, Input } = require('reactstrap');
 const { Alert, Button } = require('reactstrap');
+const listToTree = require('list-to-tree');
 
-const CheckBoxNode = (props) => {
-    const { childrenTerms, level, taxonomyName } = props;
-    var a = global.jQuery.map(childrenTerms,
-        (term, index) => {
-            const display = {
-                renderType: 'checkbox',
-                title: term.title
-            }
-            const taxName = `${taxonomyName}.${term.name}`;
+class CheckboxList extends React.Component {
+    constructor(props) {
+        super();
+        this.renderNode = this.renderNode.bind(this);
+    }
 
-            return (
-                <div check key={index} className={`pl-${level}`}>
-                    <Field component={renderField} type="checkbox" display={display} name={taxName}/>
-                    {term.childrenTerms &&
-                        <CheckBoxNode level={level + 1} childrenTerms={term.childrenTerms} taxonomyName={taxonomyName}/>}
-                </div>);
+    renderNode(node) {
+        const {taxonomyName} = this.props;
+        return (
+            <div key={node.id} className="item">
+                <Field component={renderField} display={{ renderType: 'checkbox', title: node.title }} name={`${taxonomyName}.${node.id}`} />
+                {node.children &&
+                    <div className="children">
+                        {
+                        $.map(node.children, (node) => {
+                                return this.renderNode(node);
+                            })
+                        }
+                    </div>
+                }
+            </div>            
+            );
+    }
+
+    render() {
+        const { taxonomies, taxonomyName, title } = this.props;
+
+        const ltt = new listToTree(taxonomies, {
+            key_id: 'id',
+            key_parent: 'parentId',
+            key_child: 'children'
         });
 
-    return <div className={`checkboxlist-${level === 0 ? 'root' : 'node'}`}>{a}</div>;
-};
+        const tree = ltt.GetTree();
 
-const CheckboxList = (props) => {
-    const { terms, taxonomyName, label } = props;
-    return (
-        <div className="checkboxlist">
-            <h4>{label}</h4>
-            {terms && <CheckBoxNode childrenTerms={terms} taxonomyName={taxonomyName} level={0}/>}
-        </div>);
+        return (
+            <div className="checkbox-list">
+                <h4>{title}</h4>
+                {tree &&
+                    <div className="items">
+                    {
+                        $.map(tree, (node) => {
+                            return this.renderNode(node);
+                        })
+                    }
+                    </div>
+                }
+            </div>);
+    };
 };
 
 const CHECKBOXLIST = 'checkboxlist';
 
 const TaxonomyFields = (props) => {
-    const { renderType, terms, taxonomyName, label  } = props;
+    const { renderType } = props;
     switch (renderType) {
         default:
-            return <CheckboxList terms={terms} taxonomyName={taxonomyName} label={label} />;
+            return <CheckboxList {...props} />
     }
 };
 
 const DynamicForm = (props) => {
-    const { formName, formData, close, error, handleSubmit, pristine, reset, submitting, submitSucceeded, display } = props;
+    const { formName, formData, onClose, error, handleSubmit, pristine, reset, submitting, submitSucceeded, display } = props;
 
     return (
         <div className="dynamic-form card-block">
@@ -77,11 +100,12 @@ const DynamicForm = (props) => {
                 }
 
                 {
-                    formData.taxonomies && 
+                    formData.taxonomyTypes && 
                     <div className="taxonomies">
                         {
-                            formData.taxonomies.map((props, index) => {
-                                return <TaxonomyFields key={index} renderType={props.renderType} taxonomyName={`taxonomies.${props.input.name}`} label={props.display.label} terms={props.terms} />;
+                            formData.taxonomyTypes.map((props) => {
+                                const { typeId, input: {name}, display: {renderType, title}, taxonomies} = props;
+                                return <TaxonomyFields key={typeId} renderType={renderType} taxonomyName={`taxonomyTypes.${typeId}`} title={title} taxonomies={taxonomies} />;
                             })
                         }
                     </div>
@@ -90,7 +114,7 @@ const DynamicForm = (props) => {
                 <div className="actions">
                     <Button className="mr-1" color="primary" type="submit" disabled={submitting}>{display ? display.submitLabel : "Submit"}</Button>
                     {
-                        close && <Button type="Button" onClick={() => { close(formName);}} disabled={submitting}>{display ? display.dismissForm : "Cancel"}</Button>
+                        onClose && <Button type="Button" onClick={onClose} disabled={submitting}>{display ? display.dismissForm : "Cancel"}</Button>
                     }
                 </div>
             </form>

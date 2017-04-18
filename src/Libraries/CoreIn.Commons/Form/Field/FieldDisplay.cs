@@ -19,7 +19,7 @@ namespace CoreIn.Commons.Form
         public string DisplayName { get; set; }
 
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
-        public string Label { get; set; }
+        public string Title { get; set; }
 
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public string Placeholder { get; set; }

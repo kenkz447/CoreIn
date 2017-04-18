@@ -10,17 +10,17 @@ namespace CoreIn.Commons
 {
     public interface IRepositoryWithTypedId<T, in TId> where T : IEntityWithTypedId<TId>
     {
+        void SetContext(DbContext context);
+
         IQueryable<T> Query();
 
         IQueryable<T> Query(Expression<Func<T, bool>> pre);
 
         void Add(T entity);
 
-        int AddAndSave(T entity);
-
         int SaveChange();
 
-        int Delete(T entity);
+        void Delete(T entity);
 
         void SetState(T entity, EntityState state);
 
@@ -28,6 +28,6 @@ namespace CoreIn.Commons
 
         T GetBy(Expression<Func<T, bool>> pre);
 
-        T UpdateAndSave(T entity);
+        T Update(T entity);
     }
 }

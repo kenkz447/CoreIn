@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace CoreIn.Modules.FileManager.Controllers
@@ -33,7 +34,8 @@ namespace CoreIn.Modules.FileManager.Controllers
         public async Task<JsonResult> Update(FormValues formValues)
         {
             var user = await _userManager.FindByNameAsync(User.Identity.Name);
-            var result = _mediaHelper.UpdateDetails("", formValues.Details, user);
+            var fileId = formValues.GetMetaValue("id");
+            var result = _mediaHelper.UpdateFile(long.Parse(fileId), formValues.Details, formValues.TaxonomyTypes.ToDictionary(o => o.Key, o =>o.Value.Keys.ToArray()), user);
             return Json(result);
         }
 

@@ -5,6 +5,7 @@ using System.Text;
 using CoreIn.Models;
 using CoreIn.Models.Authentication;
 using CoreIn.Models.Infrastructure;
+using Microsoft.EntityFrameworkCore;
 
 namespace CoreIn.Commons.EntityHelper
 {
@@ -31,18 +32,20 @@ namespace CoreIn.Commons.EntityHelper
 
         IQueryable<TDetail> Details(TEntity entity);
 
-        TDetail CreateDetail(TEntity entity, string field, object value, User owner, DateTime? dateTime = null);
+        TDetail CreateDetail(TEntity entity, string field, object value, string group, string prefix, string suffix, User owner, DateTime? dateTime = null);
 
         IEnumerable<TDetail> CreateDetails(TEntity entity, Dictionary<string, string> detailDictionary, User owner, DateTime? dateTime = null);
 
-        int UpdateDetails(TEntity entity, Dictionary<string, string> detailsDictionary, User byUser);
+        void UpdateDetails(TEntity entity, Dictionary<string, string> detailsDictionary, User byUser);
 
-        int Add(TEntity entity);
+        void Add(TEntity entity);
 
-        int Delete(TEntity entity);
+        void Delete(TEntity entity);
 
         string GenerateEntityName(string name);
 
         TEntity Update(TEntity entity);
+
+        void SetContext(DbContext dbContext);
     }
 }

@@ -21,23 +21,45 @@ namespace CoreIn.Media.MediaHelper
 {
     public class MediaHelper : IMediaHelper
     {
+        private readonly CoreInDbContext _dbContext;
         private readonly IEntityHelper<FileEntity, FileEntityDetail> _entityHelper;
         private readonly IHostingEnvironment _environment;
         private readonly IStringLocalizer<Language> _stringLocalizer;
+        private readonly ITaxonomyHelper _taxonomyHelper;
+        private readonly IEntityTaxonomyRelationHelper<FileEntityTaxonomy> _entityTaxonomyRelationHelper;
+        private readonly IEntityTypeManager _entityTypeManager;
+        private EntityType TypeImage { get; set; }
+        private EntityType TypeOther { get; set; }
 
-        private EntityType TypeImage { get; }
-        private EntityType TypeOther { get; }
-
-        public MediaHelper(IEntityHelper<FileEntity, FileEntityDetail> entityHelper, IHostingEnvironment environment, IStringLocalizer<Language> stringLocalizer, IEntityTypeManager entityTypeManager)
+        public MediaHelper(
+            CoreInDbContext dbContext,
+            ITaxonomyHelper taxonomyHelper,
+            IEntityHelper<FileEntity, FileEntityDetail> entityHelper, 
+            IHostingEnvironment environment, IStringLocalizer<Language> stringLocalizer,
+            IEntityTypeManager entityTypeManager,
+            IEntityTaxonomyRelationHelper<FileEntityTaxonomy> entityTaxonomyRelationHelper
+            )
         {
+            _dbContext = dbContext;
+
+            _taxonomyHelper = taxonomyHelper;
+
             _entityHelper = entityHelper;
+            _entityHelper.SetContext(_dbContext);
+
+            _entityTypeManager = entityTypeManager;
+
             _environment = environment;
             _stringLocalizer = stringLocalizer;
 
-            var entityTypeGroup = "File Type";
+            _entityTaxonomyRelationHelper = entityTaxonomyRelationHelper;
+        }
 
-            TypeImage = entityTypeManager.RegisterEntityType(AppKey.FileTypeImage, new Dictionary<string, string> { { "title", "Image" }, { "group", entityTypeGroup } });
-            TypeOther = entityTypeManager.RegisterEntityType(AppKey.FileTypeOther, new Dictionary<string, string> { { "title", "Other" }, { "group", entityTypeGroup } });
+        private void RegisterTypes()
+        {
+            var entityTypeGroup = "File Type";
+            TypeImage = _entityTypeManager.RegisterEntityType(AppKey.FileTypeImage, new Dictionary<string, string> { { "title", "Image" }, { "group", entityTypeGroup } });
+            TypeOther = _entityTypeManager.RegisterEntityType(AppKey.FileTypeOther, new Dictionary<string, string> { { "title", "Other" }, { "group", entityTypeGroup } });
         }
 
         private object FileEntityToObject(FileEntity fileEntity, bool includeDetails = false)
@@ -103,6 +125,9 @@ namespace CoreIn.Media.MediaHelper
 
         public async Task<FileEntityResult> Upload(IFormFileCollection files, User uploader)
         {
+            if (TypeImage == null || TypeOther == null)
+                RegisterTypes();
+
             var uploadDirectory = UploadFolder().ToString();
             var currentYear = DateTime.UtcNow.Year.ToString();
             var currentMonth = DateTime.UtcNow.Month.ToString();
@@ -144,6 +169,7 @@ namespace CoreIn.Media.MediaHelper
                     var entityType = fileType == FileType.Image ? TypeImage : TypeOther;
 
                     var fileEntity = _entityHelper.CreateEntity(entityType, fileName, uploader);
+
                     var detailDictionary = new Dictionary<string, string>()
                     {
                         {"type", fileType.ToString()},
@@ -155,6 +181,8 @@ namespace CoreIn.Media.MediaHelper
                         detailDictionary.Add("src_thumb", Path.Combine(rawPath, thumbFileName));
 
                     _entityHelper.CreateDetails(fileEntity, detailDictionary, uploader);
+
+                    Save();
 
                     return new FileEntityResult(JsonResultState.Success, fileName, "Upload completed!",FileEntityToObject(fileEntity));
                 }
@@ -194,7 +222,10 @@ namespace CoreIn.Media.MediaHelper
             var fileEntity = _entityHelper.Entity(fileName);
             DeleteFileOnDisk(fileEntity);
 
-            if (_entityHelper.Delete(fileEntity) > 0)
+            _entityHelper.Delete(fileEntity);
+
+            var result = Save();
+            if ( result > 0)
                 return new FileEntityResult(JsonResultState.Success, fileEntity.Name, _stringLocalizer["Deleted successfuly!"]);
 
             return new FileEntityResult(JsonResultState.Failed, fileName, _stringLocalizer["Delete failed!"]);
@@ -203,12 +234,11 @@ namespace CoreIn.Media.MediaHelper
         public FileEntity Entity(string fileName)
             => _entityHelper.Entity(fileName);
 
-        public FileEntityResult UpdateDetails(string fileName, Dictionary<string, string> detailDictionary,
-            User byUser)
+        public FileEntityResult UpdateFile(long fileId, Dictionary<string, string> detailDictionary, Dictionary<long, long[]> taxonomyTypeTaxonomies, User byUser = null)
         {
-            var entity = Entity(fileName);
+            var entity = _entityHelper.Entity(fileId);
 
-            var form = GetEntityForm();
+            var form = GetEntityForm(entity.EntityTypeId ?? 0);
 
             var newDetails = new Dictionary<string, string>();
             foreach (var formDetail in form.Details)
@@ -217,21 +247,29 @@ namespace CoreIn.Media.MediaHelper
                 newDetails.Add(formDetail.Input.Name, detailDictionary[detailName]);
             }
 
-            var updateResult = _entityHelper.UpdateDetails(entity, newDetails, byUser);
-            if (updateResult > 0)
-                return new FileEntityResult(JsonResultState.Success, fileName, _stringLocalizer["Update successfuly!"]);
+            _entityHelper.UpdateDetails(entity, newDetails, byUser);
 
-            return new FileEntityResult(JsonResultState.Failed, fileName, _stringLocalizer["Error!"]);
+            _taxonomyHelper.UpdateTaxonomiesForEntity<FileEntityTaxonomy>(entity.Id, entity.EntityTypeId ?? 0, taxonomyTypeTaxonomies);
+
+            var updateResult = Save();
+
+            if (updateResult > 0)
+                return new FileEntityResult(JsonResultState.Success, entity.Name, _stringLocalizer["Update successfuly!"]);
+
+            return new FileEntityResult(JsonResultState.Failed, entity.Name, _stringLocalizer["Error!"]);
         }
 
-        public DynamicForm GetEntityForm()
+        public DynamicForm GetEntityForm(long entityTypeId)
         {
+            var taxonomyTypesViewModels = _taxonomyHelper.GetTaxonomiesTypeViewModels(entityTypeId, true);
+
             return new DynamicForm
             {
                 Details = new List<FormField>
                 {
                     new FormField
                     {
+                        Status = FieldStatus.ReadOnly,
                         Input = new FieldInput("src"),
                         Validate = new FieldValidate
                         {
@@ -240,7 +278,7 @@ namespace CoreIn.Media.MediaHelper
                         Display = new FieldDisplay
                         {
                             RenderType = FieldRenderType.FormGroup,
-                            Label = _stringLocalizer["Url"]
+                            Title = _stringLocalizer["Url"]
                         }
                     },
                     new FormField
@@ -253,74 +291,63 @@ namespace CoreIn.Media.MediaHelper
                         Display = new FieldDisplay
                         {
                             RenderType = FieldRenderType.FormGroup,
-                            Label = _stringLocalizer["Title"]
-                        }
-                    },
-                    new FormField
-                    {
-                        Input = new FieldInput("description"),
-                        Validate = new FieldValidate
-                        {
-                            Type = "text"
-                        },
-                        Display = new FieldDisplay
-                        {
-                            RenderType = FieldRenderType.FormGroup,
-                            Label = _stringLocalizer["Description"]
+                            Title = _stringLocalizer["Title"]
                         }
                     }
                 },
 
-                Taxonomies = new List<FormTaxonomy>{
-                    new FormTaxonomy{
-                        Order = 0,
+                TaxonomyTypes = taxonomyTypesViewModels.Select( o => new FormTaxonomyType(o) )
+            };
+        }
 
-                        Input = new FieldInput("category"),
-
-                        Terms = new List<TaxonomyTerm> {
-                            new TaxonomyTerm {
-                                Title = "Category1",
-                                Name = "c1",
-                                ChildrenTerms = new List<TaxonomyTerm> {
-                                    new TaxonomyTerm {
-                                        Title = "Category Chilren 1",
-                                        Name = "c6"
-                                    },
-                                    new TaxonomyTerm {
-                                        Title = "Category Chilren 2",
-                                        Name = "c7"
-                                    }
-                                }
-                            }
-                        },
-
-                        Display = new FieldDisplay
-                        {
-                            RenderType = FieldRenderType.FormGroup,
-                            Label = _stringLocalizer["Category"]
-                        }
-                    }
+        private List<FormField> GetTheFormMeta()
+        {
+            var result = new List<FormField>
+            {
+                new FormField
+                {
+                    Status = FieldStatus.Hidden,
+                    Input = new FieldInput("id"),
                 }
             };
+            return result;
+        }
+
+        private FormValues GetFormValueFor(FileEntity entity)
+        {
+            var formValues = new FormValues();
+            formValues.Meta = new Dictionary<string, string>()
+            {
+                {"id", entity.Id.ToString() }
+            };
+
+            var entityDetails = _entityHelper.Details(entity);
+            formValues.Details = entityDetails.ToDictionary(o => o.Field, o => o.Value);
+
+            formValues.TaxonomyTypes = new Dictionary<long, Dictionary<long, bool>>();
+            var taxonomyTypesViewModels = _taxonomyHelper.GetTaxonomiesTypeViewModels(entity.EntityTypeId, true);
+            foreach (var taxonomyTypeViewModel in taxonomyTypesViewModels)
+            {
+                var relateTaxonomies = _entityTaxonomyRelationHelper.GetTaxonomiesForEntity(entity.Id, taxonomyTypeViewModel.Id);
+                formValues.TaxonomyTypes.Add(taxonomyTypeViewModel.Id, relateTaxonomies.ToDictionary(o => o.TaxonomyId, o => true));
+            }
+
+            return formValues;
         }
 
         public FileEntityResult GetEntityForm(string fileName)
         {
             var entity = Entity(fileName);
-            var entityDetails = _entityHelper.Details(entity).ToDictionary(o => o.Field,o => o.Value);
+            var form = GetEntityForm(entity.EntityTypeId ?? 0);
 
-            var form = GetEntityForm();
-            foreach (var formDetail in form.Details)
-            {
-                var detailName = formDetail.Input.Name.ToLower();
-                if (!entityDetails.ContainsKey(detailName))
-                    entityDetails.Add(detailName, string.Empty);
-                formDetail.Input.Value = entityDetails[detailName];
-            }
+            form.Meta.AddRange(GetTheFormMeta());
+            form.InitialValues = GetFormValueFor(entity);
 
-            var  result = new FileEntityResult(JsonResultState.Success, fileName, string.Empty, form);
-
+            var result = new FileEntityResult(JsonResultState.Success, fileName, null, form);
             return result;
         }
+
+        private int Save()
+            => _dbContext.SaveChanges();
     }
 }

@@ -2,18 +2,28 @@
 using System.Collections.Generic;
 using System.Text;
 using Newtonsoft.Json;
+using CoreIn.Models;
 
 namespace CoreIn.Commons.Form
 {
-    public class TaxonomyTerm
+    public class FormTaxonomy
     {
+        public long Id { get; set; }
         public string Title { get; set; }
         public string Name { get; set; }
+        public long? ParentId { get; set; }
 
-        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
-        public Dictionary<string, string> DetailDictionary { get; set; }
+        public FormTaxonomy()
+        {
 
-        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
-        public List<TaxonomyTerm> ChildrenTerms { get; set; }
+        }
+
+        public FormTaxonomy(TaxonomyViewModel taxonomyViewModel)
+        {
+            Id = taxonomyViewModel.Id;
+            Name = taxonomyViewModel.Name;
+            Title = taxonomyViewModel.Title;
+            ParentId = taxonomyViewModel.ParentId;
+        }
     }
 }

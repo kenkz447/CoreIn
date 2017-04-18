@@ -1,5 +1,232 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 const $ = require('jquery');
+const { loadEntityTypes, entityTypeChange, newTaxonomyFormChange, newTaxonomy } = require('../redux/tu-actions');
+const { bindActionCreators } = require('redux');
+const { connect } = require('react-redux');
+const classnames = require('classnames');
+const { dynamicFormValidator, DynamicForm, TabControl, tabControlActions: { tabChange, tabAdd } } = require('corein');
+const { getNewTaxonomyForm } = require('../redux/tu-ajaxs');
+const { Label } = require('reactstrap');
+const { reduxForm } = require('redux-form');
+const { newTaxonomySubmit } = require('../redux/tu-formSubmits');
+
+const ActionTabControl = (props) => {
+    const { taxonomyTypeChanged, currentTaxonomyType, newTaxonomyFormChange, activeTab, tabs, tabAdd, tabChange, newTaxonomy } = props;
+
+    if (!currentTaxonomyType)
+        return null;
+
+    if (taxonomyTypeChanged) {
+        getNewTaxonomyForm((formResult) => {
+            const vatidateData = { details: formResult.details, meta: formResult.meta };
+            const validate = dynamicFormValidator(vatidateData);
+            const ReduxDynamicForm = reduxForm({ form: 'newTaxonomy', validate, formData: formResult, initialValues: formResult.initialValues })(DynamicForm);
+
+            var submit = newTaxonomySubmit({newTaxonomy});
+            tabAdd('new-tax', `New ${currentTaxonomyType.title}`, React.createElement(ReduxDynamicForm, {onSubmit: submit}));
+            newTaxonomyFormChange();
+        }, currentTaxonomyType.id);
+    }
+    return (
+        React.createElement("div", {className: "card"}, 
+            React.createElement(TabControl, {activeTab: activeTab, tabs: tabs, tabChange: tabChange})
+        )
+    );
+};
+
+const stateToProps = (state) => ({
+    taxonomyTypeChanged: state.tu.taxonomyTypeChanged,
+    currentTaxonomyType: state.tu.current.taxonomyType,
+    activeTab: state.tc.active,
+    tabs: state.tc.tabs
+});
+
+const reducerToProps = (reducer) => (
+    bindActionCreators({ newTaxonomyFormChange, tabChange, tabAdd, newTaxonomy }, reducer)
+);
+
+module.exports = connect(stateToProps, reducerToProps)(ActionTabControl);
+
+
+
+
+},{"../redux/tu-actions":5,"../redux/tu-ajaxs":6,"../redux/tu-formSubmits":7,"classnames":"4z/pR8","corein":15,"jquery":"XpFelZ","react-redux":"MzQWgz","reactstrap":"jldOQ7","redux":"czVV+t","redux-form":"LVfYvK"}],2:[function(require,module,exports){
+(function (global){
+﻿const _ = require('underscore');
+const { bindActionCreators } = require('redux');
+const { connect } = require('react-redux');
+const classnames = require('classnames');
+const Tree = require('react-ui-tree');
+const ajaxs = require('../redux/tu-ajaxs');
+const { DynamicForm, dynamicFormValidator, tabControlActions: { tabRemove, tabAdd } } = require('corein');
+const { loadTaxonomies, taxonomyClick, taxonomySelect, taxonomiesDeleted, taxonomiesUpdating, taxonomiesUpdated, taxonomyUpdated, componentLoaded} = require('../redux/tu-actions');
+const listToTree = require('list-to-tree');
+const { Button, ButtonGroup } = require('reactstrap');
+const { reduxForm } = require('redux-form');
+const {updateTaxonomySubmit} = require('../redux/tu-formSubmits');
+
+
+const componentName = "taxonomyList";
+
+class TaxonomyTypeList extends React.Component {
+    constructor(props) {
+        super();
+        this.loaded = false;
+
+        this.convertTreeToList = this.convertTreeToList.bind(this);
+        this.onTaxonomyUpdate = this.onTaxonomyUpdate.bind(this);
+        this.onTaxonomyEditing = this.onTaxonomyEditing.bind(this);
+        this.onTaxonomyNodeClick = this.onTaxonomyNodeClick.bind(this);
+    }
+
+    visitNode(node, hashMap, array) {
+        if (!hashMap[node.id]) {
+            hashMap[node.id] = true;
+            array.push(node);
+        }
+    }
+
+    convertTreeToList(root) {
+        var stack = [], array = [], hashMap = {};
+        stack.push(root);
+
+        var currentParent = root;
+        while (stack.length !== 0) {
+            var node = stack.pop();
+            var notRoot = node.id && true;
+
+            if (!node.children) {
+                this.visitNode(node, hashMap, array);
+            } else {
+                if (notRoot)
+                    array.push(node);
+                for (var i = node.children.length - 1; i >= 0; i--) {
+                    node.children[i].parentId = node.id
+                    stack.push(node.children[i]);
+                }
+            }
+        }
+
+        return array;
+    }
+
+    renderNode(node) {
+        const { currentTaxonomy, taxonomySelect, selectedTaxonomies} = this.props;
+        var isActive = (currentTaxonomy && (node.id === currentTaxonomy.id));
+        var isChecked = _.findWhere(selectedTaxonomies, { id: node.id }) && true;
+        return (
+            React.createElement("div", {className: classnames('node', { 'active': isActive }), onClick: () => { this.onTaxonomyNodeClick(node) }}, 
+                node.id && React.createElement("input", {type: "checkbox", checked: isChecked, onClick: () => { taxonomySelect(node.id && node); }}), 
+                React.createElement("span", null, 
+                    node.title
+                )
+            )
+        );
+    }
+
+    onTaxonomyNodeClick(node) {
+        const { taxonomyClick } = this.props;
+        taxonomyClick(node.id && node);
+    }
+
+    onTaxonomyUpdate() {
+        const { taxonomies, taxonomiesUpdating, taxonomiesUpdated } = this.props;
+        taxonomiesUpdating();
+        ajaxs.updateTaxonomies(taxonomiesUpdated, taxonomies);
+    }
+
+    onTaxonomyEditing() {
+        const {tabAdd, tabRemove, currentTaxonomy, taxonomyUpdated} = this.props;
+        ajaxs.getTaxonomyFormFor((formResult) => {
+            const vatidateData = { details: formResult.details, meta: formResult.meta };
+            const validate = dynamicFormValidator(vatidateData);
+            const ReduxDynamicForm = reduxForm({ form: 'edit-taxonomy', validate, formData: formResult, initialValues: formResult.initialValues })(DynamicForm);
+
+            var submit = updateTaxonomySubmit({ successAction: taxonomyUpdated });
+
+            tabRemove('edit-taxonomy');
+            tabAdd('edit-taxonomy', `${currentTaxonomy.title}`, React.createElement(ReduxDynamicForm, {onSubmit: submit}));
+        }, currentTaxonomy.id);
+    }
+
+    render() {
+        const { componentLoaded, taxonomies, currentTaxonomy, currentTaxonomyType, loadTaxonomies, taxonomiesChanged, taxonomiesDeleted, selectedTaxonomies, isTaxonomiesUpdating } = this.props;
+
+        if (!currentTaxonomyType || taxonomies == null)
+            return null;
+
+        global.selectedTaxonomyId = currentTaxonomy ? currentTaxonomy.id : null;
+
+        if (taxonomies.length === 0) {
+            ajaxs.getTaxonomies((taxonomiesResult) => {
+                loadTaxonomies(taxonomiesResult);
+            }, currentTaxonomyType.id)
+            this.loaded = true;
+            return null;
+        }
+
+        const ltt = new listToTree(taxonomies, {
+            key_id: 'id',
+            key_parent: 'parentId',
+            key_child: 'children'
+        });
+
+        const taxonomyTree = { title: currentTaxonomyType.title, children: ltt.GetTree() };
+
+        return (
+            React.createElement("div", {className: "card"}, 
+                React.createElement("div", {className: "card-block"}, 
+                    React.createElement(ButtonGroup, null, 
+                        React.createElement(Button, {type: "button", disabled: !currentTaxonomy && true, onClick: this.onTaxonomyEditing}, "Edit"), 
+                        React.createElement(Button, {type: "button", disabled: isTaxonomiesUpdating, onClick: this.onTaxonomyUpdate}, "Update"), 
+                        React.createElement(Button, {type: "button", disabled: selectedTaxonomies.length === 0, onClick: () => { ajaxs.deleteTaxonomies(taxonomiesDeleted, selectedTaxonomies.map((taxonomy) => (taxonomy.id))) }}, "Delete")
+                    ), 
+                    React.createElement("hr", null), 
+                    React.createElement(Tree, {
+                        paddingLeft: 20, 
+                        tree: taxonomyTree, 
+                        onChange: (root) => {
+                            loadTaxonomies(this.convertTreeToList(root));
+                        }, 
+                        renderNode: this.renderNode.bind(this)}
+                    )
+                )
+            )
+        );
+    };
+};
+
+const stateToProps = (state) => ({
+    currentTaxonomy: state.tu.current.taxonomy,
+    currentTaxonomyType: state.tu.current.taxonomyType,
+    taxonomies: state.tu.current.taxonomies,
+    selectedTaxonomies: state.tu.selectedTaxonomies,
+    isTaxonomiesUpdating: state.tu.isTaxonomiesUpdating
+});
+
+const reducerToProps = (reducer) => (
+    bindActionCreators({
+        loadTaxonomies,
+        taxonomyClick,
+        taxonomySelect,
+        taxonomiesDeleted,
+        taxonomiesUpdating,
+        taxonomiesUpdated,
+        taxonomyUpdated,
+        componentLoaded,
+        tabAdd,
+        tabRemove
+    }, reducer)
+);
+
+module.exports = connect(stateToProps, reducerToProps)(TaxonomyTypeList);
+
+
+
+
+}).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{"../redux/tu-actions":5,"../redux/tu-ajaxs":6,"../redux/tu-formSubmits":7,"classnames":"4z/pR8","corein":15,"list-to-tree":"3c/Ypl","react-redux":"MzQWgz","react-ui-tree":"0pOQFP","reactstrap":"jldOQ7","redux":"czVV+t","redux-form":"LVfYvK","underscore":"vBgcj5"}],3:[function(require,module,exports){
+const $ = require('jquery');
 const _ = require('underscore');
 const ajaxs = require('../redux/tu-ajaxs');
 const { loadTaxonomyTypes, loadTaxonomies, entityTypeChange, taxonomyTypeChange } = require('../redux/tu-actions');
@@ -18,7 +245,7 @@ _.groupByMulti = function (obj, values, context) {
     return byFirst;
 };
 
-const EntityTypeList = (props) => {
+const TaxonomyTypeList = (props) => {
     const {loadTaxonomyTypes, loadTaxonomies, currentEntityType, currentTaxonomyType, taxonomyTypes, entityTypeChange, taxonomyTypeChange} = props;
 
     if (taxonomyTypes.length === 0) {
@@ -87,223 +314,18 @@ const reducerToProps = (reducer) => (
     bindActionCreators({ loadTaxonomyTypes, loadTaxonomies, entityTypeChange, taxonomyTypeChange }, reducer)
 );
 
-module.exports = connect(stateToProps, reducerToProps)(EntityTypeList);
+module.exports = connect(stateToProps, reducerToProps)(TaxonomyTypeList);
 
-
-
-
-},{"../redux/tu-actions":5,"../redux/tu-ajaxs":6,"jquery":"XpFelZ","react-redux":"MzQWgz","reactstrap":"jldOQ7","redux":"czVV+t","underscore":"vBgcj5"}],2:[function(require,module,exports){
-const $ = require('jquery');
-const { loadEntityTypes, entityTypeChange, newTaxonomyFormChange, newTaxonomy } = require('../redux/tu-actions');
-const { bindActionCreators } = require('redux');
-const { connect } = require('react-redux');
-const classnames = require('classnames');
-const { TabControl, tabControlActions: { tabChange, tabAdd } } = require('corein');
-const { getNewTaxonomyForm } = require('../redux/tu-ajaxs');
-const { Label } = require('reactstrap');
-const { reduxForm } = require('redux-form');
-const { newTaxonomySubmit } = require('../redux/tu-formSubmits');
-const { dynamicFormValidator } = require('corein');
-
-const { DynamicForm } = require('corein');
-
-const TaxonomyList = (props) => {
-    const { taxonomyTypeChanged, currentTaxonomyType, newTaxonomyFormChange, activeTab, tabs, tabAdd, tabChange, newTaxonomy } = props;
-
-    if (!currentTaxonomyType)
-        return null;
-
-    if (taxonomyTypeChanged) {
-        getNewTaxonomyForm((formResult) => {
-            const vatidateData = { details: formResult.details, meta: formResult.meta };
-            const validate = dynamicFormValidator(vatidateData);
-            const ReduxDynamicForm = reduxForm({ form: 'newTaxonomy', validate, formData: formResult, initialValues: formResult.initialValues })(DynamicForm);
-
-            var submit = newTaxonomySubmit({newTaxonomy});
-            tabAdd('new-tax', `New ${currentTaxonomyType.title}`, React.createElement(ReduxDynamicForm, {onSubmit: submit}));
-            newTaxonomyFormChange();
-        }, currentTaxonomyType.id);
-    }
-    return (
-        React.createElement("div", {className: "card"}, 
-            React.createElement(TabControl, {activeTab: activeTab, tabs: tabs, tabChange: tabChange})
-        )
-    );
-};
-
-const stateToProps = (state) => ({
-    taxonomyTypeChanged: state.tu.taxonomyTypeChanged,
-    currentTaxonomyType: state.tu.current.taxonomyType,
-    activeTab: state.tc.active,
-    tabs: state.tc.tabs
-});
-
-const reducerToProps = (reducer) => (
-    bindActionCreators({ newTaxonomyFormChange, tabChange, tabAdd, newTaxonomy }, reducer)
-);
-
-module.exports = connect(stateToProps, reducerToProps)(TaxonomyList);
-
-
-
-
-},{"../redux/tu-actions":5,"../redux/tu-ajaxs":6,"../redux/tu-formSubmits":7,"classnames":"4z/pR8","corein":15,"jquery":"XpFelZ","react-redux":"MzQWgz","reactstrap":"jldOQ7","redux":"czVV+t","redux-form":"LVfYvK"}],3:[function(require,module,exports){
-(function (global){
-﻿const _ = require('underscore');
-const { bindActionCreators } = require('redux');
-const { connect } = require('react-redux');
-const classnames = require('classnames');
-const Tree = require('react-ui-tree');
-const ajaxs = require('../redux/tu-ajaxs');
-const { loadTaxonomies, taxonomyClick, taxonomySelect, taxonomiesDeleted, taxonomiesUpdating, taxonomiesUpdated } = require('../redux/tu-actions');
-const listToTree = require('list-to-tree');
-const { Button, ButtonGroup } = require('reactstrap');
-
-class TaxonomyTree extends React.Component {
-    constructor(props) {
-        super();
-        this.loaded = false;
-
-        this.convertTreeToList = this.convertTreeToList.bind(this);
-        this.onTaxonomyUpdate = this.onTaxonomyUpdate.bind(this);
-    }
-
-    visitNode(node, hashMap, array) {
-        if (!hashMap[node.id]) {
-            hashMap[node.id] = true;
-            array.push(node);
-        }
-    }
-
-    convertTreeToList(root) {
-        var stack = [], array = [], hashMap = {};
-        stack.push(root);
-
-        var currentParent = root;
-        while (stack.length !== 0) {
-            var node = stack.pop();
-            var notRoot = node.id && true;
-
-            if (!node.children) {
-                this.visitNode(node, hashMap, array);
-            } else {
-                if (notRoot)
-                    array.push(node);
-                for (var i = node.children.length - 1; i >= 0; i--) {
-                    node.children[i].parentId = node.id
-                    stack.push(node.children[i]);
-                }
-            }
-        }
-
-        return array;
-    }
-
-    renderNode(node) {
-        const { currentTaxonomy, taxonomyClick, taxonomySelect, selectedTaxonomies} = this.props;
-        var isActive = (currentTaxonomy && (node.id === currentTaxonomy.id));
-        var isChecked = _.findWhere(selectedTaxonomies, { id: node.id }) && true;
-        return (
-            React.createElement("div", {className: classnames('node', { 'active': isActive }), onClick: () => {
-                global.selectedTaxonomyId = node.id;
-                taxonomyClick(node.id && node);
-            }}, 
-                node.id && React.createElement("input", {type: "checkbox", checked: isChecked, onClick: () =>
-                {
-                    taxonomySelect(node.id && node);
-                }}), 
-                React.createElement("span", null, 
-                    node.title
-                )
-            )
-        );
-    }
-
-    onTaxonomyUpdate() {
-        const { taxonomies, taxonomiesUpdating, taxonomiesUpdated } = this.props;
-        taxonomiesUpdating();
-        ajaxs.updateTaxonomies(taxonomiesUpdated, taxonomies);
-    }
-
-    render() {
-        const {taxonomies, currentTaxonomyType, loadTaxonomies, taxonomiesChanged, taxonomiesDeleted, selectedTaxonomies, isTaxonomiesUpdating } = this.props;
-
-        if (!currentTaxonomyType)
-            return null;
-
-        if (taxonomies.length === 0) {
-            ajaxs.getTaxonomies((taxonomiesResult) => {
-                loadTaxonomies(taxonomiesResult);
-            }, currentTaxonomyType.id)
-            this.loaded = true;
-            return null;
-        }
-
-        const ltt = new listToTree(taxonomies, {
-            key_id: 'id',
-            key_parent: 'parentId',
-            key_child: 'children'
-        });
-
-        const taxonomyTree = { title: currentTaxonomyType.title, children: ltt.GetTree() };
-
-        return (
-            React.createElement("div", {className: "card"}, 
-                React.createElement("div", {className: "card-block"}, 
-                    React.createElement(ButtonGroup, null, 
-                        React.createElement(Button, {type: "button", disabled: isTaxonomiesUpdating, onClick: this.onTaxonomyUpdate}, "Update"), 
-                        React.createElement(Button, {type: "button", disabled: selectedTaxonomies.length === 0, onClick: () => { ajaxs.deleteTaxonomies(taxonomiesDeleted, selectedTaxonomies.map((taxonomy) => (taxonomy.id))) }}, "Delete")
-                    ), 
-                    React.createElement("hr", null), 
-                    React.createElement(Tree, {
-                        paddingLeft: 20, 
-                        tree: taxonomyTree, 
-                        onChange: (root) => {
-                            loadTaxonomies(this.convertTreeToList(root));
-                        }, 
-                        renderNode: this.renderNode.bind(this)}
-                    )
-                )
-            )
-        );
-    };
-};
-
-const stateToProps = (state) => ({
-    currentTaxonomy: state.tu.current.taxonomy,
-    currentTaxonomyType: state.tu.current.taxonomyType,
-    taxonomies: state.tu.current.taxonomies,
-    selectedTaxonomies: state.tu.selectedTaxonomies,
-    isTaxonomiesUpdating: state.tu.isTaxonomiesUpdating
-});
-
-const reducerToProps = (reducer) => (
-    bindActionCreators({
-        loadTaxonomies,
-        taxonomyClick,
-        taxonomySelect,
-        taxonomiesDeleted,
-        taxonomiesUpdating,
-        taxonomiesUpdated
-    }, reducer)
-);
-
-module.exports = connect(stateToProps, reducerToProps)(TaxonomyTree);
-
-
-
-
-}).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"../redux/tu-actions":5,"../redux/tu-ajaxs":6,"classnames":"4z/pR8","list-to-tree":"3c/Ypl","react-redux":"MzQWgz","react-ui-tree":"0pOQFP","reactstrap":"jldOQ7","redux":"czVV+t","underscore":"vBgcj5"}],4:[function(require,module,exports){
+},{"../redux/tu-actions":5,"../redux/tu-ajaxs":6,"jquery":"XpFelZ","react-redux":"MzQWgz","reactstrap":"jldOQ7","redux":"czVV+t","underscore":"vBgcj5"}],4:[function(require,module,exports){
 (function (global){
 ﻿const { combineReducers, createStore } = require('redux');
 const { Provider } = require('react-redux');
 const formReducer = require('redux-form').reducer;
 const { tabControlReducer } = require('corein');
 const tuReducer = require('./redux/tu-reducer');
-const EntityTypeList = require('./components/tu-entityTypeList');
-const Tabs = require('./components/tu-tabs');
-const TaxonomyTree = require('./components/tu-taxonomies');
+const EntityTypeList = require('./components/tu-taxonomyTypeList');
+const Tabs = require('./components/tu-actionTabControl');
+const TaxonomyTree = require('./components/tu-taxonomyList');
 const reducers = {
     form: formReducer,
     tu: tuReducer,
@@ -335,7 +357,7 @@ const TaxonomyUIIndex = (props) => {
 global.TaxonomyUIIndex = TaxonomyUIIndex;
 
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./components/tu-entityTypeList":1,"./components/tu-tabs":2,"./components/tu-taxonomies":3,"./redux/tu-reducer":9,"corein":15,"react-redux":"MzQWgz","redux":"czVV+t","redux-form":"LVfYvK"}],5:[function(require,module,exports){
+},{"./components/tu-actionTabControl":1,"./components/tu-taxonomyList":2,"./components/tu-taxonomyTypeList":3,"./redux/tu-reducer":9,"corein":15,"react-redux":"MzQWgz","redux":"czVV+t","redux-form":"LVfYvK"}],5:[function(require,module,exports){
 const keys = require('./tu-keys');
 
 const loadTaxonomyTypes = (taxonomyTypes) => ({
@@ -391,6 +413,16 @@ const taxonomiesUpdated = (updateResult) => ({
     updateResult
 });
 
+const taxonomyUpdated = (updateResult) => ({
+    type: keys.taxonomyUpdated,
+    updateResult
+});
+
+const componentLoaded = (componentName) => ({
+    type: keys.componentLoaded,
+    componentName
+});
+
 module.exports = {
     loadTaxonomyTypes,
     entityTypeChange,
@@ -402,7 +434,9 @@ module.exports = {
     taxonomiesDeleted,
     taxonomySelect,
     taxonomiesUpdating,
-    taxonomiesUpdated
+    taxonomiesUpdated,
+    taxonomyUpdated,
+    componentLoaded
 };
 
 },{"./tu-keys":8}],6:[function(require,module,exports){
@@ -447,14 +481,22 @@ const deleteTaxonomies = (handler, taxonomyIds) => {
 
 const updateTaxonomies = (handler, taxonomies) => {
     $.ajax({
-        url: "/taxonomyui/UpdateTaxonomies",
+        url: "/taxonomyui/UpdateTaxonomyTree",
         data: { viewModels: taxonomies },
         method: 'PUT',
         success: handler
     });
-}
+};
 
-module.exports = { getTaxonomyTypes, getNewTaxonomyForm, getTaxonomies, deleteTaxonomies, updateTaxonomies };
+const getTaxonomyFormFor = (handler, taxonomyId) => {
+    $.ajax({
+        url: "/taxonomyui/GetTaxonomyFormFor",
+        data: { taxonomyId},
+        success: handler
+    });
+};
+
+module.exports = { getTaxonomyTypes, getNewTaxonomyForm, getTaxonomies, deleteTaxonomies, updateTaxonomies, getTaxonomyFormFor };
 
 },{"jquery":"XpFelZ"}],7:[function(require,module,exports){
 (function (global){
@@ -502,8 +544,46 @@ function newTaxonomySubmit(props) {
     }
 }
 
+const updateTaxonomyRequest = (data) => new Promise((resolve, reject) =>
+    $.ajax({
+        url: '/taxonomyui/UpdateTaxonomy',
+        method: 'PUT',
+        data: data,
+        success: (response) => {
+            if (response.resultState !== 0) {
+                resolve(response);
+            } else {
+                reject(response);
+            }
+        },
+        error: (response) => {
+            reject(response);
+        }
+    })
+);
+
+function updateTaxonomySubmit(props) {
+
+    return function (formValues) {
+        const {successAction, currentTaxonomy} = props;
+
+        return updateTaxonomyRequest(formValues)
+            .then((response) => {
+                successAction(response);
+            })
+            .catch((response) => {
+                if (response.result && response.result === "error") {
+                    throw new SubmissionError(response.errors);
+                } else {
+                    throw new SubmissionError({ _error: 'Something wrong?' });
+                }
+            });
+    }
+}
+
 module.exports = {
-    newTaxonomySubmit
+    newTaxonomySubmit,
+    updateTaxonomySubmit
 }
 
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
@@ -520,7 +600,9 @@ const keys = {
     taxonomiesDeleted: "TAXONOMIES_DELETED",
     taxonomySelect: "TAXONOMY_SELECT",
     taxonomiesUpdating: "TAXONOMIES_UPDATING",
-    taxonomiesUpdated: "TAXONOMIES_UPDATED"
+    taxonomiesUpdated: "TAXONOMIES_UPDATED",
+    taxonomyUpdated: "TAXONOMY_UPDATED",
+    componentLoaded: "COMPONENT_LOADED"
 };
 
 module.exports = keys;
@@ -561,9 +643,14 @@ const reducer = (state = initState, action) => {
             newState.taxonomyTypeChanged = false;
             break;
         case keys.loadTaxonomies:
-            newState.current.taxonomies = action.taxonomies;
+            if (action.taxonomies.length === 0)
+                newState.current.taxonomies = null;
+            else
+                newState.current.taxonomies = action.taxonomies;
             break;
         case keys.newTaxonomy:
+            if (!newState.current.taxonomies)
+                newState.current.taxonomies = [];
             newState.current.taxonomies.push(action.taxonomy);
             break;
         case keys.taxonomyClick:
@@ -587,6 +674,11 @@ const reducer = (state = initState, action) => {
         case keys.taxonomiesUpdated:
             newState.isTaxonomiesUpdating = false;
             newState.current.taxonomies = action.updateResult.result;
+            break;
+        case keys.taxonomyUpdated:
+            var taxonomyIndex = _.findIndex(newState.current.taxonomies, { id: action.updateResult.result.id });
+            if (taxonomyIndex >= 0)
+                newState.current.taxonomies[taxonomyIndex] = action.updateResult.result;
             break;
         default:
             return state;
@@ -4515,8 +4607,8 @@ const keys = {
 module.exports = keys;
 
 },{}],43:[function(require,module,exports){
-(function (global){
-﻿const keys = require('./tc-keys.jsx');
+const $ = require('jquery');
+const keys = require('./tc-keys.jsx');
 
 const initState = {
     active: null,
@@ -4524,7 +4616,7 @@ const initState = {
 };
 
 const reducer = (state = initState, action) => {
-    const newState = global.jQuery.extend(true, {}, state);
+    const newState = $.extend(true, {}, state);
     switch (action.type) { 
         case keys.tabAdd:
             newState.tabs = newState.tabs.filter(tab => tab.id !== action.tab.id);
@@ -4533,11 +4625,11 @@ const reducer = (state = initState, action) => {
             break;
         case keys.tabRemove:
             newState.tabs = newState.tabs.filter(tab => tab.id !== action.tab.id);
-            if (newState.aside.tabs.length !== 0)
+            if (newState.tabs.length !== 0)
                 newState.active = newState.tabs[0];
             break;
         case keys.tabChange:
-            if (newState.current.tab.id !== action.tab.id)
+            if (newState.active.id !== action.tab.id)
                 newState.active = action.tab;
             break;
         default:
@@ -4548,8 +4640,7 @@ const reducer = (state = initState, action) => {
 
 module.exports = reducer;
 
-}).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./tc-keys.jsx":42}],44:[function(require,module,exports){
+},{"./tc-keys.jsx":42,"jquery":"XpFelZ"}],44:[function(require,module,exports){
 "use strict";
 
 /**

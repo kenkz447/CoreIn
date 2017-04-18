@@ -42,6 +42,44 @@ function newTaxonomySubmit(props) {
     }
 }
 
+const updateTaxonomyRequest = (data) => new Promise((resolve, reject) =>
+    $.ajax({
+        url: '/taxonomyui/UpdateTaxonomy',
+        method: 'PUT',
+        data: data,
+        success: (response) => {
+            if (response.resultState !== 0) {
+                resolve(response);
+            } else {
+                reject(response);
+            }
+        },
+        error: (response) => {
+            reject(response);
+        }
+    })
+);
+
+function updateTaxonomySubmit(props) {
+
+    return function (formValues) {
+        const {successAction, currentTaxonomy} = props;
+
+        return updateTaxonomyRequest(formValues)
+            .then((response) => {
+                successAction(response);
+            })
+            .catch((response) => {
+                if (response.result && response.result === "error") {
+                    throw new SubmissionError(response.errors);
+                } else {
+                    throw new SubmissionError({ _error: 'Something wrong?' });
+                }
+            });
+    }
+}
+
 module.exports = {
-    newTaxonomySubmit
+    newTaxonomySubmit,
+    updateTaxonomySubmit
 }

@@ -7,8 +7,12 @@ using CoreIn.Models.Authentication;
 
 namespace CoreIn.Models.Infrastructure
 {
-    public abstract class BaseEntityDetail: EntityWithTypedId<long>
+    public abstract class BaseEntityDetail : EntityWithTypedId<long>
     {
+        public string Prefix { get; set; }
+
+        public string Suffix {get;set;}
+
         public string Group { get; set; }
 
         public string Field { get; set; }

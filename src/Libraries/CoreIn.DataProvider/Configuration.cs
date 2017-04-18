@@ -33,15 +33,17 @@ namespace CoreIn.DataProviver
                 .AddEntityFrameworkStores<CoreInDbContext, long>()
                 .AddDefaultTokenProviders();
 
-            services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
-            services.AddScoped(typeof(IRepositoryWithTypedId<,>), typeof(RepositoryWithTypedId<,>));
+            services.AddTransient(typeof(IRepository<>), typeof(Repository<>));
+            services.AddTransient(typeof(IRepositoryWithTypedId<,>), typeof(RepositoryWithTypedId<,>));
 
-            services.AddSingleton(typeof(IEntityTypeManager), typeof(EntityTypeManager));
-            services.AddScoped(typeof(IEntityHelper<,>), typeof(EntityHelper<,>));
-            services.AddSingleton(typeof(IMenuHelper), typeof(MenuHelper));
-            services.AddSingleton(typeof(IMediaHelper), typeof(MediaHelper));
-            services.AddSingleton(typeof(IEntityTypeManager), typeof(EntityTypeManager));
-            services.AddSingleton(typeof(ITaxonomyHelper), typeof(TaxonomyHelper));
+            services.AddTransient(typeof(IEntityHelper<,>), typeof(EntityHelper<,>));
+            services.AddScoped(typeof(IEntityTypeManager), typeof(EntityTypeManager));
+            services.AddScoped(typeof(IMenuHelper), typeof(MenuHelper));
+            services.AddScoped(typeof(IEntityTypeManager), typeof(EntityTypeManager));
+            services.AddScoped(typeof(ITaxonomyHelper), typeof(TaxonomyHelper));
+            services.AddScoped(typeof(IEntityTaxonomyRelationHelper<>), typeof(EntityTaxonomyRelationHelper<>));
+
+            services.AddScoped(typeof(IMediaHelper), typeof(MediaHelper));
 
             return services;
         }

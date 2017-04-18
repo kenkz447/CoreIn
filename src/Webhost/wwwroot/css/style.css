@@ -9047,6 +9047,27 @@ base-chart.chart {
 .card > .tab-control {
   margin: 1rem; }
 
+.overlay {
+  position: absolute;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  background: #000;
+  opacity: .5;
+  top: 0;
+  left: 0; }
+
+.fade-in-out {
+  transition-duration: 200ms;
+  transition-property: visibility, opacity;
+  transition-delay: 100ms; }
+  .fade-in-out.hidden {
+    visibility: hidden;
+    opacity: 0; }
+
+.item > .children {
+  margin-left: .5em; }
+
 .fancy-checkbox-label {
   font-weight: normal;
   cursor: pointer;

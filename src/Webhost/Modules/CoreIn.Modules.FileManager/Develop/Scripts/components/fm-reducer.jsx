@@ -15,11 +15,7 @@ const initState = {
         initLoadItems: 30,
         itemPerLoad: 12
     },
-    aside: {
-        activeTab: null,
-        isOpen: false,
-        tabs: []
-    }
+    asideOpened: false
 }
 
 const reducer = (state = initState, action) => {
@@ -50,28 +46,9 @@ const reducer = (state = initState, action) => {
 
             newState.files = sift({ fileName: { $not: action.fileName } }, newState.files);
             break;
-        case fmKeys.asideTabAdd:
-            newState.aside.tabs.push({
-                id: action.tabId,
-                title: action.tabTitle,
-                content: action.tabContent
-            });
-            newState.aside.isOpen = true;
-            newState.aside.activeTab = action.tabId;
+        case fmKeys.toggleAside:
+            newState.asideOpened = action.isOpen;
             break;
-        case fmKeys.asideTabRemove:
-            newState.aside.tabs = newState.aside.tabs.filter(tab => tab.id !== action.tabId);
-            if (newState.aside.tabs.length === 0) {
-                newState.aside.isOpen = false;
-            } else {
-                newState.aside.activeTab = newState.aside.tabs[0].id;
-            }
-            break;
-        case fmKeys.asideTabChange:
-            if (newState.aside.activeTab !== action.tab.id)
-                newState.aside.activeTab = action.tab.id;
-            break;
-        
         default:
             return state;
     }

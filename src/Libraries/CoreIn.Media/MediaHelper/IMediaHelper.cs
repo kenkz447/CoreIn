@@ -17,5 +17,6 @@ namespace CoreIn.Media.MediaHelper
         FileEntityResult UpdateFile(long fileId, Dictionary<string, string> detailDictionary, Dictionary<long, long[]> taxonomyTypeTaxonomies, User byUser = null);
         DynamicForm GetEntityForm(long entityTypeId);
         FileEntityResult GetEntityForm(string fileName);
+        string GetThumbnailPath(string sourceImage);
     }
 }

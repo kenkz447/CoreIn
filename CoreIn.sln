@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26403.3
+VisualStudioVersion = 15.0.26403.7
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{89117899-6EF6-427E-B3C6-946ACEEF294D}"
 EndProject
@@ -42,6 +42,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoreIn.Modules.TaxonomyUI", "src\Webhost\Modules\CoreIn.Modules.TaxonomyUI\CoreIn.Modules.TaxonomyUI.csproj", "{29C58BEB-0330-4274-B998-0A4E39731DD0}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CoreIn.EntityCore", "src\Libraries\CoreIn.EntityCore\CoreIn.EntityCore.csproj", "{E59686B0-F0B3-47D8-B72E-0061406CA78B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoreIn.Modules.Homeclick", "src\Webhost\Modules\CoreIn.Modules.Homeclick\CoreIn.Modules.Homeclick.csproj", "{0E2049F5-7E83-4F73-ACBC-C56D737C21F0}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Homeclick", "Homeclick", "{EF037254-C21F-4EDA-98D1-9BFF2FEE3156}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -109,6 +113,10 @@ Global
 		{E59686B0-F0B3-47D8-B72E-0061406CA78B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E59686B0-F0B3-47D8-B72E-0061406CA78B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E59686B0-F0B3-47D8-B72E-0061406CA78B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0E2049F5-7E83-4F73-ACBC-C56D737C21F0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0E2049F5-7E83-4F73-ACBC-C56D737C21F0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0E2049F5-7E83-4F73-ACBC-C56D737C21F0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0E2049F5-7E83-4F73-ACBC-C56D737C21F0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -132,5 +140,7 @@ Global
 		{278238BC-7955-46F4-8102-3924F9D8F1A1} = {20959FD4-9375-4F75-839B-029A0DF29DAC}
 		{29C58BEB-0330-4274-B998-0A4E39731DD0} = {20959FD4-9375-4F75-839B-029A0DF29DAC}
 		{E59686B0-F0B3-47D8-B72E-0061406CA78B} = {E888586F-0FCC-40A3-B6A1-8DBC2136285C}
+		{0E2049F5-7E83-4F73-ACBC-C56D737C21F0} = {EF037254-C21F-4EDA-98D1-9BFF2FEE3156}
+		{EF037254-C21F-4EDA-98D1-9BFF2FEE3156} = {20959FD4-9375-4F75-839B-029A0DF29DAC}
 	EndGlobalSection
 EndGlobal

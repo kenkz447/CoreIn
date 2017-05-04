@@ -40,6 +40,7 @@ namespace CoreIn.DataProviver
             services.AddScoped(typeof(IEntityTypeManager), typeof(EntityTypeManager));
             services.AddScoped(typeof(IMenuHelper), typeof(MenuHelper));
             services.AddScoped(typeof(IEntityTypeManager), typeof(EntityTypeManager));
+
             services.AddScoped(typeof(ITaxonomyHelper), typeof(TaxonomyHelper));
             services.AddScoped(typeof(IEntityTaxonomyRelationHelper<>), typeof(EntityTaxonomyRelationHelper<>));
 

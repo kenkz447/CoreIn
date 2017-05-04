@@ -11,6 +11,8 @@ var sourcemaps = require('gulp-sourcemaps');
 var libs = [
     'react',
     'react-dom',
+    'react-addons-css-transition-group',
+    'react-addons-transition-group',
     'redux',
     'react-redux',
     'redux-form',
@@ -24,7 +26,9 @@ var libs = [
     'react-checkbox-tree',
     'underscore',
     'react-ui-tree',
-    'list-to-tree'
+    'list-to-tree',
+    'react-table',
+    'rc-slider'
 ];
 
 var production = (process.env.NODE_ENV === 'production');

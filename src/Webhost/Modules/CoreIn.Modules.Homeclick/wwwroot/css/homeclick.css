@@ -1,0 +1,20 @@
+.layout-modal {
+  position: relative; }
+  .layout-modal .arrow-container .arrow {
+    position: absolute;
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 0 10px 20px 10px;
+    border-color: transparent transparent #007bff transparent; }
+  .layout-modal .controls {
+    position: absolute;
+    padding: 3px;
+    background: #fff;
+    border: 1px solid; }
+    .layout-modal .controls > * {
+      display: inline-block; }
+      .layout-modal .controls > *:not(:last-child) {
+        margin-right: 5px; }
+    .layout-modal .controls .slider {
+      width: 150px; }

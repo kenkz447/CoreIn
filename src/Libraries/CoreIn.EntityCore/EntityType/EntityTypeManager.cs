@@ -3,6 +3,9 @@ using CoreIn.Commons.EntityHelper;
 using CoreIn.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
+using CoreIn.Models.Infrastructure;
+using System;
+using CoreIn.Models.Authentication;
 
 namespace CoreIn.EntityCore
 {
@@ -20,7 +23,7 @@ namespace CoreIn.EntityCore
             _entityTypeHelper.SetContext(dbContext);
         }
 
-        public EntityType RegisterEntityType(string name, Dictionary<string, string> details)
+        public EntityType RegisterEntityType(string name, Dictionary<string, string> details, User byUser = null)
         {
             var entityType = _entityTypeHelper.Entity(name);
             if (entityType == null)
@@ -38,7 +41,31 @@ namespace CoreIn.EntityCore
                 _entityTypeHelper.UpdateDetails(entityType, details, null);
             }
 
-            _dbContext.SaveChanges();
+            Save();
+
+            return entityType;
+        }
+
+        public EntityType RegisterEntityType(EntityType newEntityType, EntityTypeDetail[] details, User byUser = null, bool saveAfterFinishing = true)
+        {
+            if (newEntityType.Name == null || newEntityType.Name == string.Empty)
+                return null;
+
+            var entityType = _entityTypeHelper.Entity(newEntityType.Name);
+            if (entityType == null)
+            {
+                entityType = _entityTypeHelper.Add(newEntityType);
+                if (details != null)
+                    entityType.Details = details;
+            }
+            else if (details != null)
+            {
+                _entityTypeHelper.UpdateDetails(entityType, details, byUser);
+            }
+
+            if(saveAfterFinishing)
+                Save();
+
             return entityType;
         }
 
@@ -53,5 +80,9 @@ namespace CoreIn.EntityCore
 
         public void SetContext(DbContext context)
             => _entityTypeHelper.SetContext(context);
+
+        public int Save()
+            => _dbContext.SaveChanges();
+
     }
 }

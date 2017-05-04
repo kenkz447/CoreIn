@@ -5,6 +5,7 @@ using CoreIn.Models;
 using CoreIn.Models.Authentication;
 using CoreIn.Models.Infrastructure;
 using Microsoft.EntityFrameworkCore;
+using System.Globalization;
 
 namespace CoreIn.Commons.EntityHelper
 {
@@ -95,20 +96,45 @@ namespace CoreIn.Commons.EntityHelper
             return detail;
         }
 
-        public IEnumerable<TDetail> CreateDetails(TEntity enitity, Dictionary<string, string> detailDictionary, User owner, DateTime? dateTime = null)
+        private TDetail CreateDetail(TEntity entity, TDetail detail, User owner = null)
+        {
+            detail.EntityId = entity.Id;
+            detail.Modified = DateTime.UtcNow;
+            detail.ModifiedById = owner?.Id;
+
+            _detailRepository.Add(detail);
+            return detail;
+        }
+
+        public IEnumerable<TDetail> CreateDetails(TEntity entity, Dictionary<string, string> detailDictionary, User owner, DateTime? dateTime = null)
         {
             var result = new List<TDetail>();
             foreach (var kv in detailDictionary)
             {
                 if (kv.Value == null)
                     continue;
-                result.Add(CreateDetail(enitity, kv.Key, kv.Value, null, null, null, owner, dateTime));
+                result.Add(CreateDetail(entity, kv.Key, kv.Value, null, null, null, owner, dateTime));
             }
             return result;
         }
 
-        public IQueryable<TDetail> Details(TEntity entity)
-            => _detailRepository.Query(o => o.EntityId == entity.Id);
+        public IEnumerable<TDetail> CreateDetails(TEntity entity, IEnumerable<TDetail> details, User owner = null, DateTime? dateTime = null)
+        {
+            var result = new List<TDetail>();
+            foreach (var detail in details)
+            {
+                CreateDetail(entity, detail, owner);
+            }
+            return result;
+        }
+
+        public IQueryable<TDetail> Details(TEntity entity, CultureInfo cultureInfo = null)
+        {
+            var result = _detailRepository.Query(o => o.EntityId == entity.Id);
+            if (cultureInfo != null)
+                result = result.Where(o => o.Language == cultureInfo.Name || o.Language == null);
+            return result;
+        }
 
         public TDetail Detail(TEntity entity, string field)
             => Details(entity).FirstOrDefault(o => o.Field == field);
@@ -137,8 +163,47 @@ namespace CoreIn.Commons.EntityHelper
             }
         }
 
-        public void Add(TEntity entity)
-            => _entityRepository.Add(entity); 
+        public void UpdateDetails(TEntity entity, IEnumerable<TDetail> details, User byUser)
+        {
+            var currentDetails = Details(entity);
+            foreach (var detail in details)
+            {
+                var detailPresent = false;
+
+                foreach (var currentDetail in currentDetails)
+                 {
+                    if (currentDetail.Field == detail.Field 
+                        && currentDetail.Language == detail.Language
+                        && currentDetail.Group == detail.Group)
+                    {
+                        currentDetail.Value = detail.Value;
+                        currentDetail.Group = detail.Group;
+                        currentDetail.Prefix = detail.Prefix;
+                        currentDetail.Suffix = detail.Suffix;
+                        currentDetail.Language = detail.Language;
+                        currentDetail.Modified = DateTime.UtcNow;
+                        currentDetail.ModifiedById = byUser?.Id;
+
+                        _detailRepository.Update(currentDetail);
+                        detailPresent = true;
+                        break;
+                    }
+                }
+                if (!detailPresent && detail.Value != null)
+                {
+                    CreateDetail(entity, detail, byUser);
+                }
+            }
+        }
+
+        public TEntity Add(TEntity entity, User user = null)
+        {
+            entity.OwnerId = user?.Id;
+            entity.Created = DateTime.UtcNow;
+
+            _entityRepository.Add(entity);
+            return entity;
+        }
 
         public IQueryable<TEntity> Entities()
             => _entityRepository.Query();

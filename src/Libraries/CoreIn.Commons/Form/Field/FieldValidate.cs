@@ -20,7 +20,7 @@ namespace CoreIn.Commons.Form
         public int? MaxLength { get; set; }
 
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
-        public Dictionary<string, object> Required { get; set; }
+        public string Required { get; set; }
 
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public bool? ContainLower { get; set; }
@@ -34,10 +34,10 @@ namespace CoreIn.Commons.Form
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public bool? ContainNumber { get; set; }
 
-        public Dictionary<string, Dictionary<string, object>> ToDictionary()
-            => new Dictionary<string, Dictionary<string, object>>
+        public Dictionary<string, object> ToDictionary()
+            => new Dictionary<string, object>
             {
-                { "require", new Dictionary<string, object> { { "value", Required.ContainsKey("value") ? Required["value"] : null }, { "error", Required.ContainsKey("error") ? Required["error"] : null } } }
+                { "require", Required }
             };
     }
 }

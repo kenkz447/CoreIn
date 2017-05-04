@@ -25,7 +25,8 @@ var libs = [
     'jquery.filer',
     'sift',
     'classnames',
-    'react-checkbox-tree'
+    'react-checkbox-tree',
+    'corein'
 ];
 
 var production = (process.env.NODE_ENV === 'production');

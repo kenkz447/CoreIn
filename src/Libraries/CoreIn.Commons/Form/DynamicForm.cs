@@ -1,5 +1,8 @@
-﻿using Newtonsoft.Json;
+﻿using CoreIn.Commons.Form.Attributes;
+using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
+using System.Reflection;
 
 namespace CoreIn.Commons.Form
 {
@@ -15,6 +18,6 @@ namespace CoreIn.Commons.Form
         public IEnumerable<FormTaxonomyType> TaxonomyTypes { get; set; } = new List<FormTaxonomyType>();
 
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
-        public FormValues InitialValues { get; set; }
+        public FormValues InitialValues { get; set; }       
     }
 }

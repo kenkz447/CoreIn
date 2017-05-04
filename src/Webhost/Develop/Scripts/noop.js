@@ -100,24 +100,24 @@ jQuery(document).ready(function ($) {
 * CARDS ACTIONS
 */
 
-jQuery(document).on('click', '.card-actions a', function (e) {
-    e.preventDefault();
+//jQuery(document).on('click', '.card-actions a', function (e) {
+//    e.preventDefault();
 
-    if (jQuery(this).hasClass('btn-close')) {
-        jQuery(this).parent().parent().parent().fadeOut();
-    } else if (jQuery(this).hasClass('btn-minimize')) {
-        var $target = jQuery(this).parent().parent().next('.card-block');
-        if (!jQuery(this).hasClass('collapsed')) {
-            jQuery('i', jQuery(this)).removeClass(jQuery.panelIconOpened).addClass(jQuery.panelIconClosed);
-        } else {
-            jQuery('i', jQuery(this)).removeClass(jQuery.panelIconClosed).addClass(jQuery.panelIconOpened);
-        }
+//    if (jQuery(this).hasClass('btn-close')) {
+//        jQuery(this).parent().parent().parent().fadeOut();
+//    } else if (jQuery(this).hasClass('btn-minimize')) {
+//        var $target = jQuery(this).parent().parent().next('.card-block');
+//        if (!jQuery(this).hasClass('collapsed')) {
+//            jQuery('i', jQuery(this)).removeClass(jQuery.panelIconOpened).addClass(jQuery.panelIconClosed);
+//        } else {
+//            jQuery('i', jQuery(this)).removeClass(jQuery.panelIconClosed).addClass(jQuery.panelIconOpened);
+//        }
 
-    } else if (jQuery(this).hasClass('btn-setting')) {
-        jQuery('#myModal').modal('show');
-    }
+//    } else if (jQuery(this).hasClass('btn-setting')) {
+//        jQuery('#myModal').modal('show');
+//    }
 
-});
+//});
 
 function capitalizeFirstLetter(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);

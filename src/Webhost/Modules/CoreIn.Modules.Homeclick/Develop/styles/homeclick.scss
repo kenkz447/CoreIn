@@ -1,0 +1,33 @@
+﻿.layout-modal {
+    position: relative;
+
+    .arrow-container {
+        .arrow {
+            position: absolute;
+            width: 0;
+            height: 0;
+            border-style: solid;
+            border-width: 0 10px 20px 10px;
+            border-color: transparent transparent #007bff transparent;
+        }
+    }
+
+    .controls {
+        position: absolute;
+        padding: 3px;
+        background: #fff;
+        border: 1px solid;
+
+        > * {
+            display: inline-block;
+
+            &:not(:last-child) {
+                margin-right: 5px;
+            }
+        }
+
+        .slider {
+            width: 150px;
+        }
+    }
+}

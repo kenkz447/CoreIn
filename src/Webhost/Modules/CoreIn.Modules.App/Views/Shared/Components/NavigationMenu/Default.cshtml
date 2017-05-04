@@ -11,7 +11,7 @@
         var hasChildren = item.Items.Count() != 0;
         var hasLink = item.Details.ContainsKey("url");
 
-        var itemClass = (!hasLink ? "nav-title" : "nav-item") + (hasChildren ? " nav-dropdown" : "") + (item.IsCurrent ? " current-item" : (item.HasCurrentChild ? "current" : ""));
+        var itemClass = (!hasLink ? "nav-title" : "nav-item") + (hasChildren && hasLink ? " nav-dropdown" : "") + (item.IsCurrent ? " current-item" : (item.HasCurrentChild ? "current" : ""));
         var linkClass = "nav-link" + (hasChildren ? " nav-dropdown-toggle" : "");
         <li class="@itemClass">
             @if (hasLink)
@@ -23,7 +23,7 @@
             }
             else
             {
-                <span>@item.Details.GetValue("title")</span>
+                <span class="title">@item.Details.GetValue("title")</span>
             }
 
             @{

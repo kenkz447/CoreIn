@@ -6,10 +6,11 @@ using CoreIn.Models;
 using CoreIn.Models.Authentication;
 using CoreIn.Models.Infrastructure;
 using Microsoft.EntityFrameworkCore;
+using System.Globalization;
 
 namespace CoreIn.Commons.EntityHelper
 {
-    public interface IEntityHelper<TEntity, out TDetail>
+    public interface IEntityHelper<TEntity, TDetail>
         where TEntity : BaseEntity
     {
         TEntity Entity(long id);
@@ -30,15 +31,19 @@ namespace CoreIn.Commons.EntityHelper
 
         TDetail Detail(TEntity entity, string name);
 
-        IQueryable<TDetail> Details(TEntity entity);
+        IQueryable<TDetail> Details(TEntity entity, CultureInfo cultureInfo = null);
 
         TDetail CreateDetail(TEntity entity, string field, object value, string group, string prefix, string suffix, User owner, DateTime? dateTime = null);
 
         IEnumerable<TDetail> CreateDetails(TEntity entity, Dictionary<string, string> detailDictionary, User owner, DateTime? dateTime = null);
 
+        IEnumerable<TDetail> CreateDetails(TEntity entity, IEnumerable<TDetail> details, User owner = null, DateTime? dateTime = null);
+
         void UpdateDetails(TEntity entity, Dictionary<string, string> detailsDictionary, User byUser);
 
-        void Add(TEntity entity);
+        void UpdateDetails(TEntity entity, IEnumerable<TDetail> details, User byUser);
+
+        TEntity Add(TEntity entity, User user = null);
 
         void Delete(TEntity entity);
 

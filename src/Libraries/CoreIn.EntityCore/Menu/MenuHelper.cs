@@ -4,6 +4,7 @@ using CoreIn.Commons.EntityHelper;
 using CoreIn.Models;
 using CoreIn.Models.Authentication;
 using CoreIn.Commons;
+using System.Globalization;
 
 namespace CoreIn.EntityCore
 {
@@ -13,19 +14,44 @@ namespace CoreIn.EntityCore
 
         private readonly IEntityHelper<Menu, MenuDetail> _entityHelper;
 
-        private readonly EntityType TypeMenu;
-        private readonly EntityType TypeMenuItem;
+        private readonly AppEntityTypes _appEntityTypes;
 
-        public MenuHelper(CoreInDbContext dbContext, IEntityHelper<Menu, MenuDetail> entityHelper, IEntityTypeManager entityTypeManager)
+        public MenuHelper(CoreInDbContext dbContext, AppEntityTypes appEntityTypes, IEntityHelper<Menu, MenuDetail> entityHelper, IEntityTypeManager entityTypeManager)
         {
             _dbContext = dbContext;
 
+            _appEntityTypes = appEntityTypes;
+
             _entityHelper = entityHelper;
             _entityHelper.SetContext(dbContext);
+        }
 
-            var entityTypeGroup = "Menu Entity";
-            TypeMenu = entityTypeManager.RegisterEntityType("Menu", new Dictionary<string, string> { { "title", "Menu"}, { "group", entityTypeGroup } });
-            TypeMenuItem = entityTypeManager.RegisterEntityType("MenuItem", new Dictionary<string, string> { { "title", "Menu Item" }, { "group", entityTypeGroup } });
+        public Menu CreateMenuEntity(Menu entity, MenuDetail[] details, User byUser = null, bool saveAfterFinishing = true)
+        {
+            if (entity.Name == null || entity.Name == string.Empty)
+                return null;
+
+            var existingEntity = _entityHelper.Entity(entity.Name);
+
+            //entity.EntityTypeId = entity.ParentId != null ? _appEntityTypes.TypeMenuItem.Id : _appEntityTypes.TypeMenu.Id;
+            if (existingEntity == null)
+            {
+                existingEntity = _entityHelper.Add(entity, byUser);
+                if (details != null)
+                    existingEntity.Details = _entityHelper.CreateDetails(entity, details, byUser).ToList();
+            }
+            else if (details != null)
+                _entityHelper.UpdateDetails(existingEntity, details, byUser);
+
+            foreach (var child in entity.Children)
+            {
+                child.ParentId = existingEntity.Id;
+            }
+
+            if (saveAfterFinishing)
+                Save();
+
+            return existingEntity;
         }
 
         public Menu MenuItem(Menu menu, string name, Dictionary<string, string> detailDictionary, User byUser)
@@ -34,7 +60,7 @@ namespace CoreIn.EntityCore
 
             if (item == null)
             {
-                item = _entityHelper.CreateEntity(TypeMenuItem, menu, name, byUser);
+                item = _entityHelper.CreateEntity(_appEntityTypes.TypeMenuItem, menu, name, byUser);
                 item.Details = _entityHelper.CreateDetails(item, detailDictionary, byUser).ToList();
             }
             else
@@ -49,7 +75,7 @@ namespace CoreIn.EntityCore
 
         public Menu Menu(string name, Dictionary<string, string> detailDictionary, Menu[] items, User owner)
         {
-            var menu = _entityHelper.CreateEntity(TypeMenu, name, owner);
+            var menu = _entityHelper.CreateEntity(_appEntityTypes.TypeMenu, name, owner);
 
             if (detailDictionary == null)
                 detailDictionary = new Dictionary<string, string>();
@@ -82,10 +108,13 @@ namespace CoreIn.EntityCore
 
         private IEnumerable<MenuViewModel> GetMenuViewModelItems(Menu menu)
         {
+            var currentCult = CultureInfo.CurrentCulture;
+
             foreach (var menuChild in menu.Children)
             {
                 menuChild.Children = _entityHelper.GetChildrenEntities(menuChild).ToList();
-                menuChild.Details = _entityHelper.Details(menuChild).ToList();
+                menuChild.Details = _entityHelper.Details(menuChild, currentCult).ToList();
+
                 yield return new MenuViewModel(menuChild, GetMenuViewModelItems(menuChild));
             }
         }

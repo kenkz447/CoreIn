@@ -1,5 +1,5 @@
 ﻿const $ = require('jquery');
-const keys = require('./tc-keys.jsx');
+const keys = require('./tc-keys');
 
 const initState = {
     active: null,

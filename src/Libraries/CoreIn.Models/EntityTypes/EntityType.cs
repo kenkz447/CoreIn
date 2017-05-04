@@ -10,8 +10,10 @@ namespace CoreIn.Models
         public EntityType()
         {
             Details = new HashSet<EntityTypeDetail>();
+            Children = new HashSet<EntityType>();
         }
 
         public virtual ICollection<EntityTypeDetail> Details { get; set; }
+        public virtual ICollection<EntityType> Children { get; set; }
     }
 }

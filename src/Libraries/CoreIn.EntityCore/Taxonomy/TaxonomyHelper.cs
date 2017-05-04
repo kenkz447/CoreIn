@@ -64,13 +64,9 @@ namespace CoreIn.EntityCore
                             Title = "Title",
                             RenderType = FieldRenderType.FormGroup
                         },
-                        Validate = new FieldValidate
+                        FieldValidate = new FieldValidate
                         {
-                            Required = new Dictionary<string, object>
-                            {
-                                { "value", true },
-                                { "error", "Title is required!" }
-                            }
+                            Required = "This field cann't be empty."
                         },
                         Input = new FieldInput("title"),
                     }

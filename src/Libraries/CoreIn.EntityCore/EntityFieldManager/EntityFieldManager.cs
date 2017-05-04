@@ -31,16 +31,11 @@ namespace CoreIn.EntityCore
 
             foreach (var kv in validateDic)
             {
-                //kv.Value = dictonary with some key: value, and error.
-                //for Required, we has two field: 
-                // - group: "validate", field: "required", value: "true", suffix: "value"
-                // - group: "validate", field: "required", value: "Field cann't be empty", suffix: "error".
-                // 'error' is optional, using default when not set.
-                foreach (var kv2 in kv.Value)
-                {
-                    _fieldEntityHelper.CreateDetail(field, kv.Key, kv2.Value, "validate", null, kv2.Key, byUser);
-                }
+                if (kv.Key == "required" && kv.Value != null)
+                    _fieldEntityHelper.CreateDetail(field, kv.Key, kv.Value, "validate", null, "required", byUser);
+
             }
+
             var displayDic = fieldDisplay.ToDictionary<string>();
             foreach (var kv in displayDic)
             {

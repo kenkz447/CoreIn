@@ -21,6 +21,8 @@ namespace CoreIn.Models.Infrastructure
 
         public long EntityId { get; set; }
 
+        public string Language { get; set; }
+
         public long? ModifiedById { get; set; }
 
         public DateTime? Modified { get; set; }

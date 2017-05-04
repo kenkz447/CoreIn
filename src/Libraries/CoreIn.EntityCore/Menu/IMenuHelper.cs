@@ -8,6 +8,8 @@ namespace CoreIn.EntityCore
     {
         MenuViewModel GetMenuViewModel(string menuName);
 
+        Menu CreateMenuEntity(Menu entity, MenuDetail[] details, User byUser = null, bool saveAfterFinishing = true);
+
         Menu MenuItem(Menu menu, string name, Dictionary<string, string> detailDictionary, User byUser);
 
         Menu Menu(string name, Dictionary<string, string> detailDictionary, Menu[] items, User owner);

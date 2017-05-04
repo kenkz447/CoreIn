@@ -1,4 +1,4 @@
-﻿const keys = require('./tc-keys.jsx');
+﻿const keys = require('./tc-keys');
 
 const tabAdd = (id, title, content) => ({
     type: keys.tabAdd,

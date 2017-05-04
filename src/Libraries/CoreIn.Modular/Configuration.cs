@@ -12,6 +12,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.CodeAnalysis;
 using CoreIn.Modular.Infrastructure;
 using Microsoft.EntityFrameworkCore;
+using CoreIn.EntityCore;
 
 namespace CoreIn.Modular
 {
@@ -39,6 +40,8 @@ namespace CoreIn.Modular
             });
 
             Commons.Configuration.ModuleManager = moduleManager;
+
+            services.AddSingleton(new AppEntityTypes(services.BuildServiceProvider().GetService<IEntityTypeManager>()));
 
             return services;
         }

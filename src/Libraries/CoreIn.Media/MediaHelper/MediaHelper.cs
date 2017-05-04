@@ -175,10 +175,11 @@ namespace CoreIn.Media.MediaHelper
                         {"type", fileType.ToString()},
                         {"ext", fileExtension},
                         {"title", fileNameWithoutExtension},
-                        {"src", Path.Combine(rawPath, fileName)},
+                        {"src", Path.Combine(@"\", rawPath, fileName)},
                     };
+
                     if (thumbFileName != string.Empty)
-                        detailDictionary.Add("src_thumb", Path.Combine(rawPath, thumbFileName));
+                        detailDictionary.Add("src_thumb", Path.Combine(@"\", rawPath, thumbFileName));
 
                     _entityHelper.CreateDetails(fileEntity, detailDictionary, uploader);
 
@@ -271,7 +272,7 @@ namespace CoreIn.Media.MediaHelper
                     {
                         Status = FieldStatus.ReadOnly,
                         Input = new FieldInput("src"),
-                        Validate = new FieldValidate
+                        FieldValidate = new FieldValidate
                         {
                             Type = "text"
                         },
@@ -284,7 +285,7 @@ namespace CoreIn.Media.MediaHelper
                     new FormField
                     {
                         Input = new FieldInput("title"),
-                        Validate = new FieldValidate
+                        FieldValidate = new FieldValidate
                         {
                             Type = "text"
                         },
@@ -345,6 +346,24 @@ namespace CoreIn.Media.MediaHelper
 
             var result = new FileEntityResult(JsonResultState.Success, fileName, null, form);
             return result;
+        }
+
+        public string GetThumbnailPath(string sourceImage)
+        {
+            if (sourceImage == null || sourceImage == string.Empty)
+                return null;
+
+            var fileName = Path.GetFileName(sourceImage);
+            var thumbFileName = GetThumbnailFileName(fileName);
+
+            var webroot = UploadFolder().FullName;
+
+            var thumbFilePath = Path.Combine(Path.GetDirectoryName(sourceImage), thumbFileName);
+
+            if (File.Exists(webroot + thumbFilePath))
+                return thumbFilePath;
+
+            return sourceImage;
         }
 
         private int Save()

@@ -1,5 +1,6 @@
 ﻿using CoreIn.Commons.Form;
 using CoreIn.Commons.Form.Attributes;
+using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
@@ -9,11 +10,13 @@ namespace CoreIn.Modules.Homeclick.Models
     {
         [Required(ErrorMessage = "This field cann't be empty")]
         [FormFieldDisplay(Placeholder: "Collection name")]
+        [JsonProperty(PropertyName = "collectionname")]
         public string CollectionName { get; set; }
 
         [FormFieldStatus((int)FieldStatus.ReadOnly)]
         [FormFieldDisplay(Title: "Layout data")]
         [FormFieldAction("Set layout", "SET_LAYOUT")]
+        [JsonProperty(PropertyName = "layoutdata")]
         public string LayoutData { get; set; }
     }
 
@@ -33,10 +36,12 @@ namespace CoreIn.Modules.Homeclick.Models
 
         [Required(ErrorMessage = "This field cann't be empty")]
         [FormFieldDisplay(Title: "Room description", Type: "textarea")]
+        [JsonProperty(PropertyName = "roomdescription")]
         public string RoomDescription { get; set; }
 
         [Required(ErrorMessage = "This field cann't be empty")]
         [FormFieldDisplay(RenderType: (int)FieldRenderType.Image, Title: "Layout image")]
+        [JsonProperty(PropertyName = "layoutimage")]
         public string LayoutImage { get; set; }
 
         [Required(ErrorMessage = "This field cann't be empty")]

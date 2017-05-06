@@ -1,0 +1,7 @@
+﻿@model ActionViewModel
+
+@{
+    Html.AddJavaScript("/js/homeclick.js");
+}
+
+@Html.React("Homeclick.project.update", Model.GetRawData(), clientOnly: true)

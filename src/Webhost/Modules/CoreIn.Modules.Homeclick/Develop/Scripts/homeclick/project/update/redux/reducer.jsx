@@ -5,13 +5,17 @@ const formReducer = require('redux-form').reducer;
 
 const { tabControlReducer, fileManager: { fmReducer }, pageAlerts } = Corein;
 
-const pageReducer = (state = {}, action) => {
+const initialState = {
+
+};
+
+const reducer = (state = initialState, action) => {
     return state;
-}
+};
 
 module.exports = combineReducers({
     pageAlerts: pageAlerts.reducer,
-    page: pageReducer,
+    page: reducer,
     projectForm: require('../../shared/components/project-form').reducer,
     form: formReducer,
     fm: fmReducer,

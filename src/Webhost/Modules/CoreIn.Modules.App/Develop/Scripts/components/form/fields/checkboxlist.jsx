@@ -1,6 +1,7 @@
 ﻿const $ = require('jquery');
 const listToTree = require('list-to-tree');
-const checkBox = require('./checkbox');
+const CheckBox = require('./checkbox');
+const { Field } = require('redux-form');
 
 class CheckboxList extends React.Component {
     constructor(props) {
@@ -8,11 +9,14 @@ class CheckboxList extends React.Component {
         this.renderNode = this.renderNode.bind(this);
     }
 
+
     renderNode(node) {
         const {taxonomyName} = this.props;
+        const name = `${taxonomyName}.${node.id}`
+
         return (
             <div key={node.id} className="item">
-                <Field component={checkBox} display={{ renderType: 'checkbox', title: node.title }} name={`${taxonomyName}.${node.id}`} />
+                <Field component={CheckBox} display={{ title: node.title }} name={name} />
                 {node.children &&
                     <div className="children">
                         {

@@ -2,6 +2,7 @@
 
 const FormInput = require('./form-input');
 const ImageField = require('./image');
+const CheckboxList = require('./fields/checkboxlist');
 
 const RenderInput = (props) => {
     const {input, id, type, placeholder, validationState} = props;
@@ -49,8 +50,8 @@ function renderField(props) {
             return RenderInputGroup(props);
         case 'checkbox':
             return RenderCheckBox(props);
-        case 'array':
-            return null;
+        case 'checkboxlist':
+            return <CheckboxList {...props} />;
         default:
             return <FormInput {...props} />;
     }

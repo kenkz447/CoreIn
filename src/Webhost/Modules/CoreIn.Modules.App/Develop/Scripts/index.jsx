@@ -14,7 +14,9 @@ module.exports = {
     form: {
         default: require('./components/dynamic-form'),
         validator: require('./components/form/validator'),
+        submit: require('./components/form/sumbit')
     },
+    pageAlerts: require('./components/page-alerts'),
     TabControl,
     tabControlActions,
     tabControlReducer,

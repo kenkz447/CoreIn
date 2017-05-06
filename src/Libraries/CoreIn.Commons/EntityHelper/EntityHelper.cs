@@ -166,6 +166,8 @@ namespace CoreIn.Commons.EntityHelper
         public void UpdateDetails(TEntity entity, IEnumerable<TDetail> details, User byUser)
         {
             var currentDetails = Details(entity);
+            var updatedDetails = new List<TDetail>();
+            
             foreach (var detail in details)
             {
                 var detailPresent = false;
@@ -174,17 +176,20 @@ namespace CoreIn.Commons.EntityHelper
                  {
                     if (currentDetail.Field == detail.Field 
                         && currentDetail.Language == detail.Language
-                        && currentDetail.Group == detail.Group)
+                        && currentDetail.Group == detail.Group
+                        && currentDetail.Suffix == detail.Suffix
+                        && currentDetail.Prefix == detail.Prefix
+                        )
                     {
-                        currentDetail.Value = detail.Value;
-                        currentDetail.Group = detail.Group;
-                        currentDetail.Prefix = detail.Prefix;
-                        currentDetail.Suffix = detail.Suffix;
-                        currentDetail.Language = detail.Language;
-                        currentDetail.Modified = DateTime.UtcNow;
-                        currentDetail.ModifiedById = byUser?.Id;
+                        if (currentDetail.Value != detail.Value)
+                        {
+                            currentDetail.Value = detail.Value;
+                            currentDetail.Modified = DateTime.UtcNow;
+                            currentDetail.ModifiedById = byUser?.Id;
+                        }
 
-                        _detailRepository.Update(currentDetail);
+                        updatedDetails.Add(_detailRepository.Update(currentDetail));
+
                         detailPresent = true;
                         break;
                     }
@@ -193,6 +198,12 @@ namespace CoreIn.Commons.EntityHelper
                 {
                     CreateDetail(entity, detail, byUser);
                 }
+            }
+
+            var deletes = currentDetails.Except(updatedDetails);
+            foreach (var item in deletes)
+            {
+                _detailRepository.SetState(item, EntityState.Deleted);
             }
         }
 

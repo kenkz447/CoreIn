@@ -1,10 +1,11 @@
 ﻿const $ = require('jquery');
 const { connect } = require('react-redux');
 const { bindActionCreators } = require('redux');
+const { getFormValues } = require('redux-form');
 
 const { modalToggle } = require('./file-manager/fm-actions');
 
-const DynamicFormBasic = require('./form/form');
+var DynamicFormBasic = require('./form/form');
 
 const FileManagerModal = require('./file-manager/modal');
 
@@ -23,10 +24,8 @@ class DynamicForm extends React.Component {
     }
 
     render() {
-        const { formName, formData, onClose, error, handleSubmit, pristine, reset, submitting, submitSucceeded, display } = this.props;
-
         return (
-            <div className="dynamic-form card-block">
+            <div className="dynamic-form">
                 <DynamicFormBasic {...this.props} fileManagerModalToggle={this.fileManagerModalToggle()}/>
                 <FileManagerModal />
             </div>

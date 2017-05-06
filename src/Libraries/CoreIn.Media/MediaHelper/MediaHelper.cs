@@ -238,26 +238,28 @@ namespace CoreIn.Media.MediaHelper
         public FileEntityResult UpdateFile(long fileId, Dictionary<string, string> detailDictionary, Dictionary<long, long[]> taxonomyTypeTaxonomies, User byUser = null)
         {
             var entity = _entityHelper.Entity(fileId);
-
-            var form = GetEntityForm(entity.EntityTypeId ?? 0);
-
-            var newDetails = new Dictionary<string, string>();
-            foreach (var formDetail in form.Details)
+            try
             {
-                var detailName = formDetail.Input.Name.ToLower();
-                newDetails.Add(formDetail.Input.Name, detailDictionary[detailName]);
-            }
+                var form = GetEntityForm(entity.EntityTypeId ?? 0);
 
-            _entityHelper.UpdateDetails(entity, newDetails, byUser);
+                var newDetails = new Dictionary<string, string>();
+                foreach (var formDetail in form.Details)
+                {
+                    var detailName = formDetail.Name.ToLower();
+                    newDetails.Add(formDetail.Name, detailDictionary[detailName]);
+                }
 
-            _taxonomyHelper.UpdateTaxonomiesForEntity<FileEntityTaxonomy>(entity.Id, entity.EntityTypeId ?? 0, taxonomyTypeTaxonomies);
+                _entityHelper.UpdateDetails(entity, newDetails, byUser);
 
-            var updateResult = Save();
+                _taxonomyHelper.UpdateTaxonomiesForEntity<FileEntityTaxonomy>(entity.Id, entity.EntityTypeId ?? 0, taxonomyTypeTaxonomies);
 
-            if (updateResult > 0)
+                Save();
                 return new FileEntityResult(JsonResultState.Success, entity.Name, _stringLocalizer["Update successfuly!"]);
-
-            return new FileEntityResult(JsonResultState.Failed, entity.Name, _stringLocalizer["Error!"]);
+            }
+            catch (Exception ex)
+            {
+                return new FileEntityResult(JsonResultState.Failed, entity.Name, ex.Message);
+            }
         }
 
         public DynamicForm GetEntityForm(long entityTypeId)
@@ -271,27 +273,17 @@ namespace CoreIn.Media.MediaHelper
                     new FormField
                     {
                         Status = FieldStatus.ReadOnly,
-                        Input = new FieldInput("src"),
-                        FieldValidate = new FieldValidate
-                        {
-                            Type = "text"
-                        },
+                        Name = "src",
                         Display = new FieldDisplay
                         {
-                            RenderType = FieldRenderType.FormGroup,
                             Title = _stringLocalizer["Url"]
                         }
                     },
                     new FormField
                     {
-                        Input = new FieldInput("title"),
-                        FieldValidate = new FieldValidate
-                        {
-                            Type = "text"
-                        },
+                        Name = "title",
                         Display = new FieldDisplay
                         {
-                            RenderType = FieldRenderType.FormGroup,
                             Title = _stringLocalizer["Title"]
                         }
                     }
@@ -308,7 +300,7 @@ namespace CoreIn.Media.MediaHelper
                 new FormField
                 {
                     Status = FieldStatus.Hidden,
-                    Input = new FieldInput("id"),
+                    Name = "id",
                 }
             };
             return result;

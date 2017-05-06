@@ -29,6 +29,7 @@
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
     <Content Include="wwwroot\img\avatars\user.png" />
+    <Content Include="wwwroot\img\default.png" />
     <Content Include="wwwroot\img\favicon.png" />
     <Content Include="wwwroot\img\flags\Afghanistan.png" />
     <Content Include="wwwroot\img\flags\African Union.png" />

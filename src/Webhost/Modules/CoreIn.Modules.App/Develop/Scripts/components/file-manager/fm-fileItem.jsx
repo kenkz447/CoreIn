@@ -7,7 +7,7 @@ const { reduxForm } = require('redux-form');
 const dynamicFormValidator = require('../form/validator');
 const {setNestedModal} = require('./fm-actions');
 const { tabAdd, tabRemove } = require('../../redux/tc-actions');
-const { updateFileSubmit } = require('./fm-formSubmits');
+const formSubmit = require('../form/sumbit');
 
 class FileItem extends React.Component {
     onClick(event) {
@@ -61,21 +61,34 @@ class FileItem extends React.Component {
             const formId = "properties";
 
             const validate = dynamicFormValidator({ details: form.details, meta: form.meta });
-            const submit = updateFileSubmit({ successAction: {}});
+            const onSubmit = formSubmit({
+                url: '/filemanager/update',
+                method: 'PUT',
+                successAction: (response) => {
+                    if (displayAsModal)
+                        setNestedModal({ toggle: false });
+                    else
+                        toggleAside(false);
+                }
+            });
+
             const ReduxDynamicForm = reduxForm({
                 form: formId,
                 validate,
                 initialValues: form.initialValues,
                 formData: form,
-                onSubmit: submit,
-            })(!displayAsModal ? require('../dynamic-form') : require('../form/form'));
+                onSubmit
+            })(require('../form/form'));
 
             if (!displayAsModal) {
                 tabRemove(formId);
                 tabAdd(
                     formId,
                     '<i class="icon-wrench icons"></i> ' + formResult.fileName,
-                    <ReduxDynamicForm onClose={() => { toggleAside(false); tabRemove(formId); }}/>
+                    <div className="p-1"><ReduxDynamicForm onClose={() => {
+                        toggleAside(false);
+                        tabRemove(formId);
+                    }} /></div>
                 );
                 toggleAside(true);
             }

@@ -4,6 +4,8 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Reflection;
+using Microsoft.AspNetCore.Mvc;
+
 namespace CoreIn.App.ViewModels
 {
     public class ActionViewModel
@@ -13,13 +15,15 @@ namespace CoreIn.App.ViewModels
 
         private Dictionary<string, FormViewModel> FormDictionary { get;}
         private Dictionary<string, string> ResourcesDictionary { get;}
+        private Dictionary<string, object> Parameters { get; }
 
-        public ActionViewModel(string title, string description = null, Dictionary<string, string> resourceDictionary = null )
+        public ActionViewModel(string title, string description = null, Dictionary<string, string> resourceDictionary = null, Dictionary<string, object> parameters = null)
         {
             this.Title = title;
             this.Description = description;
             this.ResourcesDictionary = resourceDictionary;
             this.FormDictionary = new Dictionary<string, FormViewModel>();
+            this.Parameters = parameters;
         }
 
         public void AddForm(FormViewModel formViewModel, string formName)
@@ -34,7 +38,8 @@ namespace CoreIn.App.ViewModels
                 title = this.Title,
                 description = this.Description,
                 forms = this.FormDictionary.ToDictionary(o => o.Key, o => o.Value.GetRawData()),
-                resources = this.ResourcesDictionary
+                resources = this.ResourcesDictionary,
+                parameters = this.Parameters
             };
             return result;
         }

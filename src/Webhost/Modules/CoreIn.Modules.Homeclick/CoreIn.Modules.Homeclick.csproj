@@ -5,6 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Folder Include="Develop\Scripts\homeclick\project\create\components\" />
     <Folder Include="Views\shared\" />
     <Folder Include="wwwroot\" />
   </ItemGroup>

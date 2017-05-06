@@ -1,18 +1,11 @@
 ﻿const $ = require('jquery');
 const { connect } = require('react-redux');
 const { bindActionCreators } = require('redux');
-
 const Table = Corein.table.default;
-const tableActions = Corein.table.actions;
-const {Button} = require('reactstrap');
 
-function renderColumn(columns) {
-    const result = [];
-
-    for (var column in columns) {
-
-    }
-}
+const editUrl = '/project/update';
+const deleteUrl = '/project/delete';
+const dataUrl = '/project/GetTableData';
 
 class ReduxTable extends React.Component {
     constructor(props) {
@@ -21,24 +14,7 @@ class ReduxTable extends React.Component {
     }
 
     getColumns() {
-        const { selectRow, selectedRows } = this.props;
-
         return [
-            {
-                header: "",
-                accessor: 'id',
-                render: row => (
-                    <div>
-                        <input type="checkbox"
-                            onClick={() => {
-                                selectRow(row.index);
-                            }} />
-                    </div>
-                ),
-                width: 22,
-                sortable: false,
-                hideFilter: true
-            },
             {
                 header: "Thumbnail",
                 accessor: 'thumbnail',
@@ -48,29 +24,22 @@ class ReduxTable extends React.Component {
                 hideFilter: true
             }, {
                 header: "Title",
-                accessor: 'title'
+                accessor: 'title',
+                render: row => (<div><a href={`${editUrl}/${row.rowValues.id}`} target="blank">{row.value}</a></div>),
             }
         ];
     }
 
     render() {
-        const {columns, data, init, deleteSelectedRows} = this.props;
-
-        if (!columns) {
-            init({ columns: this.getColumns(), dataUrl: '/project/GetTableData' });
-            return null;
-        }
+        const deleteProps = {
+            url: deleteUrl,
+            success: (response) => {
+                console.log(response);
+            }
+        };
 
         return (
-            <div>
-                <div className="mb-1 text-right">
-                    <Button className="btn-circle" outline color="danger"
-                        onClick={() => {
-                            deleteSelectedRows();
-                        }}><i className="fa fa-remove" /></Button>
-                </div>
-                <Table {...this.props} />
-            </div>
+            <Table {...this.props} deleteProps={deleteProps} columns={this.getColumns()} dataUrl={dataUrl} />
         );
     }
 };
@@ -80,7 +49,7 @@ const stateToProps = (state) => {
 };
 
 const reducerToProps = (reducer) => (
-    bindActionCreators(tableActions, reducer)
+    bindActionCreators({}, reducer)
 );
 
 module.exports = connect(stateToProps, reducerToProps)(ReduxTable);

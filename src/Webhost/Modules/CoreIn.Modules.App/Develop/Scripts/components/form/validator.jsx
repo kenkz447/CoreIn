@@ -1,4 +1,6 @@
-﻿const isType = (value, type) => {
+﻿const $ = require('jquery');
+
+const isType = (value, type) => {
     switch (type) {
         case 'email':
             return value && /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(value);
@@ -20,9 +22,12 @@ function fieldValidate(fields, values) {
 
         if (fieldObj.childFields) {
             for (var value in values[fieldName]) {
-                if (!errors[fieldName])
-                    errors[fieldName] = [];
-                errors[fieldName].push(fieldValidate(fieldObj.childFields, values[fieldName][value]));
+                var validateResult = fieldValidate(fieldObj.childFields, values[fieldName][value]);
+                if (validateResult) {
+                    if (!errors[fieldName])
+                        errors[fieldName] = [];
+                    errors[fieldName].push(validateResult);
+                }
             }
         }
 
@@ -67,8 +72,7 @@ function fieldValidate(fields, values) {
             errors[fieldName] = hasContainSpecialChar.error;
         }
     }
-
-    return errors;
+    return $.isEmptyObject(errors) ? undefined : errors;
 }
 
 const validator = fieldGroups => values => {

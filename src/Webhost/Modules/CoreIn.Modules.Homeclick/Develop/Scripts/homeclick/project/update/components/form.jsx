@@ -7,46 +7,9 @@ const { reduxForm, getFormValues } = require('redux-form');
 
 const LayoutModal = require('../../shared/components/layout-modal').default;
 const { openLayoutModal } = require('../../shared/components/layout-modal').actions;
-const {SubmissionError} = require('redux-form');
 
-function formAjaxPost(url, data, method) {
-    return new Promise((resolve, reject) =>
-        $.ajax({
-            url: url,
-            method: method,
-            data: data,
-            success: (response) => {
-                if (response.resultState !== 0) {
-                    resolve(response);
-                } else {
-                    reject(response);
-                }
-            },
-            error: (response) => {
-                reject(response);
-            }
-        })
-    );
-}
-
-function formSubmit(props) {
-    const {url, method, successAction} = props;
-
-    return function (values) {
-        formAjaxPost(url, values, method)
-            .then((response) => {
-                successAction(response);
-            })
-            .catch((response) => {
-                if (response.result && response.result === "error") {
-                    throw new SubmissionError(response.errors);
-                } else {
-                    throw new SubmissionError({ _error: 'Something wrong?' });
-                }
-            });
-    }
-}
-
+const formSubmit = Corein.form.sumbit;
+const alertPush = Corein.pageAlerts.actions.push;
 
 class ProjectForm extends React.Component {
     constructor(props) {
@@ -72,8 +35,8 @@ class ProjectForm extends React.Component {
     }
 
     getForm() {
-        const { loadNewForm } = this.props;
-        $.get("/project/GetNewProjectForm", (formResult) => {
+        const { loadNewForm, projectId } = this.props;
+        $.get("/project/GetNewProjectForm", {projectId},(formResult) => {
             loadNewForm(formResult);
         });
 
@@ -81,7 +44,7 @@ class ProjectForm extends React.Component {
     }
 
     render() {
-        const { formData, formValues } = this.props;
+        const { formData, alertPush } = this.props;
 
         if (!formData)
             return this.getForm();
@@ -90,23 +53,22 @@ class ProjectForm extends React.Component {
         const validate = form.validator(vatidateData);
 
         const onSubmit = formSubmit({
-            url: '/project/create',
-            method: 'POST',
-            successAction: () => {
-
-            }
+            url: '/project/update',
+            method: 'PUT',
+            successAction: (respo) => {
+                alertPush("success", respo.message);
+                $("html, body").stop().animate({ scrollTop: 0 }, 500, 'swing');
+            },
+            validate
         });
 
         var ReduxDynamicForm = reduxForm({
-            form: 'newProject',
-            validate,
+            form: 'updateProject',
             formData,
             commands: this.getCommands(),
             onSubmit,
-            initialValues: formValues || formData.initialValues,
+            initialValues: formData.initialValues,
         })(form.default);
-
-        ReduxDynamicForm = connect(state => ({ formValues: getFormValues('newProject')(state) }))(ReduxDynamicForm);
 
         return (
             <div>
@@ -124,7 +86,7 @@ const stateToProps = (state) => {
 };
 
 const reducerToProps = (reducer) => (
-    bindActionCreators({ loadNewForm, openLayoutModal }, reducer)
+    bindActionCreators({ loadNewForm, openLayoutModal, alertPush }, reducer)
 );
 
 module.exports = connect(stateToProps, reducerToProps)(ProjectForm);

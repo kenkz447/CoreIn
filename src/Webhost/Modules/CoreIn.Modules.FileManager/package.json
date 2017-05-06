@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "name": "f078",
+  "name": "filemanager",
   "private": true,
   "devDependencies": {
     "babelify": "7.3.0",

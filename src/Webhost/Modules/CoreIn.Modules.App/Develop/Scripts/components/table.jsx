@@ -2,6 +2,7 @@
 const { connect } = require('react-redux');
 const { bindActionCreators } = require('redux');
 const ReactTable = require('react-table').default;
+const {Button} = require('reactstrap');
 
 // Keys
 const keys = {
@@ -37,7 +38,6 @@ const actions = {
 
 // Reducer
 const initialState = {
-    dataUrl: '',
     data: [],
     pages: 0,
     loading: false,
@@ -50,7 +50,6 @@ const reducer = (state = initialState, action) => {
     const newState = $.extend(true, {}, state);
     switch (action.type) {
         case keys.init:
-            newState.dataUrl = action.initValue.dataUrl;
             newState.columns = action.initValue.columns;
             break;
         case keys.loading:
@@ -73,6 +72,7 @@ const reducer = (state = initialState, action) => {
             break;
         case keys.deleteSelectedRows:
             newState.data = newState.data.filter((row, index) => newState.selectedRows.indexOf(index) < 0);
+            newState.selectedRows = [];
             break;
         default:
             return state;
@@ -88,36 +88,99 @@ function defaultFilterMethod (filter, row, column)
 
 // Component
 class Table extends React.Component {
+    constructor(props) {
+        super();
+        this.getCheckColumn = this.getCheckColumn.bind(this);
+    }
+
     fetchData(state, instance) {
         const { dataUrl, onLoaded } = this.props;
+
         $.get(dataUrl, onLoaded);
     }
 
+    getCheckColumn() {
+        const { selectRow, selectedRows } = this.props;
+
+        return (
+            {
+                header: "",
+                accessor: 'id',
+                render: row => (
+                    <div>
+                        <input type="checkbox"
+                            onClick={() => {
+                                selectRow(row.index);
+                            }} checked={selectedRows.indexOf(row.index) >= 0} />
+                    </div>
+                ),
+                width: 22,
+                sortable: false,
+                hideFilter: true
+            }
+        );
+    }
+
+    onDelete() {
+        const {data, selectedRows, deleteSelectedRows, deleteProps: { url, success }} = this.props;
+
+        const ids = data.filter((row, index) => {
+            return selectedRows.indexOf(index) >= 0;
+        }).map((row) => row.id);;
+
+        $.ajax({
+            url,
+            method: "DELETE",
+            data: { ids },
+            success: (response) => {
+                success(response);
+                deleteSelectedRows();
+            }
+        });
+    }
+
     render() {
-        const {columns, data, pages, loading, defaultPageSize, showFilters } = this.props;
+        const {columns, data, pages, loading, defaultPageSize, showFilters, selectedRows } = this.props;
 
         if (!columns)
             return;
 
+        columns.unshift(this.getCheckColumn());
+
         return (
-            <ReactTable
-                className='-striped -highlight'
-                manual
-                defaultPageSize={defaultPageSize}
-                showFilters={showFilters}
-                data={data}
-                pages={pages}
-                loading={loading}
-                columns={columns}
-                onChange={this.fetchData.bind(this)}
-                defaultFilterMethod={defaultFilterMethod}
-            />
+            <div>
+                <div className="mb-1 text-right">
+                    <Button className="btn-circle" outline color="danger" disabled={!selectedRows.length}
+                        onClick={this.onDelete.bind(this)}> <i className="fa fa-remove" /></Button>
+                </div>
+
+                <ReactTable
+                    className='-striped -highlight'
+                    manual
+                    defaultPageSize={defaultPageSize}
+                    showFilters={showFilters}
+                    data={data}
+                    pages={pages}
+                    loading={loading}
+                    columns={columns}
+                    onChange={this.fetchData.bind(this)}
+                    defaultFilterMethod={defaultFilterMethod}
+                />
+            </div>
         );
     }
 };
 
+const stateToProps = (state) => {
+    return {}
+};
+
+const reducerToProps = (reducer) => (
+    bindActionCreators(actions, reducer)
+);
+
 module.exports = {
-    default: Table,
+    default: connect(stateToProps, reducerToProps)(Table),
     reducer,
     actions
 }

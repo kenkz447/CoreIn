@@ -289,6 +289,9 @@ namespace CoreIn.EntityCore
 
         public void UpdateTaxonomiesForEntity<TEntityTaxonomy>(long EntityId, long entityTypeId, Dictionary<long,long[]> taxonomyTypeIdTaxonomyIds) where TEntityTaxonomy : BaseEntityTaxonomy, new()
         {
+            if (taxonomyTypeIdTaxonomyIds == null)
+                taxonomyTypeIdTaxonomyIds = new Dictionary<long, long[]>();
+
             var relationHelper = _serviceProvider.GetService<IEntityTaxonomyRelationHelper<TEntityTaxonomy>>();
            
             var taxonomyTypes = GetTaxonomiesTypeViewModels(entityTypeId, true);
@@ -297,6 +300,9 @@ namespace CoreIn.EntityCore
             {
                 var taxonomyIdsOfTaxonomyType = taxonomyType.Taxonomies.Select(o => o.Id);
                 var taxonomiesRelateToEntity = relationHelper.GetTaxonomiesForEntity(EntityId, taxonomyType.Id);
+
+                if (!taxonomyTypeIdTaxonomyIds.ContainsKey(taxonomyType.Id))
+                    taxonomyTypeIdTaxonomyIds.Add(taxonomyType.Id, new long[0]);
 
                 var updateTaxonomyIds = taxonomyTypeIdTaxonomyIds[taxonomyType.Id];
                 var entityTaxonomyIds = taxonomiesRelateToEntity.Select(o => o.TaxonomyId);

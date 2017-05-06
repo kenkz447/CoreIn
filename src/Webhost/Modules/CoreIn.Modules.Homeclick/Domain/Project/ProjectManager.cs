@@ -3,6 +3,7 @@ using CoreIn.Commons.EntityHelper;
 using CoreIn.Commons.Form;
 using CoreIn.Media.MediaHelper;
 using CoreIn.Models.Authentication;
+using CoreIn.Modules.Homeclick.Domain.Project.Form;
 using CoreIn.Modules.Homeclick.Models;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,7 +30,7 @@ namespace CoreIn.Modules.Homeclick
             return _projectEntityHelper.Entities();
         }
              
-        public DynamicForm GetForm(long? entityTypeId)
+        public DynamicForm GetForm(long? entityTypeId, long? entityId)
         {
             var form = new DynamicForm
             {
@@ -43,6 +44,21 @@ namespace CoreIn.Modules.Homeclick
                 },
                 Details = FormUtitities.ViewModelToFormField(typeof(ProjectDetailsViewModel)),
             };
+
+            if (entityId != null)
+            {
+
+                var entity = _projectEntityHelper.Entity(entityId ?? 0);
+                var details = _projectEntityHelper.Details(entity).ToList();
+
+                var formValues = new ProjectFormValues()
+                {
+                    Meta = new Dictionary<string, string>() { { "id", entityId.ToString() } },
+                    Details = FormUtitities.EntityDetailsToFieldValues<ProjectDetail, ProjectDetailsViewModel>(details)
+                };
+
+                form.InitialValues = formValues;
+            }
 
             return form;
         }
@@ -63,8 +79,21 @@ namespace CoreIn.Modules.Homeclick
         public int UpdateProject(long projectId, ProjectDetail[] details, User user = null)
         {
             var entity = _projectEntityHelper.Entity(projectId);
+            entity.Name = _projectEntityHelper.GenerateEntityName(details.FirstOrDefault(o => o.Field == "title")?.Value);
+
             _projectEntityHelper.UpdateDetails(entity, details, user);
            
+            return Save();
+        }
+
+        public int DeleteProjects(long[] ids)
+        {
+            foreach (var id in ids)
+            {
+                var entity = _projectEntityHelper.Entity(id);
+                _projectEntityHelper.Delete(entity);
+            }
+
             return Save();
         }
 

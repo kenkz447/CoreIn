@@ -49,7 +49,9 @@ class FileManager extends React.Component {
                 </div>
                 {files.length !== 0 ? <FileList /> : getFilesFromServer(loadFiles, 0, initLoadItems)}
                 <SidePanel />
-                <div className={classnames('overlay', 'fade-in-out', { 'hidden': !asideOpened })} onClick={() => { toggleAside(false); }} />
+                <div className={classnames('overlay', 'fade-in-out', { 'hidden': !asideOpened })} onClick={() => {
+                    toggleAside(false);
+                }} />
             </div>
         );
     }

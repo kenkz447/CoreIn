@@ -4,13 +4,15 @@ const {connect} = require('react-redux');
 
 const { Provider } = require('react-redux');
 const Table = require('./index/components/table');
-const DynamicForm = Corein;
-const {Button} = require('reactstrap');
+const { Button, Card, CardHeader, CardBlock } = require('reactstrap');
 
 const tableActions = Corein.table.actions;
+const PageAlert = Corein.pageAlerts.default;
+const pageAlertsReducer = Corein.pageAlerts.reducer;
 
 const reducer = combineReducers({
-    index: require('./index/redux/reducer')
+    index: require('./index/redux/reducer'),
+    pageAlerts: pageAlertsReducer
 });
 
 const store = createStore(reducer);
@@ -20,16 +22,17 @@ var PageContent = (props) => {
 
     return (
         <div>
-            <div className="card">
-                <div className="card-block">
+            <PageAlert/>
+            <Card>
+                <CardBlock>
                     <Button color="primary">Create new</Button>
-                </div>
-            </div>
-            <div className="card">
-                <div className="card-block">
+                </CardBlock>
+            </Card>
+            <Card>
+                <CardBlock>
                     <Table />
-                </div>
-            </div>
+                </CardBlock>
+            </Card>
         </div>
     );
 };

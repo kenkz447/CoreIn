@@ -34,8 +34,9 @@ namespace CoreIn.Modules.FileManager.Controllers
         public async Task<JsonResult> Update(FormValues formValues)
         {
             var user = await _userManager.FindByNameAsync(User.Identity.Name);
-            var fileId = formValues.GetMetaValue("id");
-            var result = _mediaHelper.UpdateFile(long.Parse(fileId), formValues.Details, formValues.TaxonomyTypes.ToDictionary(o => o.Key, o =>o.Value.Keys.ToArray()), user);
+            var fileId = long.Parse(formValues.GetMetaValue("id"));
+            Dictionary<long, long[]> taxonomyTypeTaxonomies = formValues.TaxonomyTypes?.ToDictionary(o => o.Key, o => o.Value.Keys.ToArray());
+            var result = _mediaHelper.UpdateFile(fileId, formValues.Details, taxonomyTypeTaxonomies, user);
             return Json(result);
         }
 
@@ -81,5 +82,8 @@ namespace CoreIn.Modules.FileManager.Controllers
             var result = _mediaHelper.GetEntityForm(fileName);
             return Json(result);
         }
+
+        public JsonResult GetThumbnail(string sourceImage)
+            => Json(_mediaHelper.GetThumbnailPath(sourceImage));
     }
 }

@@ -5,23 +5,9 @@ const { reduxForm, Field, FieldArray} = require('redux-form');
 const { FormGroup, Label, Input } = require('reactstrap');
 const { Alert, Button } = require('reactstrap');
 const { renderField } = require('./render-field');
-
+const CheckboxList = require('./fields/checkboxlist');
 
 const renderFieldType = require('./render-field-type')
-
-const CheckboxList = require('./checkboxlist');
-
-const CHECKBOXLIST = 'checkboxlist';
-
-const TaxonomyFields = (props) => {
-    const { renderType } = props;
-    switch (renderType) {
-        default:
-            return <CheckboxList {...props} />
-    }
-};
-
-
 
 module.exports = class Form extends React.Component {
     constructor(props) {
@@ -35,6 +21,7 @@ module.exports = class Form extends React.Component {
 
         commands[command](formValues, fieldData);
     }
+
 
     render() {
         const { formName, formData, onClose, error, handleSubmit, pristine, reset, submitting, submitSucceeded, display, fileManagerModalToggle } = this.props;
@@ -70,8 +57,8 @@ module.exports = class Form extends React.Component {
                     <div className="taxonomies">
                         {
                             formData.taxonomyTypes.map((props) => {
-                                const { typeId, input: {name}, display: {renderType, title}, taxonomies} = props;
-                                return <TaxonomyFields key={typeId} renderType={renderType} taxonomyName={`taxonomyTypes.${typeId}`} title={title} taxonomies={taxonomies} />;
+                                const { typeId, input: {name}, display: {title}, taxonomies} = props;
+                                return <CheckboxList key={typeId} taxonomyName={`taxonomyTypes.${typeId}`} title={title} taxonomies={taxonomies} />;
                             })
                         }
                     </div>

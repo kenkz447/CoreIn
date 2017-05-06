@@ -2,15 +2,20 @@
 const { combineReducers, createStore, bindActionCreators } = require('redux');
 const {connect, Provider} = require('react-redux');
 const { Button, Card, CardHeader, CardBlock } = require('reactstrap');
+
+const alerts = Corein.pageAlerts;
+const PageAlerts = alerts.default;
+
 const Form = require('../project/shared/components/project-form').default;
-const store = createStore(require('./create/redux/reducer'));
+
+const store = createStore(require('./update/redux/reducer'));
 
 var PageContent = (props) => {
-
-    const {title, description} = props;
+    const { parameters, title, description, alertPush } = props;
 
     return (
         <div>
+            <PageAlerts />
             <Card>
                 <CardBlock>
                     <Button color="primary">Create new</Button>
@@ -18,16 +23,18 @@ var PageContent = (props) => {
             </Card>
             <Card>
                 <CardHeader>
-                    <strong>{title}</strong> {description && ` ${description}` }
+                    <strong>{title}</strong> {description && ` ${description}`}
                 </CardHeader>
                 <CardBlock>
                     <Form formName="create"
                         formUrl="/project/GetNewProjectForm"
+                        formUrlData={parameters}
                         formSubmitData={{
-                            url: '/project/create',
-                            method: 'POST',
+                            url: '/project/update',
+                            method: 'PUT',
                             successAction: (respo) => {
-                                window.location.href = respo.result;
+                                alertPush("success", respo.message);
+                                $("html, body").stop().animate({ scrollTop: 0 }, 500, 'swing');
                             },
                         }}
                     />
@@ -43,7 +50,7 @@ const stateToProps = (state) => {
 }
 
 const reducerToProps = (reducer) => (
-    bindActionCreators({}, reducer)
+    bindActionCreators({ alertPush: alerts.actions.push}, reducer)
 );
 
 PageContent = connect(stateToProps, reducerToProps)(PageContent);

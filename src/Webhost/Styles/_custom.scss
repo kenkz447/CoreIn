@@ -107,3 +107,14 @@
 .form-member:last-child {
     margin-bottom: 0;
 }
+
+.image-fill {
+    width: 150px;
+    height: 150px;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+    border: 5px solid #f3f3f3;
+    border-radius: 10px;
+    cursor:pointer;
+}

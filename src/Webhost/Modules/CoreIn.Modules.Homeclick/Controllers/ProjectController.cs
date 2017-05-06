@@ -6,6 +6,7 @@ using CoreIn.Modules.Homeclick.Domain.Project.Form;
 using CoreIn.Modules.Homeclick.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace CoreIn.Modules.Homeclick.Controllers
@@ -29,7 +30,7 @@ namespace CoreIn.Modules.Homeclick.Controllers
 
         public ActionResult Create()
         {
-            var actionViewModel = new ActionViewModel("Create new project");
+            var actionViewModel = new ActionViewModel("Create a new project");
             return View(actionViewModel);
         }
 
@@ -45,13 +46,46 @@ namespace CoreIn.Modules.Homeclick.Controllers
 
             project = _projectManager.CreateProject(project, projectDetails.ToArray(), user);
 
-            var result = new BaseAjaxResult(JsonResultState.Success, "New project was created!");
+            var result = new BaseAjaxResult(JsonResultState.Success, "New project was created!", Url.Action("update", new { id = project.Id}));
             return Json(result);
         }
 
-        public JsonResult GetNewProjectForm()
+        public ActionResult Update(long id)
         {
-            return Json(_projectManager.GetForm(null));
+            var actionViewModel = new ActionViewModel("Update the project",
+                parameters: new Dictionary<string, object>
+                {
+                    { "projectId", id}
+                }
+                );
+
+            return View(actionViewModel);
+        }
+
+        [HttpDelete]
+        public JsonResult Delete(long[] ids)
+        {
+            _projectManager.DeleteProjects(ids);
+           return Json(new BaseAjaxResult(JsonResultState.Success, "delete successfuly."));
+        }
+
+        [HttpPut]
+        public JsonResult Update(ProjectFormValues formValues)
+        {
+            var user = _userManager.FindByNameAsync(User.Identity.Name).Result;
+            var projectDetails = FormUtitities.ViewModelToEntityDetails<ProjectDetail, ProjectDetailsViewModel>(formValues.Details, null, user);
+
+            var projectId = long.Parse(formValues.Meta["id"]);
+            var result = _projectManager.UpdateProject(projectId, projectDetails.ToArray(), user);
+            if (result > 0)
+                return Json(new BaseAjaxResult(JsonResultState.Success, "Update successuly"));
+
+            return Json(new BaseAjaxResult(JsonResultState.Failed, "Update failed"));
+        }
+
+        public JsonResult GetNewProjectForm(long? projectTypeId, long? projectId)
+        {
+            return Json(_projectManager.GetForm(projectTypeId, projectId));
         }
 
         public JsonResult GetTableData(Datatable datatable)

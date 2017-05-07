@@ -3,7 +3,7 @@ const keys = require('./keys');
 const { combineReducers } = require('redux');
 const formReducer = require('redux-form').reducer;
 
-const { tabControlReducer, fileManager: { fmReducer }, pageAlerts } = Corein;
+const { tabControlReducer, fileManager: { fmReducer }, pageAlerts } = Corein.components;
 
 const initialState = {
 

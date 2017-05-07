@@ -1,7 +1,7 @@
 ﻿const $ = require('jquery');
 const { combineReducers } = require('redux');
 
-const { table } = Corein;
+const { table } = Corein.components;
 
 const initialState = {
 

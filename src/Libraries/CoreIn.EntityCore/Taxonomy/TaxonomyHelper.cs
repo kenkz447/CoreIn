@@ -52,7 +52,7 @@ namespace CoreIn.EntityCore
                     new FormField
                     {
                         Status = FieldStatus.Hidden,
-                        Input = new FieldInput(AppKey.TaxonomyTypeId),
+                        Name = AppKey.TaxonomyTypeId
                     }
                 },
                 Details = new List<FormField>
@@ -68,7 +68,7 @@ namespace CoreIn.EntityCore
                         {
                             Required = "This field cann't be empty."
                         },
-                        Input = new FieldInput("title"),
+                        Name= "title"
                     }
                 },
                 InitialValues = new FormValues
@@ -92,13 +92,13 @@ namespace CoreIn.EntityCore
             form.Meta.Add(new FormField
             {
                 Status = FieldStatus.Hidden,
-                Input = new FieldInput("id"),
+                Name = "id"
             });
 
             form.Meta.Add(new FormField
             {
                 Status = FieldStatus.Hidden,
-                Input = new FieldInput(AppKey.ParentId),
+                Name = AppKey.ParentId
             });
 
             var formValues = new FormValues();

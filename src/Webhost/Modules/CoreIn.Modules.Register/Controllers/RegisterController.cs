@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using CoreIn.App.ViewModels;
 using CoreIn.Resources;
 using Microsoft.Extensions.Localization;
+using CoreIn.Commons;
 
 namespace CoreIn.Modules.Register.Controllers
 {
@@ -42,6 +43,7 @@ namespace CoreIn.Modules.Register.Controllers
                     {
                         pageViewModel = new ActionViewModel(
                             title: _moduleLocalizer["Register"],
+                            module: "Admin",
                             resourceDictionary: new Dictionary<string, string>
                                 {
                                     {"loginBtnLabel", _moduleLocalizer["Login"]},
@@ -80,8 +82,6 @@ namespace CoreIn.Modules.Register.Controllers
         [ValidateAjax]
         public async Task<JsonResult> Index(RegisterViewModel model, string returnUrl = null)
         {
-            object result;
-
             var user = new User
             {
                 UserName = model.Email,
@@ -95,7 +95,7 @@ namespace CoreIn.Modules.Register.Controllers
                 if (registerResult.Succeeded)
                 {
                     var returnUrlResult = Url.Action("index", "login", new { username = user.UserName, returnUrl = returnUrl, @ref = "register" });
-                    result = new { result = "success", returnUrl = returnUrlResult };
+                    return Json(new BaseAjaxResult(JsonResultState.Success, "Register succeeded.", returnUrlResult));
                 }
                 else
                 {
@@ -104,16 +104,13 @@ namespace CoreIn.Modules.Register.Controllers
                         _error = "Can't register!",
                         Email = registerResult.Errors.FirstOrDefault(o => o.Code == "DuplicateUserName").Description
                     };
-                    result = new { result = "error", message = "Can't register!", errors = errors };
+                    return Json(new BaseAjaxResult(JsonResultState.Failed, "Can't register!", errors));
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex);
                 throw;
             }
-
-            return Json(result);
         }
         #endregion
 

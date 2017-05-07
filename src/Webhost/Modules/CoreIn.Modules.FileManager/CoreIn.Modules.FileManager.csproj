@@ -5,6 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Folder Include="Develop\Scripts\admin\file-manager\index\" />
     <Folder Include="wwwroot\" />
   </ItemGroup>
   <ItemGroup>

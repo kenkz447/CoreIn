@@ -1,7 +1,7 @@
 ﻿const $ = require('jquery');
 const { connect } = require('react-redux');
 const { bindActionCreators } = require('redux');
-const Table = Corein.table.default;
+const Table = Corein.components.table.default;
 
 const editUrl = '/project/update';
 const deleteUrl = '/project/delete';

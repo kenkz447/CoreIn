@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "name": "ci1856",
+  "name": "register",
   "private": true,
   "devDependencies": {
     "gulp": "3.8.11",

@@ -1,15 +1,15 @@
 ﻿const $ = require('jquery');
 const { connect } = require('react-redux');
 const { bindActionCreators } = require('redux');
-const { form } = Corein;
+const { form } = Corein.components;
 const { loadNewForm } = require('../redux/actions');
 const { reduxForm, getFormValues } = require('redux-form');
 
 const LayoutModal = require('../../shared/components/layout-modal').default;
 const { openLayoutModal } = require('../../shared/components/layout-modal').actions;
 
-const formSubmit = Corein.form.sumbit;
-const alertPush = Corein.pageAlerts.actions.push;
+const formSubmit = Corein.components.form.sumbit;
+const alertPush = Corein.components.pageAlerts.actions.push;
 
 class ProjectForm extends React.Component {
     constructor(props) {

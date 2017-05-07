@@ -1,0 +1,13 @@
+#RegisterForm {
+    .ReactFlipCard {
+        width: 100%;
+
+        .ReactFlipCard__Front, .ReactFlipCard__Back {
+            width: 100%;
+        }
+
+        .card-block {
+            min-height: 350px;
+        }
+    }
+}

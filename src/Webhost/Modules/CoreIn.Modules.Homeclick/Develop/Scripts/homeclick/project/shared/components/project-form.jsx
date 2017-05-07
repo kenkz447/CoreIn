@@ -1,7 +1,7 @@
 ﻿const $ = require('jquery');
 const { connect } = require('react-redux');
 const { bindActionCreators } = require('redux');
-const { form } = Corein;
+const { form } = Corein.components;
 const { reduxForm, getFormValues } = require('redux-form');
 
 const LayoutModal = require('../../shared/components/layout-modal').default;

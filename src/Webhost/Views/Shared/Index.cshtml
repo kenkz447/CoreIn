@@ -1,0 +1,32 @@
+﻿@model ActionViewModel
+
+@{
+    ViewBag.Title = Model.Title;
+
+    var module = Model.Module;
+    var action = Html.ActionName().FirstCharacterToLower();
+    var controller = Html.ControllerName().FirstCharacterToLower();
+    var reactComponent = $"{module}.{controller}.{action}";
+
+    if (Model.Scripts != null)
+    {
+        foreach (var script in Model.Scripts)
+        {
+            Html.AddJavaScript(script);
+        }
+    }
+    else
+    {
+        Html.AddJavaScript($"/js/{controller}.js");
+    }
+
+    if (Model.Styles != null)
+    {
+        foreach (var style in Model.Styles)
+        {
+            Html.AddStyle(style);
+        }
+    }
+}
+
+@Html.React(reactComponent, Model.GetRawData(), clientOnly: true)

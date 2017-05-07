@@ -1,4 +1,32 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+const validator = require('./components/validator');
+const TabControl = require('./components/tabControl');
+const tabControlActions = require('./redux/tc-actions');
+const tabControlReducer = require('./redux/tc-reducer');
+const table = require('./components/table');
+const fileManager = require('./components/file-manager');
+
+const appKeys = {
+    parentId: 'parentId'
+};
+
+module.exports = {
+    validator,
+    form: {
+        default: require('./components/dynamic-form'),
+        validator: require('./components/form/validator'),
+        submit: require('./components/form/sumbit')
+    },
+    pageAlerts: require('./components/page-alerts'),
+    TabControl,
+    tabControlActions,
+    tabControlReducer,
+    appKeys,
+    table,
+    fileManager
+};
+
+},{"./components/dynamic-form":2,"./components/file-manager":3,"./components/form/sumbit":21,"./components/form/validator":22,"./components/page-alerts":23,"./components/tabControl":24,"./components/table":25,"./components/validator":26,"./redux/tc-actions":27,"./redux/tc-reducer":29}],2:[function(require,module,exports){
 const $ = require('jquery');
 const { connect } = require('react-redux');
 const { bindActionCreators } = require('redux');
@@ -46,7 +74,7 @@ const reducerToProps = (reducer) => (
 
 module.exports = connect(stateToProps, reducerToProps)(DynamicForm);
 
-},{"./file-manager/fm-actions":3,"./file-manager/modal":11,"./form/form":16,"jquery":"XpFelZ","react-redux":"MzQWgz","redux":"czVV+t","redux-form":"LVfYvK"}],2:[function(require,module,exports){
+},{"./file-manager/fm-actions":4,"./file-manager/modal":12,"./form/form":17,"jquery":"XpFelZ","react-redux":"MzQWgz","redux":"czVV+t","redux-form":"LVfYvK"}],3:[function(require,module,exports){
 const $ = require('jquery');
 const { connect } = require('react-redux');
 const { bindActionCreators } = require('redux');
@@ -123,7 +151,7 @@ module.exports = {
     fmReducer
 };
 
-},{"./file-manager/fm-actions":3,"./file-manager/fm-ajaxs":4,"./file-manager/fm-fileList":6,"./file-manager/fm-filer.jsx":7,"./file-manager/fm-reducer":9,"./file-manager/fm-sidePanel":10,"./file-manager/modal":11,"classnames":"4z/pR8","jquery":"XpFelZ","react-redux":"MzQWgz","reactstrap":"jldOQ7","redux":"czVV+t"}],3:[function(require,module,exports){
+},{"./file-manager/fm-actions":4,"./file-manager/fm-ajaxs":5,"./file-manager/fm-fileList":7,"./file-manager/fm-filer.jsx":8,"./file-manager/fm-reducer":10,"./file-manager/fm-sidePanel":11,"./file-manager/modal":12,"classnames":"4z/pR8","jquery":"XpFelZ","react-redux":"MzQWgz","reactstrap":"jldOQ7","redux":"czVV+t"}],4:[function(require,module,exports){
 const fmKeys = require('./fm-keys');
 
 const fileUploaded = (fileObjectResult) => ({
@@ -197,7 +225,7 @@ module.exports = {
     setNestedModal
 };
 
-},{"./fm-keys":8}],4:[function(require,module,exports){
+},{"./fm-keys":9}],5:[function(require,module,exports){
 const $ = require('jquery');
 
 const getFilesFromServer = (handler, selectFrom, take) => {
@@ -244,7 +272,7 @@ const updateFile = (handler, file) => {
 
 module.exports = { getFilesFromServer, getFormInfoFromServer, deleteFilesFromServer, updateFile};
 
-},{"jquery":"XpFelZ"}],5:[function(require,module,exports){
+},{"jquery":"XpFelZ"}],6:[function(require,module,exports){
 const $ = require('jquery');
 const { connect } = require('react-redux');
 const { fileChecked, toggleAside} = require('./fm-actions');
@@ -380,7 +408,7 @@ const dispatchToProps = (dispatch) => (
 
 module.exports = connect(stateToProps, dispatchToProps)(FileItem);
 
-},{"../../redux/tc-actions":27,"../form/form":16,"../form/sumbit":20,"../form/validator":21,"./fm-actions":3,"./fm-ajaxs":4,"jquery":"XpFelZ","react-redux":"MzQWgz","redux":"czVV+t","redux-form":"LVfYvK"}],6:[function(require,module,exports){
+},{"../../redux/tc-actions":27,"../form/form":17,"../form/sumbit":21,"../form/validator":22,"./fm-actions":4,"./fm-ajaxs":5,"jquery":"XpFelZ","react-redux":"MzQWgz","redux":"czVV+t","redux-form":"LVfYvK"}],7:[function(require,module,exports){
 const $ = require('jquery');
 const fmKeys = require('./fm-keys');
 const { getFilesFromServer } = require('./fm-ajaxs');
@@ -441,7 +469,7 @@ const dispatchToProps = (dispatch) => (
 
 module.exports = connect(stateToProps, dispatchToProps)(FileThumbList);
 
-},{"./fm-actions":3,"./fm-ajaxs":4,"./fm-fileItem":5,"./fm-keys":8,"jquery":"XpFelZ","react-redux":"MzQWgz","reactstrap":"jldOQ7","redux":"czVV+t"}],7:[function(require,module,exports){
+},{"./fm-actions":4,"./fm-ajaxs":5,"./fm-fileItem":6,"./fm-keys":9,"jquery":"XpFelZ","react-redux":"MzQWgz","reactstrap":"jldOQ7","redux":"czVV+t"}],8:[function(require,module,exports){
 const $ = require('jquery');
 const jFiler = require('jquery.filer');
 const { bindActionCreators } = require('redux');
@@ -512,7 +540,7 @@ const dispatchToProps = (dispatch) => (
 module.exports = connect(state => state, dispatchToProps)(JFiler);
 
 
-},{"./fm-actions":3,"jquery":"XpFelZ","jquery.filer":"pPPu8c","react-redux":"MzQWgz","reactstrap":"jldOQ7","redux":"czVV+t"}],8:[function(require,module,exports){
+},{"./fm-actions":4,"jquery":"XpFelZ","jquery.filer":"pPPu8c","react-redux":"MzQWgz","reactstrap":"jldOQ7","redux":"czVV+t"}],9:[function(require,module,exports){
 const fmKeys = {
     fileUploaded: 'FILE_UPLOADED',
     fileChecked: 'FILE_CHEKED',
@@ -529,7 +557,7 @@ const fmKeys = {
 
 module.exports = fmKeys;
 
-},{}],9:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 const $ = require('jquery');
 const fmKeys = require('./fm-keys');
 const sift = require('sift');
@@ -618,7 +646,7 @@ const reducer = (state = initState, action) => {
 
 module.exports = reducer;
 
-},{"./fm-keys":8,"jquery":"XpFelZ","sift":"yAbQ3S"}],10:[function(require,module,exports){
+},{"./fm-keys":9,"jquery":"XpFelZ","sift":"yAbQ3S"}],11:[function(require,module,exports){
 const react = require('react');
 const reactDOM = require('react-dom');
 const $ = require('jquery');
@@ -654,7 +682,7 @@ const distpatchToProps = (dispatch) => (
 module.exports = connect(stateToProps, distpatchToProps)(SidePanel);
 
 
-},{"../../redux/tc-actions":27,"../dynamic-form":1,"../form/validator":21,"../tabControl":23,"classnames":"4z/pR8","jquery":"XpFelZ","react":"b6Dds6","react-dom":"Ld8xHf","react-redux":"MzQWgz","reactstrap":"jldOQ7","redux":"czVV+t"}],11:[function(require,module,exports){
+},{"../../redux/tc-actions":27,"../dynamic-form":2,"../form/validator":22,"../tabControl":24,"classnames":"4z/pR8","jquery":"XpFelZ","react":"b6Dds6","react-dom":"Ld8xHf","react-redux":"MzQWgz","reactstrap":"jldOQ7","redux":"czVV+t"}],12:[function(require,module,exports){
 const $ = require('jquery');
 const _ = require('underscore');
 
@@ -779,7 +807,7 @@ const dispatchToProps = (dispatch) => (
 
 module.exports = connect(stateToProps, dispatchToProps)(FileManagerModal);
 
-},{"./fm-actions":3,"./fm-ajaxs":4,"./fm-fileList":6,"./fm-filer.jsx":7,"./fm-sidePanel":10,"classnames":"4z/pR8","jquery":"XpFelZ","react-redux":"MzQWgz","reactstrap":"jldOQ7","redux":"czVV+t","underscore":"vBgcj5"}],12:[function(require,module,exports){
+},{"./fm-actions":4,"./fm-ajaxs":5,"./fm-fileList":7,"./fm-filer.jsx":8,"./fm-sidePanel":11,"classnames":"4z/pR8","jquery":"XpFelZ","react-redux":"MzQWgz","reactstrap":"jldOQ7","redux":"czVV+t","underscore":"vBgcj5"}],13:[function(require,module,exports){
 const $ = require('jquery');
 const {Card, CardBlock, CardHeader, Input, InputGroup, InputGroupAddon, FormFeedback, FormGroup, FormText, Label, Button, Modal, ModalHeader, ModalBody, ModalFooter} = require('reactstrap');
 
@@ -824,7 +852,7 @@ module.exports = (props) => {
     )
 }
 
-},{"./render-field-type":18,"jquery":"XpFelZ","reactstrap":"jldOQ7"}],13:[function(require,module,exports){
+},{"./render-field-type":19,"jquery":"XpFelZ","reactstrap":"jldOQ7"}],14:[function(require,module,exports){
 var {Input, FormGroup, Label} = require('reactstrap');
 
 module.exports = function(props) {
@@ -839,7 +867,7 @@ module.exports = function(props) {
     );
 };
 
-},{"reactstrap":"jldOQ7"}],14:[function(require,module,exports){
+},{"reactstrap":"jldOQ7"}],15:[function(require,module,exports){
 const $ = require('jquery');
 const listToTree = require('list-to-tree');
 const CheckBox = require('./checkbox');
@@ -901,7 +929,7 @@ class CheckboxList extends React.Component {
 
 module.exports = CheckboxList;
 
-},{"./checkbox":13,"jquery":"XpFelZ","list-to-tree":"3c/Ypl","redux-form":"LVfYvK"}],15:[function(require,module,exports){
+},{"./checkbox":14,"jquery":"XpFelZ","list-to-tree":"3c/Ypl","redux-form":"LVfYvK"}],16:[function(require,module,exports){
 const $ = require('jquery');
 const shallowCompare = require('react-addons-shallow-compare');
 
@@ -987,7 +1015,7 @@ module.exports = FormInput;
     //    );
     //};
 
-},{"jquery":"XpFelZ","react-addons-shallow-compare":31,"reactstrap":"jldOQ7"}],16:[function(require,module,exports){
+},{"jquery":"XpFelZ","react-addons-shallow-compare":32,"reactstrap":"jldOQ7"}],17:[function(require,module,exports){
 const $ = require('jquery');
 const { connect } = require('react-redux');
 const { bindActionCreators } = require('redux');
@@ -1065,7 +1093,7 @@ module.exports = class Form extends React.Component {
     }  
 };
 
-},{"./fields/checkboxlist":14,"./render-field":19,"./render-field-type":18,"jquery":"XpFelZ","react-redux":"MzQWgz","reactstrap":"jldOQ7","redux":"czVV+t","redux-form":"LVfYvK"}],17:[function(require,module,exports){
+},{"./fields/checkboxlist":15,"./render-field":20,"./render-field-type":19,"jquery":"XpFelZ","react-redux":"MzQWgz","reactstrap":"jldOQ7","redux":"czVV+t","redux-form":"LVfYvK"}],18:[function(require,module,exports){
 const $ = require('jquery');
 
 var {Input, InputGroup, InputGroupAddon, FormFeedback, FormGroup, FormText, Label, Button, Modal, ModalHeader, ModalBody, ModalFooter} = require('reactstrap');
@@ -1111,7 +1139,7 @@ class ImageField extends React.Component {
 
 module.exports = ImageField;
 
-},{"../file-manager/modal":11,"jquery":"XpFelZ","reactstrap":"jldOQ7"}],18:[function(require,module,exports){
+},{"../file-manager/modal":12,"jquery":"XpFelZ","reactstrap":"jldOQ7"}],19:[function(require,module,exports){
 const $ = require('jquery');
 const { Field, FieldArray} = require('redux-form');
 const { renderField } = require('./render-field');
@@ -1133,7 +1161,7 @@ module.exports = function (prefixName, props) {
     return React.createElement(Field, React.__spread({},  newProps, {component: renderField}));
 }
 
-},{"./array":12,"./render-field":19,"jquery":"XpFelZ","redux-form":"LVfYvK"}],19:[function(require,module,exports){
+},{"./array":13,"./render-field":20,"jquery":"XpFelZ","redux-form":"LVfYvK"}],20:[function(require,module,exports){
 const { Input, InputGroup, InputGroupButton, InputGroupAddon, FormFeedback, FormGroup, FormText, Label, Button, Modal, ModalHeader, ModalBody, ModalFooter} = require('reactstrap');
 
 const FormInput = require('./form-input');
@@ -1198,7 +1226,7 @@ module.exports = {
 }
 
 
-},{"./fields/checkboxlist":14,"./form-input":15,"./image":17,"reactstrap":"jldOQ7"}],20:[function(require,module,exports){
+},{"./fields/checkboxlist":15,"./form-input":16,"./image":18,"reactstrap":"jldOQ7"}],21:[function(require,module,exports){
 const $ = require('jquery');
 const {SubmissionError} = require('redux-form');
 
@@ -1251,7 +1279,7 @@ function formSubmit(props) {
 
 module.exports = formSubmit;
 
-},{"jquery":"XpFelZ","redux-form":"LVfYvK"}],21:[function(require,module,exports){
+},{"jquery":"XpFelZ","redux-form":"LVfYvK"}],22:[function(require,module,exports){
 const $ = require('jquery');
 
 const isType = (value, type) => {
@@ -1341,7 +1369,7 @@ const validator = fieldGroups => values => {
 
 module.exports = validator
 
-},{"jquery":"XpFelZ"}],22:[function(require,module,exports){
+},{"jquery":"XpFelZ"}],23:[function(require,module,exports){
 const $ = require('jquery');
 const { connect } = require('react-redux');
 const { bindActionCreators } = require('redux');
@@ -1422,7 +1450,7 @@ module.exports = {
 }
 
 
-},{"jquery":"XpFelZ","react-redux":"MzQWgz","reactstrap":"jldOQ7","redux":"czVV+t"}],23:[function(require,module,exports){
+},{"jquery":"XpFelZ","react-redux":"MzQWgz","reactstrap":"jldOQ7","redux":"czVV+t"}],24:[function(require,module,exports){
 const classnames = require('classnames');
 const { Nav, NavItem, NavLink, TabContent, TabPane } = require('reactstrap');
 
@@ -1459,7 +1487,7 @@ module.exports = TabControl;
 
 
 
-},{"classnames":"4z/pR8","reactstrap":"jldOQ7"}],24:[function(require,module,exports){
+},{"classnames":"4z/pR8","reactstrap":"jldOQ7"}],25:[function(require,module,exports){
 const $ = require('jquery');
 const { connect } = require('react-redux');
 const { bindActionCreators } = require('redux');
@@ -1648,7 +1676,7 @@ module.exports = {
 }
 
 
-},{"jquery":"XpFelZ","react-redux":"MzQWgz","react-table":"OYum5A","reactstrap":"jldOQ7","redux":"czVV+t"}],25:[function(require,module,exports){
+},{"jquery":"XpFelZ","react-redux":"MzQWgz","react-table":"OYum5A","reactstrap":"jldOQ7","redux":"czVV+t"}],26:[function(require,module,exports){
 const isType = (value, type) => {
     switch (type) {
         case 'email':
@@ -1706,39 +1734,7 @@ const validator = validating => values => {
 
 module.exports = validator
 
-},{}],26:[function(require,module,exports){
-(function (global){
-const validator = require('./components/validator');
-const TabControl = require('./components/tabControl');
-const tabControlActions = require('./redux/tc-actions');
-const tabControlReducer = require('./redux/tc-reducer');
-const table = require('./components/table');
-const fileManager = require('./components/file-manager');
-
-const appKeys = {
-    parentId: 'parentId'
-};
-
-module.exports = {
-    validator,
-    form: {
-        default: require('./components/dynamic-form'),
-        validator: require('./components/form/validator'),
-        submit: require('./components/form/sumbit')
-    },
-    pageAlerts: require('./components/page-alerts'),
-    TabControl,
-    tabControlActions,
-    tabControlReducer,
-    appKeys,
-    table,
-    fileManager
-};
-
-global.Corein = module.exports;
-
-}).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./components/dynamic-form":1,"./components/file-manager":2,"./components/form/sumbit":20,"./components/form/validator":21,"./components/page-alerts":22,"./components/tabControl":23,"./components/table":24,"./components/validator":25,"./redux/tc-actions":27,"./redux/tc-reducer":29}],27:[function(require,module,exports){
+},{}],27:[function(require,module,exports){
 const keys = require('./tc-keys');
 
 const tabAdd = (id, title, content) => ({
@@ -1806,6 +1802,13 @@ const reducer = (state = initState, action) => {
 module.exports = reducer;
 
 },{"./tc-keys":28,"jquery":"XpFelZ"}],30:[function(require,module,exports){
+(function (global){
+global.Corein = {
+    components: require('./corein/components')
+}
+
+}).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{"./corein/components":1}],31:[function(require,module,exports){
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
  * All rights reserved.
@@ -1874,7 +1877,7 @@ function shallowEqual(objA, objB) {
 
 module.exports = shallowEqual;
 
-},{}],31:[function(require,module,exports){
+},{}],32:[function(require,module,exports){
 /**
  * Copyright 2013-present, Facebook, Inc.
  * All rights reserved.
@@ -1905,6 +1908,6 @@ function shallowCompare(instance, nextProps, nextState) {
 module.exports = shallowCompare;
 
 
-},{"fbjs/lib/shallowEqual":30}]},{},[26])
+},{"fbjs/lib/shallowEqual":31}]},{},[30])
 
 //# sourceMappingURL=corein.js.map

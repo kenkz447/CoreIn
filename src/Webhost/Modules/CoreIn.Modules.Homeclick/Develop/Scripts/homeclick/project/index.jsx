@@ -6,9 +6,9 @@ const { Provider } = require('react-redux');
 const Table = require('./index/components/table');
 const { Button, Card, CardHeader, CardBlock } = require('reactstrap');
 
-const tableActions = Corein.table.actions;
-const PageAlert = Corein.pageAlerts.default;
-const pageAlertsReducer = Corein.pageAlerts.reducer;
+const tableActions = Corein.components.table.actions;
+const PageAlert = Corein.components.pageAlerts.default;
+const pageAlertsReducer = Corein.components.pageAlerts.reducer;
 
 const reducer = combineReducers({
     index: require('./index/redux/reducer'),

@@ -3,7 +3,7 @@ const { combineReducers, createStore, bindActionCreators } = require('redux');
 const {connect, Provider} = require('react-redux');
 const { Button, Card, CardHeader, CardBlock } = require('reactstrap');
 
-const alerts = Corein.pageAlerts;
+const alerts = Corein.components.pageAlerts;
 const PageAlerts = alerts.default;
 
 const Form = require('../project/shared/components/project-form').default;

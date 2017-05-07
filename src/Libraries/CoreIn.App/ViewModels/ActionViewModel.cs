@@ -10,20 +10,32 @@ namespace CoreIn.App.ViewModels
 {
     public class ActionViewModel
     {
-        public string Title { get;}
-        public string Description { get;}
+        public string Module { get; }
+        public string Title { get; }
+        public string Description { get; }
+
+        public string[] Scripts { get; }
+        public string[] Styles { get; }
 
         private Dictionary<string, FormViewModel> FormDictionary { get;}
         private Dictionary<string, string> ResourcesDictionary { get;}
         private Dictionary<string, object> Parameters { get; }
 
-        public ActionViewModel(string title, string description = null, Dictionary<string, string> resourceDictionary = null, Dictionary<string, object> parameters = null)
+        public ActionViewModel()
         {
+
+        }
+
+        public ActionViewModel(string title, string description = null, string module = null, Dictionary<string, string> resourceDictionary = null, Dictionary<string, object> parameters = null, string[] scripts = null, string [] styles = null)
+        {
+            this.Module = module;
             this.Title = title;
             this.Description = description;
             this.ResourcesDictionary = resourceDictionary;
             this.FormDictionary = new Dictionary<string, FormViewModel>();
             this.Parameters = parameters;
+            this.Scripts = scripts;
+            this.Styles = styles;
         }
 
         public void AddForm(FormViewModel formViewModel, string formName)

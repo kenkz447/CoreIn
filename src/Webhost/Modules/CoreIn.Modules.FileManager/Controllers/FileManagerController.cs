@@ -1,4 +1,5 @@
 ﻿using CoreIn.App.Attributes;
+using CoreIn.App.ViewModels;
 using CoreIn.Commons;
 using CoreIn.Commons.Form;
 using CoreIn.Media.MediaHelper;
@@ -27,7 +28,8 @@ namespace CoreIn.Modules.FileManager.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            var viewModel = new ActionViewModel("File Manager", module: "Admin");
+            return View(viewModel);
         }
 
         [HttpPut]

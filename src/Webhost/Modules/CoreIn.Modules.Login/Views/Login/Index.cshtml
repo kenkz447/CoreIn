@@ -1,7 +1,12 @@
 ﻿@model ActionViewModel
+
 @{
-    Html.AddJavaScript("/js/ci0786.js");
+    var module = Model.Module;
+    var action = Html.ActionName().FirstCharacterToLower();
+    var controller = Html.ControllerName().FirstCharacterToLower();
+    var reactComponent = $"{module}.{controller}.{action}";
+
+    Html.AddJavaScript($"/js/{controller}.js");
 }
 
-
-@Html.React("Login", new { index = Model.GetRawData() }, clientOnly: true)
+@Html.React(reactComponent, Model.GetRawData(), clientOnly: true)

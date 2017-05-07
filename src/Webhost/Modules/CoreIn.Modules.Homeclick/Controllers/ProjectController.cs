@@ -24,13 +24,19 @@ namespace CoreIn.Modules.Homeclick.Controllers
 
         public ActionResult Index()
         {
-            var actionViewModel = new ActionViewModel("Index");
+            var actionViewModel = new ActionViewModel("Index", 
+                module: "Homeclick", 
+                scripts: new string[] { "/js/homeclick.js" },
+                styles: new string[] { "/css/homeclick.css"});
             return View(actionViewModel);
         }
 
         public ActionResult Create()
         {
-            var actionViewModel = new ActionViewModel("Create a new project");
+            var actionViewModel = new ActionViewModel("Create a new project",
+                module: "Homeclick",
+                scripts: new string[] { "/js/homeclick.js" },
+                styles: new string[] { "/css/homeclick.css" });
             return View(actionViewModel);
         }
 
@@ -53,11 +59,13 @@ namespace CoreIn.Modules.Homeclick.Controllers
         public ActionResult Update(long id)
         {
             var actionViewModel = new ActionViewModel("Update the project",
+                module: "Homeclick",
+                scripts: new string[] { "/js/homeclick.js" },
+                styles: new string[] { "/css/homeclick.css" },
                 parameters: new Dictionary<string, object>
                 {
                     { "projectId", id}
-                }
-                );
+                });
 
             return View(actionViewModel);
         }

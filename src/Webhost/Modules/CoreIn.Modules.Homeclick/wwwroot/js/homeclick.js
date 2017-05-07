@@ -78,7 +78,7 @@ const keys = require('./keys');
 const { combineReducers } = require('redux');
 const formReducer = require('redux-form').reducer;
 
-const { tabControlReducer, fileManager: { fmReducer }, pageAlerts } = Corein;
+const { tabControlReducer, fileManager: { fmReducer }, pageAlerts } = Corein.components;
 
 const pageReducer = (state = {}, action) => {
     return state;
@@ -103,9 +103,9 @@ const { Provider } = require('react-redux');
 const Table = require('./index/components/table');
 const { Button, Card, CardHeader, CardBlock } = require('reactstrap');
 
-const tableActions = Corein.table.actions;
-const PageAlert = Corein.pageAlerts.default;
-const pageAlertsReducer = Corein.pageAlerts.reducer;
+const tableActions = Corein.components.table.actions;
+const PageAlert = Corein.components.pageAlerts.default;
+const pageAlertsReducer = Corein.components.pageAlerts.reducer;
 
 const reducer = combineReducers({
     index: require('./index/redux/reducer'),
@@ -158,7 +158,7 @@ module.exports = (props) => {
 const $ = require('jquery');
 const { connect } = require('react-redux');
 const { bindActionCreators } = require('redux');
-const Table = Corein.table.default;
+const Table = Corein.components.table.default;
 
 const editUrl = '/project/update';
 const deleteUrl = '/project/delete';
@@ -216,7 +216,7 @@ module.exports = connect(stateToProps, reducerToProps)(ReduxTable);
 const $ = require('jquery');
 const { combineReducers } = require('redux');
 
-const { table } = Corein;
+const { table } = Corein.components;
 
 const initialState = {
 
@@ -483,7 +483,7 @@ module.exports = {
 const $ = require('jquery');
 const { connect } = require('react-redux');
 const { bindActionCreators } = require('redux');
-const { form } = Corein;
+const { form } = Corein.components;
 const { reduxForm, getFormValues } = require('redux-form');
 
 const LayoutModal = require('../../shared/components/layout-modal').default;
@@ -599,7 +599,7 @@ const { combineReducers, createStore, bindActionCreators } = require('redux');
 const {connect, Provider} = require('react-redux');
 const { Button, Card, CardHeader, CardBlock } = require('reactstrap');
 
-const alerts = Corein.pageAlerts;
+const alerts = Corein.components.pageAlerts;
 const PageAlerts = alerts.default;
 
 const Form = require('../project/shared/components/project-form').default;
@@ -669,7 +669,7 @@ const keys = require('./keys');
 const { combineReducers } = require('redux');
 const formReducer = require('redux-form').reducer;
 
-const { tabControlReducer, fileManager: { fmReducer }, pageAlerts } = Corein;
+const { tabControlReducer, fileManager: { fmReducer }, pageAlerts } = Corein.components;
 
 const initialState = {
 

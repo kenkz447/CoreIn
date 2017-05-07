@@ -10,6 +10,7 @@ using CoreIn.App.Attributes;
 using CoreIn.App.ViewModels;
 using CoreIn.Resources;
 using Microsoft.Extensions.Localization;
+using CoreIn.Commons;
 
 namespace CoreIn.Modules.Login.Controllers
 {
@@ -40,6 +41,7 @@ namespace CoreIn.Modules.Login.Controllers
 
                     pageViewModel = new ActionViewModel(
                         title: _moduleLocalizer["Login"], 
+                        module: "Admin",
                         resourceDictionary: viewResources);
 
                     var formViewModel = new FormViewModel(
@@ -79,55 +81,31 @@ namespace CoreIn.Modules.Login.Controllers
         [ValidateAjax]
         public async Task<JsonResult> Index(LoginViewModel model, string returnUrl = null)
         {
-            object result;
-
             var returnUrlResult = returnUrl ?? Url.Action("index", "dashboard");
-
             try
             {
                 var loginResult = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, lockoutOnFailure: false);
 
                 if (loginResult.Succeeded)
-                    result = new { result = "success", returnUrl = returnUrlResult };
+                    return Json(new BaseAjaxResult(JsonResultState.Success, "Login succeeded.", returnUrlResult));
 
                 else if (loginResult.IsLockedOut)
-                    result = new
-                    {
-                        result = "error",
-                        errors = new {
-                            _error = "Login failed.",
-                            email = Strings.AccountLocked
-                        }
-                    };
+                    return Json(new BaseAjaxResult(JsonResultState.Success, "Login failed.", new { email = Strings.AccountLocked }));
 
-                else
+                var user = _userManager.FindByEmailAsync(model.Email).Result;
+
+                var errors = new
                 {
-                    var user = _userManager.FindByEmailAsync(model.Email).Result;
-                    result = new
-                    {
-                        result = "error",
-                        errors = new
-                        {
-                            _error = "Login failed.",
-                            email = user == null ? "Email not found." : null,
-                            password = user != null ? "The password that you've entered is incorrect." : null
-                        }
-                    };
-                }
+                    _error = "Login failed.",
+                    email = user == null ? "Email not found." : null,
+                    password = user != null ? "The password that you've entered is incorrect." : null
+                };
+                return Json(new BaseAjaxResult(JsonResultState.Failed, "Login failed.", errors));
             }
             catch(Exception ex)
             {
-                result = new
-                {
-                    result = "error",
-                    errors = new
-                    {
-                        _error = ex.Message
-                    }
-                };
+                throw;
             }
-
-            return Json(result);
         }
     }
 }

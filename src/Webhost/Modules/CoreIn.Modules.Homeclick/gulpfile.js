@@ -51,7 +51,7 @@ gulp.task('jsx-watch', ['jsx'], function (done) {
 });
 
 gulp.task('jsx', function () {
-    var stream = gulp.src(['develop/scripts/index.jsx'], { read: false })
+    var stream = gulp.src(['develop/scripts/*.jsx'], { read: false })
         .pipe(browserify({
             debug: !production,
             transform: ['reactify'],

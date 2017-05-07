@@ -10,6 +10,7 @@ using CoreIn.Commons;
 using Microsoft.AspNetCore.Authorization;
 using CoreIn.Resources.ConstantKeys;
 using CoreIn.Models;
+using CoreIn.App.ViewModels;
 
 namespace CoreIn.Modules.TaxonomyUI.Controllers
 {
@@ -27,7 +28,8 @@ namespace CoreIn.Modules.TaxonomyUI.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            var viewModel = new ActionViewModel("Taxonomies", module: "Admin");
+            return View(viewModel);
         }
 
         [HttpPost]

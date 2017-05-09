@@ -28,7 +28,11 @@ var libs = [
     'react-ui-tree',
     'list-to-tree',
     'react-table',
-    'rc-slider'
+    'rc-slider',
+    'react-draft-wysiwyg',
+    'draft-js',
+    'draftjs-to-html',
+    'html-to-draftjs'
 ];
 
 var production = (process.env.NODE_ENV === 'production');

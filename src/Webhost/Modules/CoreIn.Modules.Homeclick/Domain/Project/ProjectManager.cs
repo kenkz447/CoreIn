@@ -14,7 +14,8 @@ namespace CoreIn.Modules.Homeclick
     {
         private readonly CoreInDbContext _dbContext;
         private readonly IEntityHelper<Project, ProjectDetail> _projectEntityHelper;
-        private readonly IMediaHelper _mediaHelper; 
+        private readonly IMediaHelper _mediaHelper;
+
         public ProjectManager(CoreInDbContext dbContext, IMediaHelper mediaHelper, IEntityHelper<Project, ProjectDetail> projectEntityHelper)
         {
             _dbContext = dbContext;

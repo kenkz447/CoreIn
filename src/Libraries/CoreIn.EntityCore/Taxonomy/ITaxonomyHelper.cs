@@ -24,6 +24,6 @@ namespace CoreIn.EntityCore
         TaxonomyType GetTaxonomyType(long taxonomyTypeId);
         IEnumerable<TaxonomyType> GetTaxonomyTypesForEntityType(long entityTypeId);
         void UpdateTaxonomiesForEntity<TEntityTaxonomy>(long EntityId, long entityTypeId, Dictionary<long, long[]> taxonomyTypeIdTaxonomyIds) where TEntityTaxonomy : BaseEntityTaxonomy, new();
-
+        IEnumerable<TEntityTaxonomy> GetTaxonomiesForEntity<TEntityTaxonomy>(long entityId, long taxonomyTypeId) where TEntityTaxonomy : BaseEntityTaxonomy, new();
     }
 }

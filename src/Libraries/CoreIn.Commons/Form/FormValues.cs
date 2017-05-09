@@ -16,7 +16,7 @@ namespace CoreIn.Commons.Form
         public Dictionary<string, string> Details { get; set; } = new Dictionary<string, string>();
 
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
-        public Dictionary<long, Dictionary<long, bool>> TaxonomyTypes { get; set; }
+        public Dictionary<long, Dictionary<long, bool>> TaxonomyTypes { get; set; } = new Dictionary<long, Dictionary<long, bool>>();
 
         public string GetMetaValue(string metaKey)
         {

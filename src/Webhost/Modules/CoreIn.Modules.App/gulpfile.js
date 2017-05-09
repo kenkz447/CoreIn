@@ -26,7 +26,11 @@ var libs = [
     'underscore',
     'react-ui-tree',
     'list-to-tree',
-    'react-table'
+    'react-table',
+    'react-draft-wysiwyg',
+    'draft-js',
+    'draftjs-to-html',
+    'html-to-draftjs'
 ];
 
 var updateDestFolders = [

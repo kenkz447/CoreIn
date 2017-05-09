@@ -9,6 +9,7 @@ namespace CoreIn.Modules.Homeclick
         public void Build(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Project>();
+            modelBuilder.Entity<Collection>();
         }
     }
 }

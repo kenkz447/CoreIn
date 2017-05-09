@@ -15,9 +15,9 @@ namespace CoreIn.Commons.Form
         public List<FormField> Details { get; set; } = new List<FormField>();
 
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
-        public IEnumerable<FormTaxonomyType> TaxonomyTypes { get; set; } = new List<FormTaxonomyType>();
+        public IEnumerable<FormTaxonomyType> TaxonomyTypes { get; set; }
 
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
-        public FormValues InitialValues { get; set; }       
+        public FormValues InitialValues { get; set; }
     }
 }

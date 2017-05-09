@@ -144,8 +144,8 @@ class Table extends React.Component {
 
         if (!columns)
             return;
-
-        columns.unshift(this.getCheckColumn());
+        if (!(columns[0].accessor === "id"))
+            columns.unshift(this.getCheckColumn());
 
         return (
             <div>

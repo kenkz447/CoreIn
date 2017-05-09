@@ -247,6 +247,12 @@ namespace CoreIn.EntityCore
             return taxonomies;
         }
 
+        public IEnumerable<TEntityTaxonomy> GetTaxonomiesForEntity<TEntityTaxonomy>(long entityId, long taxonomyTypeId) where TEntityTaxonomy : BaseEntityTaxonomy, new()
+        {
+            var relationHelper = _serviceProvider.GetService<IEntityTaxonomyRelationHelper<TEntityTaxonomy>>();
+            return relationHelper.GetTaxonomiesForEntity(entityId, taxonomyTypeId);
+        }
+
         public int DeleteTaxonomy(long taxonomyId)
         {
             var taxonomy = _taxEntityHelper.Entity(taxonomyId);

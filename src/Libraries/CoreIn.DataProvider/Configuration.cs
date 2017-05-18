@@ -22,8 +22,9 @@ namespace CoreIn.DataProviver
             var serviceProvider = services.BuildServiceProvider();
             var configuration = serviceProvider.GetService<IConfigurationRoot>();
 
-            services.AddDbContext<CoreInDbContext>(options =>
-                options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
+            services.AddDbContext<CoreInDbContext>(options => {
+                options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"));
+            });
 
             services.AddIdentity<User, Role>(options =>
                 {
@@ -37,7 +38,12 @@ namespace CoreIn.DataProviver
             services.AddTransient(typeof(IRepositoryWithTypedId<,>), typeof(RepositoryWithTypedId<,>));
 
             services.AddTransient(typeof(IEntityHelper<,>), typeof(EntityHelper<,>));
+
             services.AddScoped(typeof(IEntityTypeManager), typeof(EntityTypeManager));
+
+            var entityTypeManager = services.BuildServiceProvider().GetService<IEntityTypeManager>();
+            services.AddSingleton(new AppEntityTypes(entityTypeManager));
+
             services.AddScoped(typeof(IMenuHelper), typeof(MenuHelper));
             services.AddScoped(typeof(IEntityTypeManager), typeof(EntityTypeManager));
 

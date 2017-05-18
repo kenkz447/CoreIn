@@ -14,6 +14,7 @@ namespace CoreIn.Models.Infrastructure
         public long? ParentId { get; set; }
         public long? OwnerId { get; set; }
         public long? EntityTypeId { get; set; }
+        public int? Order { get; set; }
         public DateTime? Created { get; set; }
 
         [ForeignKey("EntityTypeId")]

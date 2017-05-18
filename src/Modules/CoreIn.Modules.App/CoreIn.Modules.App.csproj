@@ -1,0 +1,46 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp1.1</TargetFramework>
+    <AssemblyName>CoreIn.Modules.App</AssemblyName>
+    <PackageId>CoreIn.Modules.App</PackageId>
+    <PackageTargetFallback>$(PackageTargetFallback);dotnet5.6;portable-net45+win8</PackageTargetFallback>
+    <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
+    <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
+    <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Develop\Scripts\node_modules\**" />
+    <Content Remove="Develop\Scripts\node_modules\**" />
+    <EmbeddedResource Remove="Develop\Scripts\node_modules\**" />
+    <None Remove="Develop\Scripts\node_modules\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Remove="Develop\Scripts\package.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Libraries\CoreIn.App\CoreIn.App.csproj" />
+    <ProjectReference Include="..\..\Libraries\CoreIn.DataProvider\CoreIn.DataProvider.csproj" />
+    <ProjectReference Include="..\..\Libraries\CoreIn.Media\CoreIn.Media.csproj" />
+    <ProjectReference Include="..\..\Libraries\CoreIn.Models\CoreIn.Models.csproj" />
+    <ProjectReference Include="..\..\Libraries\CoreIn.Modular\CoreIn.Modular.csproj" />
+    <ProjectReference Include="..\..\Libraries\CoreIn.Package\CoreIn.Package.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="1.1.0" />
+  </ItemGroup>
+
+  <Target Name="PrepublishScript" BeforeTargets="PrepareForPublish">
+    <Exec Command="bower install" />
+    <Exec Command="dotnet bundle" />
+  </Target>
+
+</Project>

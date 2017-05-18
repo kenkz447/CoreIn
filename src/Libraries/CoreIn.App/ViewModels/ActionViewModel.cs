@@ -13,7 +13,7 @@ namespace CoreIn.App.ViewModels
         public string Module { get; }
         public string Title { get; }
         public string Description { get; }
-
+        public string ViewLayout { get; }
         public string[] Scripts { get; }
         public string[] Styles { get; }
 
@@ -26,13 +26,21 @@ namespace CoreIn.App.ViewModels
 
         }
 
-        public ActionViewModel(string title, string description = null, string module = null, Dictionary<string, string> resourceDictionary = null, Dictionary<string, object> parameters = null, string[] scripts = null, string [] styles = null)
+        public ActionViewModel(string title, 
+            string description = null, 
+            string module = null, 
+            Dictionary<string, string> resourceDictionary = null, 
+            Dictionary<string, object> parameters = null, 
+            string viewLayout = null,
+            string[] scripts = null, 
+            string [] styles = null)
         {
             this.Module = module;
             this.Title = title;
             this.Description = description;
             this.ResourcesDictionary = resourceDictionary;
             this.FormDictionary = new Dictionary<string, FormViewModel>();
+            this.ViewLayout = viewLayout;
             this.Parameters = parameters;
             this.Scripts = scripts;
             this.Styles = styles;

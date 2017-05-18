@@ -9,7 +9,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Modules", "Modules", "{20959FD4-9375-4F75-839B-029A0DF29DAC}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CoreIn.Modules.App", "src\Webhost\Modules\CoreIn.Modules.App\CoreIn.Modules.App.csproj", "{C80EDBD2-9555-499A-8903-AECBE3CE647C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CoreIn.Modules.App", "src\Modules\CoreIn.Modules.App\CoreIn.Modules.App.csproj", "{C80EDBD2-9555-499A-8903-AECBE3CE647C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Webhost", "src\Webhost\Webhost.csproj", "{E26D0B3E-B67C-4EBE-94C6-93274E582A14}"
 EndProject
@@ -29,23 +29,23 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoreIn.Media", "src\Librari
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoreIn.Resources", "src\Libraries\CoreIn.Resources\CoreIn.Resources.csproj", "{C6C970CF-CFF5-48DA-BFC4-0846A1B25B92}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoreIn.Modules.Register", "src\Webhost\Modules\CoreIn.Modules.Register\CoreIn.Modules.Register.csproj", "{CD385858-B767-4FA3-A08B-96476C95AC06}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoreIn.Modules.Register", "src\Modules\CoreIn.Modules.Register\CoreIn.Modules.Register.csproj", "{CD385858-B767-4FA3-A08B-96476C95AC06}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoreIn.Modules.Login", "src\Webhost\Modules\CoreIn.Modules.Login\CoreIn.Modules.Login.csproj", "{FAB9BABE-3C3C-4DF0-B7FD-C83A80395A21}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoreIn.Modules.Login", "src\Modules\CoreIn.Modules.Login\CoreIn.Modules.Login.csproj", "{FAB9BABE-3C3C-4DF0-B7FD-C83A80395A21}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Accounts", "Accounts", "{D7AEE59B-5776-4D1A-97DB-255C475CE054}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoreIn.Commons", "src\Libraries\CoreIn.Commons\CoreIn.Commons.csproj", "{14296729-94F5-4EDA-8DDC-3F0F475C810C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoreIn.Modules.FileManager", "src\Webhost\Modules\CoreIn.Modules.FileManager\CoreIn.Modules.FileManager.csproj", "{278238BC-7955-46F4-8102-3924F9D8F1A1}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoreIn.Modules.TaxonomyUI", "src\Webhost\Modules\CoreIn.Modules.TaxonomyUI\CoreIn.Modules.TaxonomyUI.csproj", "{29C58BEB-0330-4274-B998-0A4E39731DD0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoreIn.Modules.TaxonomyUI", "src\Modules\CoreIn.Modules.TaxonomyUI\CoreIn.Modules.TaxonomyUI.csproj", "{29C58BEB-0330-4274-B998-0A4E39731DD0}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CoreIn.EntityCore", "src\Libraries\CoreIn.EntityCore\CoreIn.EntityCore.csproj", "{E59686B0-F0B3-47D8-B72E-0061406CA78B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoreIn.Modules.Homeclick", "src\Webhost\Modules\CoreIn.Modules.Homeclick\CoreIn.Modules.Homeclick.csproj", "{0E2049F5-7E83-4F73-ACBC-C56D737C21F0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoreIn.Modules.Homeclick", "src\Modules\CoreIn.Modules.Homeclick\CoreIn.Modules.Homeclick.csproj", "{0E2049F5-7E83-4F73-ACBC-C56D737C21F0}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Homeclick", "Homeclick", "{EF037254-C21F-4EDA-98D1-9BFF2FEE3156}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CoreIn.Modules.FileManager", "src\Modules\CoreIn.Modules.FileManager\CoreIn.Modules.FileManager.csproj", "{8069BD4A-7A89-4DF6-AEDF-638B804984E4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -101,10 +101,6 @@ Global
 		{14296729-94F5-4EDA-8DDC-3F0F475C810C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{14296729-94F5-4EDA-8DDC-3F0F475C810C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{14296729-94F5-4EDA-8DDC-3F0F475C810C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{278238BC-7955-46F4-8102-3924F9D8F1A1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{278238BC-7955-46F4-8102-3924F9D8F1A1}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{278238BC-7955-46F4-8102-3924F9D8F1A1}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{278238BC-7955-46F4-8102-3924F9D8F1A1}.Release|Any CPU.Build.0 = Release|Any CPU
 		{29C58BEB-0330-4274-B998-0A4E39731DD0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{29C58BEB-0330-4274-B998-0A4E39731DD0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{29C58BEB-0330-4274-B998-0A4E39731DD0}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -117,6 +113,10 @@ Global
 		{0E2049F5-7E83-4F73-ACBC-C56D737C21F0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0E2049F5-7E83-4F73-ACBC-C56D737C21F0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0E2049F5-7E83-4F73-ACBC-C56D737C21F0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8069BD4A-7A89-4DF6-AEDF-638B804984E4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8069BD4A-7A89-4DF6-AEDF-638B804984E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8069BD4A-7A89-4DF6-AEDF-638B804984E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8069BD4A-7A89-4DF6-AEDF-638B804984E4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -137,10 +137,10 @@ Global
 		{FAB9BABE-3C3C-4DF0-B7FD-C83A80395A21} = {D7AEE59B-5776-4D1A-97DB-255C475CE054}
 		{D7AEE59B-5776-4D1A-97DB-255C475CE054} = {20959FD4-9375-4F75-839B-029A0DF29DAC}
 		{14296729-94F5-4EDA-8DDC-3F0F475C810C} = {E888586F-0FCC-40A3-B6A1-8DBC2136285C}
-		{278238BC-7955-46F4-8102-3924F9D8F1A1} = {20959FD4-9375-4F75-839B-029A0DF29DAC}
 		{29C58BEB-0330-4274-B998-0A4E39731DD0} = {20959FD4-9375-4F75-839B-029A0DF29DAC}
 		{E59686B0-F0B3-47D8-B72E-0061406CA78B} = {E888586F-0FCC-40A3-B6A1-8DBC2136285C}
 		{0E2049F5-7E83-4F73-ACBC-C56D737C21F0} = {EF037254-C21F-4EDA-98D1-9BFF2FEE3156}
 		{EF037254-C21F-4EDA-98D1-9BFF2FEE3156} = {20959FD4-9375-4F75-839B-029A0DF29DAC}
+		{8069BD4A-7A89-4DF6-AEDF-638B804984E4} = {20959FD4-9375-4F75-839B-029A0DF29DAC}
 	EndGlobalSection
 EndGlobal

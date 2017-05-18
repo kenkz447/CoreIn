@@ -19,17 +19,19 @@ namespace CoreIn.Modular.Infrastructure
                 if (context.Values.ContainsKey("component"))
                 {
                     var component = context.Values[ComponentKey];
-                    moduleViewLocations.Add("/Modules/" + module + "/Views/Shared/Components/" + component + "/default.cshtml");
+                    moduleViewLocations.Add($"/Modules/{module}/Views/Shared/Components/{component}/default.cshtml");
+                    moduleViewLocations.Add($"/Views/Shared/Components/{component}/default.cshtml");
                 }
                 else if (!string.IsNullOrWhiteSpace(module))
                 {
                     moduleViewLocations.AddRange(new string[] {
-                       "/Modules/" + module + "/Views/{1}/{0}.cshtml",
-                       "/Modules/" + module + "/Views/Shared/{0}.cshtml",
+                       $"../Modules/{module}/Views/{1}/{0}.cshtml",
+                       $"../Modules/{ module}/Views/Shared/{0}.cshtml",
                        "/Views/{1}/{0}.cshtml",
                        "/Views/Shared/{0}.cshtml"
                     });
                 }
+
                 viewLocations = moduleViewLocations.Concat(viewLocations);
             }
             return viewLocations;

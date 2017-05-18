@@ -17,13 +17,9 @@
     <div id="app">
         @RenderBody()
     </div>
-    <environment names="Development">
-        <script type="text/javascript" src="~/js/vendor.js"></script>
-        <script type="text/javascript" src="~/js/corein.js"></script>
-    </environment>
-    <environment names="Staging,Production">
-        <script type="text/javascript" src="~/js/vendor.min.js"></script>
-    </environment>
+
+    <script type="text/javascript" src="~/js/vendor.js"></script>
+    <script type="text/javascript" src="~/js/corein.js"></script>
     @Html.RenderJavaScripts()
     @Html.ReactInitJavaScript()
 </body>

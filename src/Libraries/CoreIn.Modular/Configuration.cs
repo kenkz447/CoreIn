@@ -13,19 +13,22 @@ using Microsoft.CodeAnalysis;
 using CoreIn.Modular.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using CoreIn.EntityCore;
+using Microsoft.Extensions.Configuration;
 
 namespace CoreIn.Modular
 {
     public static class Configuration
     {
-        public static IServiceCollection AddModularConfigureServices(this IServiceCollection services, IHostingEnvironment hostingEnvironment)
+        public static IServiceCollection AddModularConfigureServices(this IServiceCollection services)
         {
-            services.AddTransient<IModuleManager,ModuleManager>();
-
             var serviceProvider = services.BuildServiceProvider();
-            var moduleManager = serviceProvider.GetService<IModuleManager>();
 
-            var modules = moduleManager.LoadInstalledModules(hostingEnvironment);
+            var hostingEnvironment = serviceProvider.GetService<IHostingEnvironment>();
+            var configurationRoot = serviceProvider.GetService<IConfigurationRoot>();
+
+            var moduleManager = ModuleManager.CreateInstance(hostingEnvironment, configurationRoot);
+          
+            var modules = moduleManager.LoadModules();
 
             services.Configure<RazorViewEngineOptions>(options =>
             {
@@ -39,21 +42,17 @@ namespace CoreIn.Modular
                 options.ViewLocationExpanders.Add(new ModuleViewLocationExpander());
             });
 
-            Commons.Configuration.ModuleManager = moduleManager;
-
-            services.AddSingleton(new AppEntityTypes(services.BuildServiceProvider().GetService<IEntityTypeManager>()));
-
             return services;
         }
 
         public static IMvcBuilder AddModules(this IMvcBuilder mvcBuilder)
         {
-            var moduleManager = Commons.Configuration.ModuleManager;
+            var moduleManager = ModuleManager.GetInstance();
 
             var services = mvcBuilder.Services;
             var serviceProvider = services.BuildServiceProvider();
 
-            var modules = moduleManager.GetInstalledModules();
+            var modules = moduleManager.Modules;
 
             using (var serviceScope = serviceProvider.GetRequiredService<IServiceScopeFactory>().CreateScope())
             {
@@ -82,14 +81,14 @@ namespace CoreIn.Modular
 
         public static IApplicationBuilder UseModularConfigure(this IApplicationBuilder app)
         {
-            var moduleManager = Commons.Configuration.ModuleManager;
+            var moduleManager = ModuleManager.GetInstance();
 
-            var modules = moduleManager.GetInstalledModules();
+            var modules = moduleManager.Modules;
 
             // Serving static file for modules
             foreach (var module in modules)
             {
-                var wwwrootDir = new DirectoryInfo(Path.Combine(module.Path, "wwwroot"));
+                var wwwrootDir = new DirectoryInfo(Path.Combine(moduleManager.ModuleFolderPath, module.Name, "wwwroot"));
                 if (!wwwrootDir.Exists)
                     continue;
 

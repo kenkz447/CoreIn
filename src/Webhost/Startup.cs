@@ -46,10 +46,14 @@ namespace Webhost
 
             services.AddSingleton(provider => Configuration);
 
+            services.AddModularConfigureServices();
+
             services.AddDataProviderServices();
 
-            services.AddModularConfigureServices(_hostingEnvironment);
+            if (_hostingEnvironment.IsProduction())
+            {
 
+            }
 
             services.SeedDb().Wait();
 
@@ -71,9 +75,10 @@ namespace Webhost
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
 
+            app.UseDeveloperExceptionPage();
+
             if (env.IsDevelopment())
             {
-                app.UseDeveloperExceptionPage();
                 app.UseBrowserLink();
             }
             else

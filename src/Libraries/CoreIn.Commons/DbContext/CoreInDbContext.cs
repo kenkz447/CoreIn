@@ -12,14 +12,13 @@ namespace CoreIn.Commons
     {
         public CoreInDbContext(DbContextOptions<CoreInDbContext> options) : base(options)
         {
-
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            var moduleManager = Configuration.ModuleManager;
+            var moduleManager = ModuleManager.GetInstance();
 
-            var modules = moduleManager.GetInstalledModules();
+            var modules = moduleManager.Modules;
 
             var typeToRegisters = new List<Type>()
             {

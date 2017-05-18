@@ -15,10 +15,9 @@ namespace CoreIn.Modular
             {
                 var supportedCultures = new[] {
                     new CultureInfo("en-US"),
-                    new CultureInfo("fr-FR"),
                     new CultureInfo("vi-VN"),
                 };
-                opts.DefaultRequestCulture = new RequestCulture("fr-FR");
+                opts.DefaultRequestCulture = new RequestCulture("vi-VN");
                 opts.SupportedCultures = supportedCultures;
                 opts.SupportedUICultures = supportedCultures;
             });

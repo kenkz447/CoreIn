@@ -113,6 +113,8 @@ namespace CoreIn.Commons.Migrations
                     b.Property<string>("Name")
                         .IsRequired();
 
+                    b.Property<int?>("Order");
+
                     b.Property<long?>("OwnerId");
 
                     b.Property<long?>("ParentId");
@@ -171,6 +173,8 @@ namespace CoreIn.Commons.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired();
+
+                    b.Property<int?>("Order");
 
                     b.Property<long?>("OwnerId");
 
@@ -249,6 +253,8 @@ namespace CoreIn.Commons.Migrations
                     b.Property<string>("Name")
                         .IsRequired();
 
+                    b.Property<int?>("Order");
+
                     b.Property<long?>("OwnerId");
 
                     b.Property<long?>("ParentId");
@@ -307,6 +313,8 @@ namespace CoreIn.Commons.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired();
+
+                    b.Property<int?>("Order");
 
                     b.Property<long?>("OwnerId");
 
@@ -371,6 +379,8 @@ namespace CoreIn.Commons.Migrations
                     b.Property<string>("Name")
                         .IsRequired();
 
+                    b.Property<int?>("Order");
+
                     b.Property<long?>("OwnerId");
 
                     b.Property<long?>("ParentId");
@@ -420,6 +430,65 @@ namespace CoreIn.Commons.Migrations
                     b.ToTable("CoreIn_TaxonomyTypeDetail");
                 });
 
+            modelBuilder.Entity("CoreIn.Modules.Homeclick.Models.Album", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<DateTime?>("Created");
+
+                    b.Property<long?>("EntityTypeId");
+
+                    b.Property<string>("Name")
+                        .IsRequired();
+
+                    b.Property<int?>("Order");
+
+                    b.Property<long?>("OwnerId");
+
+                    b.Property<long?>("ParentId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EntityTypeId");
+
+                    b.HasIndex("OwnerId");
+
+                    b.ToTable("CoreIn_Album");
+                });
+
+            modelBuilder.Entity("CoreIn.Modules.Homeclick.Models.AlbumDetail", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<long>("EntityId");
+
+                    b.Property<string>("Field");
+
+                    b.Property<string>("Group");
+
+                    b.Property<string>("Language");
+
+                    b.Property<DateTime?>("Modified");
+
+                    b.Property<long?>("ModifiedById");
+
+                    b.Property<string>("Prefix");
+
+                    b.Property<string>("Suffix");
+
+                    b.Property<string>("Value");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EntityId");
+
+                    b.HasIndex("ModifiedById");
+
+                    b.ToTable("CoreIn_AlbumDetail");
+                });
+
             modelBuilder.Entity("CoreIn.Modules.Homeclick.Models.Collection", b =>
                 {
                     b.Property<long>("Id")
@@ -431,6 +500,8 @@ namespace CoreIn.Commons.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired();
+
+                    b.Property<int?>("Order");
 
                     b.Property<long?>("OwnerId");
 
@@ -477,6 +548,160 @@ namespace CoreIn.Commons.Migrations
                     b.ToTable("CoreIn_CollectionDetail");
                 });
 
+            modelBuilder.Entity("CoreIn.Modules.Homeclick.Models.Construction", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<DateTime?>("Created");
+
+                    b.Property<long?>("EntityTypeId");
+
+                    b.Property<string>("Name")
+                        .IsRequired();
+
+                    b.Property<int?>("Order");
+
+                    b.Property<long?>("OwnerId");
+
+                    b.Property<long?>("ParentId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EntityTypeId");
+
+                    b.HasIndex("OwnerId");
+
+                    b.ToTable("CoreIn_Construction");
+                });
+
+            modelBuilder.Entity("CoreIn.Modules.Homeclick.Models.ConstructionDetail", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<long>("EntityId");
+
+                    b.Property<string>("Field");
+
+                    b.Property<string>("Group");
+
+                    b.Property<string>("Language");
+
+                    b.Property<DateTime?>("Modified");
+
+                    b.Property<long?>("ModifiedById");
+
+                    b.Property<string>("Prefix");
+
+                    b.Property<string>("Suffix");
+
+                    b.Property<string>("Value");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EntityId");
+
+                    b.HasIndex("ModifiedById");
+
+                    b.ToTable("CoreIn_ConstructionDetail");
+                });
+
+            modelBuilder.Entity("CoreIn.Modules.Homeclick.Models.ConstructionTaxonomy", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<long>("EntityId");
+
+                    b.Property<long>("TaxonomyId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EntityId");
+
+                    b.HasIndex("TaxonomyId");
+
+                    b.ToTable("CoreIn_ConstructionTaxonomy");
+                });
+
+            modelBuilder.Entity("CoreIn.Modules.Homeclick.Models.DesignTemplate", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<DateTime?>("Created");
+
+                    b.Property<long?>("EntityTypeId");
+
+                    b.Property<string>("Name")
+                        .IsRequired();
+
+                    b.Property<int?>("Order");
+
+                    b.Property<long?>("OwnerId");
+
+                    b.Property<long?>("ParentId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EntityTypeId");
+
+                    b.HasIndex("OwnerId");
+
+                    b.ToTable("CoreIn_DesignTemplate");
+                });
+
+            modelBuilder.Entity("CoreIn.Modules.Homeclick.Models.DesignTemplateDetail", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<long>("EntityId");
+
+                    b.Property<string>("Field");
+
+                    b.Property<string>("Group");
+
+                    b.Property<string>("Language");
+
+                    b.Property<DateTime?>("Modified");
+
+                    b.Property<long?>("ModifiedById");
+
+                    b.Property<string>("Prefix");
+
+                    b.Property<string>("Suffix");
+
+                    b.Property<string>("Value");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EntityId");
+
+                    b.HasIndex("ModifiedById");
+
+                    b.ToTable("CoreIn_DesignTemplateDetail");
+                });
+
+            modelBuilder.Entity("CoreIn.Modules.Homeclick.Models.DesignTemplateTaxonomy", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<long>("EntityId");
+
+                    b.Property<long>("TaxonomyId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EntityId");
+
+                    b.HasIndex("TaxonomyId");
+
+                    b.ToTable("CoreIn_DesignTemplateTaxonomy");
+                });
+
             modelBuilder.Entity("CoreIn.Modules.Homeclick.Models.OptionGroup", b =>
                 {
                     b.Property<long>("Id")
@@ -488,6 +713,8 @@ namespace CoreIn.Commons.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired();
+
+                    b.Property<int?>("Order");
 
                     b.Property<long?>("OwnerId");
 
@@ -534,6 +761,65 @@ namespace CoreIn.Commons.Migrations
                     b.ToTable("CoreIn_OptionGroupDetail");
                 });
 
+            modelBuilder.Entity("CoreIn.Modules.Homeclick.Models.Page", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<DateTime?>("Created");
+
+                    b.Property<long?>("EntityTypeId");
+
+                    b.Property<string>("Name")
+                        .IsRequired();
+
+                    b.Property<int?>("Order");
+
+                    b.Property<long?>("OwnerId");
+
+                    b.Property<long?>("ParentId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EntityTypeId");
+
+                    b.HasIndex("OwnerId");
+
+                    b.ToTable("CoreIn_Page");
+                });
+
+            modelBuilder.Entity("CoreIn.Modules.Homeclick.Models.PageDetail", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<long>("EntityId");
+
+                    b.Property<string>("Field");
+
+                    b.Property<string>("Group");
+
+                    b.Property<string>("Language");
+
+                    b.Property<DateTime?>("Modified");
+
+                    b.Property<long?>("ModifiedById");
+
+                    b.Property<string>("Prefix");
+
+                    b.Property<string>("Suffix");
+
+                    b.Property<string>("Value");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EntityId");
+
+                    b.HasIndex("ModifiedById");
+
+                    b.ToTable("CoreIn_PageDetail");
+                });
+
             modelBuilder.Entity("CoreIn.Modules.Homeclick.Models.Post", b =>
                 {
                     b.Property<long>("Id")
@@ -545,6 +831,8 @@ namespace CoreIn.Commons.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired();
+
+                    b.Property<int?>("Order");
 
                     b.Property<long?>("OwnerId");
 
@@ -620,6 +908,8 @@ namespace CoreIn.Commons.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired();
+
+                    b.Property<int?>("Order");
 
                     b.Property<long?>("OwnerId");
 
@@ -907,6 +1197,29 @@ namespace CoreIn.Commons.Migrations
                         .HasForeignKey("ModifiedById");
                 });
 
+            modelBuilder.Entity("CoreIn.Modules.Homeclick.Models.Album", b =>
+                {
+                    b.HasOne("CoreIn.Models.EntityType", "EntityType")
+                        .WithMany()
+                        .HasForeignKey("EntityTypeId");
+
+                    b.HasOne("CoreIn.Models.Authentication.User", "Owner")
+                        .WithMany()
+                        .HasForeignKey("OwnerId");
+                });
+
+            modelBuilder.Entity("CoreIn.Modules.Homeclick.Models.AlbumDetail", b =>
+                {
+                    b.HasOne("CoreIn.Modules.Homeclick.Models.Album", "Entity")
+                        .WithMany("Details")
+                        .HasForeignKey("EntityId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("CoreIn.Models.Authentication.User", "ModifiedBy")
+                        .WithMany()
+                        .HasForeignKey("ModifiedById");
+                });
+
             modelBuilder.Entity("CoreIn.Modules.Homeclick.Models.Collection", b =>
                 {
                     b.HasOne("CoreIn.Models.EntityType", "EntityType")
@@ -930,6 +1243,78 @@ namespace CoreIn.Commons.Migrations
                         .HasForeignKey("ModifiedById");
                 });
 
+            modelBuilder.Entity("CoreIn.Modules.Homeclick.Models.Construction", b =>
+                {
+                    b.HasOne("CoreIn.Models.EntityType", "EntityType")
+                        .WithMany()
+                        .HasForeignKey("EntityTypeId");
+
+                    b.HasOne("CoreIn.Models.Authentication.User", "Owner")
+                        .WithMany()
+                        .HasForeignKey("OwnerId");
+                });
+
+            modelBuilder.Entity("CoreIn.Modules.Homeclick.Models.ConstructionDetail", b =>
+                {
+                    b.HasOne("CoreIn.Modules.Homeclick.Models.Construction", "Entity")
+                        .WithMany("Details")
+                        .HasForeignKey("EntityId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("CoreIn.Models.Authentication.User", "ModifiedBy")
+                        .WithMany()
+                        .HasForeignKey("ModifiedById");
+                });
+
+            modelBuilder.Entity("CoreIn.Modules.Homeclick.Models.ConstructionTaxonomy", b =>
+                {
+                    b.HasOne("CoreIn.Modules.Homeclick.Models.Construction", "Entity")
+                        .WithMany()
+                        .HasForeignKey("EntityId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("CoreIn.Models.Taxonomy", "Taxonomy")
+                        .WithMany()
+                        .HasForeignKey("TaxonomyId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("CoreIn.Modules.Homeclick.Models.DesignTemplate", b =>
+                {
+                    b.HasOne("CoreIn.Models.EntityType", "EntityType")
+                        .WithMany()
+                        .HasForeignKey("EntityTypeId");
+
+                    b.HasOne("CoreIn.Models.Authentication.User", "Owner")
+                        .WithMany()
+                        .HasForeignKey("OwnerId");
+                });
+
+            modelBuilder.Entity("CoreIn.Modules.Homeclick.Models.DesignTemplateDetail", b =>
+                {
+                    b.HasOne("CoreIn.Modules.Homeclick.Models.DesignTemplate", "Entity")
+                        .WithMany("Details")
+                        .HasForeignKey("EntityId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("CoreIn.Models.Authentication.User", "ModifiedBy")
+                        .WithMany()
+                        .HasForeignKey("ModifiedById");
+                });
+
+            modelBuilder.Entity("CoreIn.Modules.Homeclick.Models.DesignTemplateTaxonomy", b =>
+                {
+                    b.HasOne("CoreIn.Modules.Homeclick.Models.DesignTemplate", "Entity")
+                        .WithMany("Taxonomies")
+                        .HasForeignKey("EntityId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("CoreIn.Models.Taxonomy", "Taxonomy")
+                        .WithMany()
+                        .HasForeignKey("TaxonomyId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
             modelBuilder.Entity("CoreIn.Modules.Homeclick.Models.OptionGroup", b =>
                 {
                     b.HasOne("CoreIn.Models.EntityType", "EntityType")
@@ -944,6 +1329,29 @@ namespace CoreIn.Commons.Migrations
             modelBuilder.Entity("CoreIn.Modules.Homeclick.Models.OptionGroupDetail", b =>
                 {
                     b.HasOne("CoreIn.Modules.Homeclick.Models.OptionGroup", "Entity")
+                        .WithMany("Details")
+                        .HasForeignKey("EntityId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("CoreIn.Models.Authentication.User", "ModifiedBy")
+                        .WithMany()
+                        .HasForeignKey("ModifiedById");
+                });
+
+            modelBuilder.Entity("CoreIn.Modules.Homeclick.Models.Page", b =>
+                {
+                    b.HasOne("CoreIn.Models.EntityType", "EntityType")
+                        .WithMany()
+                        .HasForeignKey("EntityTypeId");
+
+                    b.HasOne("CoreIn.Models.Authentication.User", "Owner")
+                        .WithMany()
+                        .HasForeignKey("OwnerId");
+                });
+
+            modelBuilder.Entity("CoreIn.Modules.Homeclick.Models.PageDetail", b =>
+                {
+                    b.HasOne("CoreIn.Modules.Homeclick.Models.Page", "Entity")
                         .WithMany("Details")
                         .HasForeignKey("EntityId")
                         .OnDelete(DeleteBehavior.Cascade);

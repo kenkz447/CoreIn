@@ -204,13 +204,15 @@ namespace CoreIn.EntityCore
             else
                 taxonomytypes = _taxTypeEntityHelper.Entities().ToList();
 
+            var result = new List<TaxonomyTypeViewModel>();
+
             foreach (var taxonomyType in taxonomytypes)
             {
                 var details = _taxTypeEntityHelper.Details(taxonomyType);
                 var entityType = _entityTypeManager.GetEntityType(taxonomyType.EntityTypeId ?? 0);
                 var entityTypeDetails = _entityTypeManager.GetEntityTypeDetails(entityType);
 
-                var result = new TaxonomyTypeViewModel
+                var viewModel = new TaxonomyTypeViewModel
                 {
                     Id = taxonomyType.Id,
                     Name = taxonomyType.Name,
@@ -220,9 +222,9 @@ namespace CoreIn.EntityCore
                 };
                 if (includeTaxonomies)
                 {
-                    var taxonomies = GetTaxonomies(result.Id, true);
+                    var taxonomies = GetTaxonomies(viewModel.Id, true);
 
-                    result.Taxonomies = taxonomies.Select(o => new TaxonomyViewModel
+                    viewModel.Taxonomies = taxonomies.Select(o => new TaxonomyViewModel
                     {
                         Id = o.Id,
                         Name = o.Name,
@@ -231,8 +233,9 @@ namespace CoreIn.EntityCore
                     });
                 }
 
-                yield return result;
+                result.Add(viewModel);
             }
+            return result;
         }
 
         public IEnumerable<Taxonomy> GetTaxonomies(long TaxonomyTypeId, bool includeDetails = false)

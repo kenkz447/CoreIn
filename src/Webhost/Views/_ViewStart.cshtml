@@ -1,3 +1,11 @@
-﻿@{
-    Layout = "_Layout";
+﻿@model ActionViewModel
+@{
+    if (Model.ViewLayout != null)
+    {
+        Layout = Model.ViewLayout;
+    }
+    else
+    {
+        Layout = "_Layout";
+    }
 }

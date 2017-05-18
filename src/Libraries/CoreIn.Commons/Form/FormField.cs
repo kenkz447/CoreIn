@@ -19,6 +19,9 @@ namespace CoreIn.Commons.Form
         public FieldDisplay Display { get; set; }
 
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+        public Dictionary<string, string> Values;
+
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public List<FormField> ChildFields { get; set; }
 
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]

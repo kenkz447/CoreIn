@@ -67,7 +67,7 @@ gulp.task('vendor', function () {
 
 gulp.task('style', function () {
     var bundles = [
-        'styles/style.scss'
+        'develop/styles/style.scss'
     ];
 
     var stream = gulp.src(bundles);

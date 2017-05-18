@@ -1,24 +1,52 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using System.Collections.Generic;
 using System.IO;
-using System.Runtime.Loader;
-using Newtonsoft.Json.Linq;
 using System.Reflection;
 using Microsoft.Extensions.DependencyModel;
 using System.Linq;
+using Microsoft.Extensions.Configuration;
 
 namespace CoreIn.Commons
 {
-    public class ModuleManager : IModuleManager
+    public class ModuleManager
     {
-        public string ModuleFolderName { get; }
+        #region Singleton
+        private static ModuleManager instance;
 
-        public ModuleManager()
+        public static ModuleManager GetInstance()
+            => instance;
+
+        public static ModuleManager CreateInstance(IHostingEnvironment environment, IConfigurationRoot configurationRoot)
         {
-            ModuleFolderName = "Modules";
+            if (instance != null)
+                return instance;
+
+            instance = new ModuleManager(environment, configurationRoot);
+            return instance;
+        }
+        #endregion          
+
+        private const string _moduleFolderName = "Modules";
+        private readonly IConfigurationRoot _configurationRoot;
+
+        public readonly string ModuleFolderName;
+
+        public readonly string ModuleFolderPath;
+
+
+        public IEnumerable<ModuleInfo> Modules { get; set; }
+
+        protected ModuleManager(IHostingEnvironment environment, IConfigurationRoot configurationRoot)
+        {
+            var rootpath = Directory.GetParent(environment.ContentRootPath).FullName;
+
+            var moduleRootFolder = new DirectoryInfo(Path.Combine(rootpath, _moduleFolderName));
+            ModuleFolderPath = moduleRootFolder.FullName;
+
+            _configurationRoot = configurationRoot;
         }
 
-        private static IEnumerable<Assembly> GetReferencingAssemblies(string assemblyName)
+        private IEnumerable<Assembly> GetReferencingAssemblies(string assemblyName)
         {
             var assemblies = new List<Assembly>();
             var dependencies = DependencyContext.Default.RuntimeLibraries;
@@ -34,59 +62,32 @@ namespace CoreIn.Commons
             return assemblies;
         }
 
-    
-        private Dictionary<string, object> getModuleConfigureFormJsonFile(DirectoryInfo moduleFolder)
+        public IEnumerable<ModuleInfo> LoadModules()
         {
-            var moduleInfoValue = File.ReadAllText(Path.Combine(moduleFolder.FullName, "module.json"));
-            var result = Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, object>>(moduleInfoValue);
-            return result;
-        }
+            var modules_ = _configurationRoot.GetSection("Modules").GetChildren().Select(x => x.Value).ToArray();
 
-        public IEnumerable<ModuleInfo> LoadInstalledModules(IHostingEnvironment environment)
-        {
-            var moduleRootFolder = new DirectoryInfo(Path.Combine(environment.ContentRootPath, ModuleFolderName));
-            var moduleFolders = moduleRootFolder.GetDirectories();
             var modules = new List<ModuleInfo>();
-
-            foreach (var moduleFolder in moduleFolders)
+            foreach (var module in modules_)
             {
-                var binFolder = new DirectoryInfo(Path.Combine(moduleFolder.FullName, "bin"));
-                if (!binFolder.Exists)
-                    continue;
-
-                var moduleConfiglure = getModuleConfigureFormJsonFile(moduleFolder);
-                if (!(bool)moduleConfiglure["active"])
-                    continue;
-
-                foreach (var file in binFolder.GetFileSystemInfos((string)moduleConfiglure["name"], SearchOption.AllDirectories))
+                try
                 {
-                    try
-                    {
-                        //var assembly = AssemblyLoadContext.Default.LoadFromAssemblyPath(file.FullName);
-                        var assembly = GetReferencingAssemblies(Path.GetFileNameWithoutExtension(file.FullName).ToLower()).FirstOrDefault();
-                        modules.Add(
-                            new ModuleInfo {
-                                Name = moduleFolder.Name,
-                                Assembly = assembly,
-                                Path = moduleFolder.FullName,
-                                Scripts = moduleConfiglure.ContainsKey("scripts") ? ((JArray)moduleConfiglure["scripts"]).ToObject<List<string>>() : null,
-                                Styles = moduleConfiglure.ContainsKey("styles") ? ((JArray)moduleConfiglure["styles"]).ToObject<List<string>>() : null,
-                                Jsx = moduleConfiglure.ContainsKey("jsx") ? ((JArray)moduleConfiglure["jsx"]).ToObject<List<string>>() : null
-                            });
-                    }
-                    catch (FileLoadException ex)
-                    {
-                        continue;
-                    }
+                    var assembly = GetReferencingAssemblies(module.ToLower()).FirstOrDefault();
+                    modules.Add(
+                        new ModuleInfo
+                        {
+                            Name = module,
+                            Assembly = assembly,
+                        });
+                }
+                catch (FileLoadException)
+                {
+                    continue;
                 }
             }
-            ModuleStore.AddModules(modules);
-            return modules;
-        }
 
-        public IEnumerable<ModuleInfo> GetInstalledModules()
-        {
-            return ModuleStore.Modules;
+            this.Modules = modules;
+
+            return this.Modules;
         }
     }
 }

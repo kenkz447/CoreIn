@@ -31,5 +31,8 @@ namespace CoreIn.Commons.Form
                 return long.Parse(Meta[metaKey]);
             return null;
         }
+
+        public Dictionary<long, long[]> GetTaxonomuTypeIdTaxonomyId()
+        => TaxonomyTypes?.ToDictionary(o => o.Key, o => o.Value.Keys.ToArray());
     }
 }

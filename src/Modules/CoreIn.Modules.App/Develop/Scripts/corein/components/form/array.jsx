@@ -21,7 +21,11 @@ module.exports = (props) => {
                                 <CardHeader>
                                     Member #{index + 1}
                                     <div className="card-actions">
-                                        <a className="btn-close" onClick={() => fields.remove(index)} href="#"><i className="icon-close"></i></a>
+                                        <a className="btn-close" onClick={
+                                            (e) => {
+                                                fields.remove(index);
+                                                e.preventDefault();
+                                            }} href="#"><i className="icon-close"></i></a>
                                     </div>
                                 </CardHeader>
                                 <CardBlock>

@@ -5,7 +5,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Develop\Scripts\admin\file-manager\index\" />
+    <Compile Remove="Develop\Scripts\admin\file-manager\**" />
+    <Content Remove="Develop\Scripts\admin\file-manager\**" />
+    <EmbeddedResource Remove="Develop\Scripts\admin\file-manager\**" />
+    <None Remove="Develop\Scripts\admin\file-manager\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Folder Include="wwwroot\" />
   </ItemGroup>
   <ItemGroup>

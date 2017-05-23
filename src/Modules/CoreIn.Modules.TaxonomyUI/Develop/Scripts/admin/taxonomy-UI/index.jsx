@@ -2,18 +2,18 @@
 const { Provider } = require('react-redux');
 const formReducer = require('redux-form').reducer;
 
-const { tabControlReducer, fileManager: {fmReducer} } = Corein.components;
+const { tabControl, fileManager: {fmReducer} } = Corein.components;
 
-const tuReducer = require('./index/redux/tu-reducer');
-const EntityTypeList = require('./index/components/tu-taxonomyTypeList');
-const Tabs = require('./index/components/tu-actionTabControl');
-const TaxonomyTree = require('./index/components/tu-taxonomyList');
+const tuReducer = require('./index/redux/reducer');
+const EntityTypeList = require('./index/components/taxonomy-type-list');
+const Tabs = require('./index/components/tab-control');
+const TaxonomyTree = require('./index/components/taxonomy-list');
 
 const reducers = {
     fm: fmReducer,
     form: formReducer,
     tu: tuReducer,
-    tc: tabControlReducer
+    tc: tabControl.reducer
 }
 
 const reducer = combineReducers(reducers);

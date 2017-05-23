@@ -2,31 +2,27 @@
 const { combineReducers, createStore, bindActionCreators } = require('redux');
 const { connect, Provider } = require('react-redux');
 const { Input, Button, Card, CardHeader, CardBlock } = require('reactstrap');
-const Form = require('./shared/components/form').default;
+const SharedForm = require('./shared/components/form').default;
 
 const store = createStore(require('./shared/redux/reducer'));
+const { PageTitle } = require('../components/page');
 
 var PageContent = (props) => {
-    const { title, description, formUrl, formSubmitData, indexUrl} = props;
+    const { parameters, title, description, formUrl, formSubmitData, indexUrl, Form} = props;
 
     return (
         <div>
             <div className="clearfix mb-1">
                 <div className="pull-left">
-                    <h3><a href={indexUrl}>{title}</a></h3>
+                    <PageTitle><a href={indexUrl}>{title}</a></PageTitle>
+                    { description }
                 </div>
             </div>
             <Card>
-                <CardHeader>
-                    <div className="card-text">
-                        {description && ` ${description}`}
-                    </div>
-                </CardHeader>
                 <CardBlock>
-                    <Form formName="create"
-                        formUrl={formUrl}
-                        formSubmitData={formSubmitData}
-                    />
+                    {
+                        Form ? Form : <SharedForm formName="create" formUrlData={parameters} formUrl={formUrl} formSubmitData={formSubmitData} />
+                    }
                 </CardBlock>
             </Card>
         </div>

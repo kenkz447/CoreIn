@@ -7,6 +7,7 @@ const { Button, Card, CardHeader, CardBlock } = require('reactstrap');
 
 const pageAlert = require('../components/page-alerts');
 const PageTable = require('./index/components/table');
+const { PageTitle } = require('../components/page');
 
 const pageReducer = require('./index/redux/reducer');
 
@@ -20,9 +21,9 @@ var PageContent = (props) => {
             <pageAlert.default />
             <div className="clearfix mb-1">
                 <div className="pull-left">
-                    <h3>{ title }</h3>
+                    <PageTitle>{ title }</PageTitle>
                 </div>
-                <div className="pull-left ml-h">
+                <div className="pull-left ml-1">
                     <a className="btn btn-outline-primary" href={createNewUrl}>Create new</a>
                 </div>
             </div>

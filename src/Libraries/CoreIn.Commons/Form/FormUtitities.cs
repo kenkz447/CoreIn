@@ -1,6 +1,6 @@
 ﻿using CoreIn.Commons.Form.Attributes;
-using CoreIn.Models.Authentication;
 using CoreIn.Models.Infrastructure;
+using Microsoft.Extensions.Localization;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -11,20 +11,39 @@ namespace CoreIn.Commons.Form
 {
     public static class FormUtitities
     {
-        public static List<FormField> ViewModelToFormField(Type type)
+        private static FieldDisplay ConvertLocalizer<TLoc>(this FieldDisplay fieldDisplay, IStringLocalizer<TLoc> loc)
+        {
+            var newFieldDisplay = new FieldDisplay();
+            var props = fieldDisplay.GetType().GetProperties();
+            foreach (var prop in props)
+            {
+                var sourceValue = prop.GetValue(fieldDisplay);
+                if (sourceValue is string)
+                {
+                    var convertedValue = loc[sourceValue.ToString()].Value;
+                    prop.SetValue(newFieldDisplay, convertedValue);
+                }
+                else
+                    prop.SetValue(newFieldDisplay, sourceValue);
+            }
+
+            return newFieldDisplay;
+        }
+
+        public static List<FormField> ViewModelTypeToFormField<TLoc>(Type type, IStringLocalizer<TLoc> loc)
         {
             var formFields = new List<FormField>();
 
-            var props = type.GetProperties();
+            var props = type.GetProperties(BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.Instance);
             foreach (var prop in props)
             {
                 var field = new FormField();
 
-                field.Name = prop.Name.ToLower();
+                field.Name = prop.Name.FirstCharacterToLower();
 
                 var displayAttr = prop.GetCustomAttribute<FormFieldDisplayAttribute>();
                 if (displayAttr != null)
-                    field.Display = displayAttr.FieldDisplay;
+                    field.Display = displayAttr.FieldDisplay.ConvertLocalizer(loc);
 
                 var actionAttr = prop.GetCustomAttribute<FormFieldActionAttribute>();
                 if (actionAttr != null)
@@ -44,14 +63,14 @@ namespace CoreIn.Commons.Form
                 {
                     var argumentType = propType.GetGenericArguments()[0];
 
-                    field.ChildFields = ViewModelToFormField(argumentType);
+                    field.ChildFields = ViewModelTypeToFormField(argumentType, loc);
                 }
 
                 var requiredAtrr = prop.GetCustomAttribute<RequiredAttribute>();
                 if (requiredAtrr != null)
                 {
                     field.FieldValidate = new FieldValidate();
-                    field.FieldValidate.Required = requiredAtrr.ErrorMessage;
+                    field.FieldValidate.Required = loc[requiredAtrr.ErrorMessage ?? "This field cann't be empty"].Value;
                 }
 
                 formFields.Add(field);
@@ -59,7 +78,7 @@ namespace CoreIn.Commons.Form
             return formFields;
         }
 
-        private static IEnumerable<TEntityDetail> ListToDetails<TEntityDetail>(IEnumerable<object> list, string group = null, User user = null)
+        private static IEnumerable<TEntityDetail> ListToDetails<TEntityDetail>(IEnumerable<object> list, string group = null, string lang = null)
                         where TEntityDetail : BaseEntityDetail, new()
         {
             var entityDetails = new List<TEntityDetail>();
@@ -84,19 +103,21 @@ namespace CoreIn.Commons.Form
                         propType.GetGenericTypeDefinition() == typeof(List<>))
                         )
                         {
-                            entityDetails.AddRange(ListToDetails<TEntityDetail>(propValue as IEnumerable<object>, prop.Name.ToLower(), user));
+                            entityDetails.AddRange(ListToDetails<TEntityDetail>(propValue as IEnumerable<object>, prop.Name.FirstCharacterToLower(), lang));
                         }
                         else
                         {
                             var entityDetail = new TEntityDetail()
                             {
-                                Field = prop.Name.ToLower(),
+                                Field = prop.Name.FirstCharacterToLower(),
                                 Group = group,
                                 Prefix = i.ToString(),
-                                ModifiedById = user?.Id,
-                                Modified = DateTime.UtcNow,
                                 Value = propValue.ToString()
                             };
+                            var localizationAttribute = prop.CustomAttributes.FirstOrDefault(o => o.AttributeType == typeof(FormFieldLocalizationAttribute));
+                            if (localizationAttribute != null)
+                                entityDetail.Language = lang;
+
                             entityDetails.Add(entityDetail);
                         }
                     }
@@ -107,15 +128,15 @@ namespace CoreIn.Commons.Form
             return entityDetails;
         }
 
-        public static IEnumerable<TEntityDetail> ViewModelToEntityDetails<TEntityDetail, TDetail>(TDetail details, string group = null, User user = null)
+        public static IEnumerable<TEntityDetail> ViewModelToEntityDetails<TEntityDetail, TDetail>(TDetail details, string lang = null)
             where TEntityDetail : BaseEntityDetail, new()
         {
             var entityDetails = new List<TEntityDetail>();
 
-            var props = typeof(TDetail).GetProperties();
+            var props = typeof(TDetail).GetProperties(BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.Instance);
             foreach (var prop in props)
             {
-                var propName = prop.Name.ToLower();
+                var propName = prop.Name.FirstCharacterToLower();
                 var propType = prop.PropertyType;
                 var isGenericType = propType.GetTypeInfo().IsGenericType;
                 var value = prop.GetValue(details);
@@ -129,19 +150,20 @@ namespace CoreIn.Commons.Form
                     {
                         var values = value as IEnumerable<object>;
 
-                        entityDetails.AddRange(ListToDetails<TEntityDetail>(values, propName, user));
+                        entityDetails.AddRange(ListToDetails<TEntityDetail>(values, propName, lang));
                     }
                     else
                     {
-
                         var entityDetail = new TEntityDetail()
                         {
                             Field = propName,
-                            Group = group,
-                            ModifiedById = user?.Id,
-                            Modified = DateTime.UtcNow,
                             Value = value.ToString()
                         };
+
+                        var localizationAttribute = prop.CustomAttributes.FirstOrDefault(o => o.AttributeType == typeof(FormFieldLocalizationAttribute));
+                        if (localizationAttribute != null)
+                            entityDetail.Language = lang;
+
                         entityDetails.Add(entityDetail);
                     }
                 }
@@ -166,7 +188,7 @@ namespace CoreIn.Commons.Form
 
                 foreach (var prop in props)
                 {
-                    var propName = prop.Name.ToLower();
+                    var propName = prop.Name.FirstCharacterToLower();
                     var propType = prop.PropertyType;
                     var isGenericType = propType.GetTypeInfo().IsGenericType;
 
@@ -191,11 +213,11 @@ namespace CoreIn.Commons.Form
         {
             var detail = new TDetail();
 
-            var props = typeof(TDetail).GetProperties();
+            var props = typeof(TDetail).GetProperties(BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.Instance);
 
             foreach (var prop in props)
             {
-                var propName = prop.Name.ToLower();
+                var propName = prop.Name.FirstCharacterToLower();
                 var propType = prop.PropertyType;
                 var isGenericType = propType.GetTypeInfo().IsGenericType;
 

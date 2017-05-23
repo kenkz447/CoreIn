@@ -12,6 +12,7 @@ module.exports = {
         submit: require('./components/form/submit')
     },
     pageAlerts: require('./components/page-alerts'),
+    pageComponents: require('./components/page'),
     tabControl: require('./components/tab-control'),
     appKeys,
     table,

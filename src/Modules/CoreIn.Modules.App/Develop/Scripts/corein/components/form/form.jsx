@@ -72,8 +72,8 @@ class Form extends React.Component {
                         }
                     </div>
                 }
-                <hr />
-                <div className="actions">
+
+                <div className="actions mt-1">
                     <Button className="mr-1" color="primary" type="submit" disabled={submitting}>{display ? display.submitLabel : "Submit"}</Button>
                     {
                         onClose && <Button type="Button" onClick={onClose} disabled={submitting}>{display ? display.dismissForm : "Cancel"}</Button>

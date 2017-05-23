@@ -5,6 +5,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="EntityFieldManager\**" />
+    <EmbeddedResource Remove="EntityFieldManager\**" />
+    <None Remove="EntityFieldManager\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\CoreIn.Commons\CoreIn.Commons.csproj" />
     <ProjectReference Include="..\CoreIn.Models\CoreIn.Models.csproj" />
     <ProjectReference Include="..\CoreIn.Package\CoreIn.Package.csproj" />

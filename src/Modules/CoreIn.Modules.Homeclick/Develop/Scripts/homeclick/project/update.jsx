@@ -1,9 +1,9 @@
 ﻿const $ = require('jquery');
 const { combineReducers, createStore, bindActionCreators } = require('redux');
-const {connect, Provider} = require('react-redux');
-const { Button, Card, CardHeader, CardBlock } = require('reactstrap');
+const { connect, Provider } = require('react-redux');
+const { Row, Col, Input, Button, Card, CardHeader, CardBlock } = require('reactstrap');
 
-const {createNewUrl, update: {formUrl, formSubmitData}} = require('./shared');
+const {index, create, update: {formUrl, formSubmitData}} = require('./shared');
 
 const PageAlerts = Corein.components.pageAlerts.default;
 
@@ -17,17 +17,38 @@ var PageContent = (props) => {
     return (
         <div>
             <PageAlerts />
-            <Card>
-                <CardBlock>
-                    <a className="btn btn-primary" href={createNewUrl}>Create new</a>
-                </CardBlock>
-            </Card>
+            <div className="clearfix mb-1">
+                <div className="pull-left">
+                    <h3><a href={index.url}>{title}</a></h3>
+                </div>
+                <div className="pull-left ml-1">
+                    <a className="btn btn-outline-secondary" href={create.url}>Create new</a>
+                </div>
+            </div>
             <Card>
                 <CardHeader>
-                    <strong>{title}</strong> {description && ` ${description}`}
+                    <Row>
+                        <Col md="8" className="card-text">
+                            <div>
+                                {description && ` ${description}`}
+                            </div>
+                        </Col>
+                        <Col md="4">
+                            <div className="form-language">
+                                <div className="pull-right ml-q">
+                                    <Button className="btn btn-secondary">OK</Button>
+                                </div>
+                                <div className="pull-right" >
+                                    <Input type="select">
+                                        <option value="vi-VN">Tiếng Việt</option>
+                                    </Input>
+                                </div>
+                            </div>
+                        </Col>
+                    </Row>
                 </CardHeader>
                 <CardBlock>
-                    <Form formName="create"
+                    <Form formName="update"
                         formUrl={formUrl}
                         formUrlData={parameters}
                         formSubmitData={formSubmitData}

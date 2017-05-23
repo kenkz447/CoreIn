@@ -113,7 +113,7 @@ namespace CoreIn.EntityCore
             foreach (var menuChild in menu.Children)
             {
                 menuChild.Children = _entityHelper.GetChildrenEntities(menuChild).ToList();
-                menuChild.Details = _entityHelper.Details(menuChild, currentCult).ToList();
+                menuChild.Details = _entityHelper.GetDetails(menuChild, currentCult).ToList();
 
                 yield return new MenuViewModel(menuChild, GetMenuViewModelItems(menuChild));
             }

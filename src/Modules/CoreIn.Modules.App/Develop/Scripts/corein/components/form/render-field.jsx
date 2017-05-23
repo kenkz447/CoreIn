@@ -1,17 +1,10 @@
 ﻿const { Input, InputGroup, InputGroupButton, InputGroupAddon, FormFeedback, FormGroup, FormText, Label, Button, Modal, ModalHeader, ModalBody, ModalFooter} = require('reactstrap');
 
-const FormInput = require('./form-input');
-const ImageField = require('./image');
+const ImageField = require('./fields/image');
 const CheckboxList = require('./fields/checkboxlist');
 const Select = require('./fields/select');
-
-const RenderInput = (props) => {
-    const {input, id, type, placeholder, validationState} = props;
-
-    return (
-        <Input {...input} id={id} state={validationState} type={type} placeholder={placeholder}/>
-    );
-}
+const Editor = require('./fields/editor');
+const FormInput = require('./fields/input');
 
 const RenderInputGroup = (props) => {
     const {input, display: {id, type, title, displayName, placeholder, prompt}, meta: {touched, error, warning}, status} = props;
@@ -30,18 +23,11 @@ const RenderInputGroup = (props) => {
     );
 }
 
-const RenderHidden = (props) => {
-    const {input} = props;
-    return (
-        <input {...input} type="hidden" />
-    );
-}
-
 function renderField(props) {
-    const {display, status } = props;
+    const { display, status } = props;
 
-    if (status && status.toLowerCase() == 'hidden')
-        return RenderHidden(props);
+    if (!display)
+        return null;
 
     var rt = display.renderType.toLowerCase();
     switch (rt) {
@@ -55,6 +41,8 @@ function renderField(props) {
             return <CheckboxList {...props} />;
         case 'select':
             return <Select {...props} />
+        case 'editor':
+            return <Editor {...props} />
         default:
             return <FormInput {...props} />;
     }

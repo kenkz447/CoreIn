@@ -4,7 +4,7 @@ const mvcController = 'optiongroup';
 
 module.exports = {
     index: {
-        url: `/${mvcController}/index`,
+        url: `/${mvcController}`,
         dataUrl: `/${mvcController}/GetTableData`,
         deleteUrl: `/${mvcController}/delete`,
         tableColumns: [{
@@ -25,6 +25,7 @@ module.exports = {
         }
     },
     update: {
+        url: `/${mvcController}/update`,
         formUrl: `/${mvcController}/GetForm`,
         formSubmitData: {
             url: `/${mvcController}/update`,

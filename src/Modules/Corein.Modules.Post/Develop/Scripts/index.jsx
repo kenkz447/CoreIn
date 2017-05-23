@@ -1,0 +1,1 @@
+﻿global.Corein.post = require('./corein/post');

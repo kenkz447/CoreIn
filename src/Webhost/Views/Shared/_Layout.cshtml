@@ -13,11 +13,18 @@
         </aside>
         <main class="main">
             @await Component.InvokeAsync("CoreIn_Modules_App/Breadcrumb")
-            <div class="page-content container-fluid">
+            <div class="page container-fluid">
                 <div class="animated fadeIn aside-menu-fixed">
-                    @RenderBody()               
+                    @RenderBody()
                 </div>
             </div>
+            <footer class="site-footer">
+                <div class="mr-auto">
+                    <p class="text-primary mb-0">
+                        Made By <a href="#">Kenkz447</a>
+                    </p>
+                </div>
+            </footer>
         </main>
     </div>
 

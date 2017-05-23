@@ -1,5 +1,7 @@
 .card {
-  margin-bottom: 1.5 * $spacer-y;
+    margin-bottom: 1.5 * $spacer-y;
+    border: none;
+    box-shadow: 0 2px 4px rgba(0,0,0,.08);
 }
 
 .card-header {

@@ -18,3 +18,17 @@
     border: 0;
   }
 }
+
+.table-row-actions {
+    width:100%;
+    height:100%;
+    .btn-group {
+        display: none;
+    }
+
+    &:hover {
+        .btn-group {
+            display: block;
+        }
+    }
+}

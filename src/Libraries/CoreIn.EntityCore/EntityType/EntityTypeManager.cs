@@ -70,7 +70,7 @@ namespace CoreIn.EntityCore
         }
 
         public IEnumerable<EntityTypeDetail> GetEntityTypeDetails(EntityType entityType)
-            => _entityTypeHelper.Details(entityType);
+            => _entityTypeHelper.GetDetails(entityType);
 
         public EntityType GetEntityType(long id)
             => _entityTypeHelper.Entity(id);

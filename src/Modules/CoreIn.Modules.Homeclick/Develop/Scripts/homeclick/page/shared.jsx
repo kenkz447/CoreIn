@@ -3,8 +3,8 @@
 const mvcController = 'page';
 
 module.exports = {
-    createNewUrl: `/${mvcController}/create`,
     index: {
+        url: `/${mvcController}`,
         dataUrl: `/${mvcController}/GetTableData`,
         deleteUrl: `/${mvcController}/delete`,
         tableColumns: [{
@@ -14,6 +14,7 @@ module.exports = {
         }]
     },
     create: {
+        url: `/${mvcController}/create`,
         formUrl: `/${mvcController}/GetForm`,
         formSubmitData: {
             url: `/${mvcController}/create`,
@@ -24,6 +25,7 @@ module.exports = {
         }
     },
     update: {
+        url: `/${mvcController}/update`,
         formUrl: `/${mvcController}/GetForm`,
         formSubmitData: {
             url: `/${mvcController}/update`,

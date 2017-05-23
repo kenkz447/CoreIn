@@ -334,6 +334,7 @@
     <ProjectReference Include="..\Modules\CoreIn.Modules.FileManager\CoreIn.Modules.FileManager.csproj" />
     <ProjectReference Include="..\Modules\CoreIn.Modules.Homeclick\CoreIn.Modules.Homeclick.csproj" />
     <ProjectReference Include="..\Modules\CoreIn.Modules.Login\CoreIn.Modules.Login.csproj" />
+	<ProjectReference Include="..\Modules\Corein.Modules.Post\Corein.Modules.Post.csproj" />
     <ProjectReference Include="..\Modules\CoreIn.Modules.Register\CoreIn.Modules.Register.csproj" />
     <ProjectReference Include="..\Modules\CoreIn.Modules.TaxonomyUI\CoreIn.Modules.TaxonomyUI.csproj" />
   </ItemGroup>

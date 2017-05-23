@@ -2,7 +2,7 @@
 const { connect } = require('react-redux');
 const { bindActionCreators } = require('redux');
 const ReactTable = require('react-table').default;
-const { Button, Input, Row, Col } = require('reactstrap');
+const { ButtonGroup, Button, Input, Row, Col } = require('reactstrap');
 
 // Keys
 const keys = {
@@ -10,7 +10,8 @@ const keys = {
     loaded: "LOADED",
     loading: "LOADING",
     selectRow: "SELECT_ROW",
-    deleteSelectedRows: "DETETE_SELECTED_ROWS"
+    deleteSelectedRows: "DETETE_SELECTED_ROWS",
+    deleteRows: "DELETE_ROWS"
 };
 
 // Actions
@@ -33,6 +34,11 @@ const actions = {
     }),
     deleteSelectedRows: () => ({
         type: keys.deleteSelectedRows
+    }),
+
+    deleteRows: (indexs) => ({
+        type: keys.deleteRows,
+        indexs
     })
 }
 
@@ -74,6 +80,11 @@ const reducer = (state = initialState, action) => {
             newState.data = newState.data.filter((row, index) => newState.selectedRows.indexOf(index) < 0);
             newState.selectedRows = [];
             break;
+        case keys.deleteRows:
+            const filter = (row, index) => (action.indexs.indexOf(index) < 0);
+            newState.data = newState.data.filter(filter);
+            newState.selectedRows = newState.selectedRows.filter(filter);
+            break;
         default:
             return state;
     }
@@ -90,7 +101,8 @@ function defaultFilterMethod (filter, row, column)
 class Table extends React.Component {
     constructor(props) {
         super();
-        this.getCheckColumn = this.getCheckColumn.bind(this);
+        this.getFirstColumn = this.getFirstColumn.bind(this);
+        this.deleteRows = this.deleteRows.bind(this);
     }
 
     fetchData(state, instance) {
@@ -99,7 +111,7 @@ class Table extends React.Component {
         $.get(dataUrl, onLoaded);
     }
 
-    getCheckColumn() {
+    getFirstColumn() {
         const { selectRow } = this.props;
         return (
             {
@@ -109,19 +121,62 @@ class Table extends React.Component {
                     const { selectedRows } = this.props;
                     const checked = selectedRows.indexOf(row.index) >= 0;
                     return  (
-                        <div>
+                        <div className="checkbox">
                             <input type="checkbox"
                                 onClick={() => {
                                     selectRow(row.index);
                                 }} checked={checked} />
+                            <label />
                         </div>
                     )
                 },
-                width: 22,
+                width: 32,
                 sortable: false,
                 hideFilter: true
             }
         );
+    }
+
+    getActionsColumn() {
+        return {
+            header: "Actions",
+            accessor: 'id',
+            render: row => {
+
+                return (
+                    <div className="table-row-actions">       
+                        <ButtonGroup>
+                            <button className="btn btn-icon"
+                                onClick={() => {
+                                    const { deleteRows, deleteProps: { url, success } } = this.props;
+
+                                    this.deleteRows(url, [row.value], (response) => {
+                                        success(response);
+                                        deleteRows(row.index);
+                                    });
+                                }}>
+                                <i className="fa fa-trash-o" aria-hidden="true"></i>
+                            </button>
+                        </ButtonGroup>
+                    </div>
+                )
+            },
+            width: 120,
+            sortable: false,
+            hideFilter: true
+        }
+    }
+
+    deleteRows(url, rowIds, callback) {
+        var result = window.confirm("delete?");
+        if (result) {
+            $.ajax({
+                url,
+                method: "DELETE",
+                data: { ids: rowIds },
+                success: callback
+            });
+        }
     }
 
     onDelete() {
@@ -131,15 +186,11 @@ class Table extends React.Component {
             return selectedRows.indexOf(index) >= 0;
         }).map((row) => row.id);;
 
-        $.ajax({
-            url,
-            method: "DELETE",
-            data: { ids },
-            success: (response) => {
+        this.deleteRows(url, ids,
+            (response) => {
                 success(response);
                 deleteSelectedRows();
-            }
-        });
+            });
     }
 
     render() {
@@ -147,11 +198,14 @@ class Table extends React.Component {
 
         if (!columns)
             return;
-        if (!(columns[0].accessor === "id"))
-            columns.unshift(this.getCheckColumn());
+
+        if (!(columns[0].accessor === "id")) {
+            columns.unshift(this.getFirstColumn());
+            columns.push(this.getActionsColumn());   
+        }
 
         return (
-            <div class="react-table">
+            <div className="react-table">
                 <div className="mb-1">
                     <div className="clearfix">
                         <Button className="ml-h pull-right" outline disabled={!selectedRows.length} onClick={this.onDelete.bind(this)}>
@@ -164,19 +218,20 @@ class Table extends React.Component {
                         </div>
                     </div>
                 </div>
-
-                <ReactTable
-                    className='-striped -highlight'
-                    manual
-                    defaultPageSize={defaultPageSize}
-                    showFilters={showFilters}
-                    data={data}
-                    pages={pages}
-                    loading={loading}
-                    columns={columns}
-                    onChange={this.fetchData.bind(this)}
-                    defaultFilterMethod={defaultFilterMethod}
-                />
+                <div className="table-wrap">
+                    <ReactTable
+                        className='-striped -highlight'
+                        manual
+                        defaultPageSize={defaultPageSize}
+                        showFilters={showFilters}
+                        data={data}
+                        pages={pages}
+                        loading={loading}
+                        columns={columns}
+                        onChange={this.fetchData.bind(this)}
+                        defaultFilterMethod={defaultFilterMethod}
+                    />
+                </div>
             </div>
         );
     }

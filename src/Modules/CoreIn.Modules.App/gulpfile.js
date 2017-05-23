@@ -46,7 +46,7 @@ gulp.task('default', ['watch'], function () {
 });
 
 gulp.task('watch', function () {
-    return gulp.watch(['develop/scripts/components/index.js', 'develop/scripts/components/*.*'], ['update-corein']);
+    return gulp.watch(['develop/**/*.jsx'], ['jsx']);
 })
 
 gulp.task('jsx', function () {

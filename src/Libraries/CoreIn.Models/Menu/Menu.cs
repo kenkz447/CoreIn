@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using CoreIn.Models.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata.Conventions.Internal;
@@ -17,7 +18,7 @@ namespace CoreIn.Models
         [ForeignKey("ParentId")]
         public virtual Menu Parent { get; set; }
 
-        public virtual  ICollection<MenuDetail> Details { get; set; }
+        public virtual ICollection<MenuDetail> Details { get; set; }
 
         public virtual ICollection<Menu> Children { get; set; }
     }

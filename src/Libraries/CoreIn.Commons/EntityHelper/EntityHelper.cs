@@ -128,7 +128,7 @@ namespace CoreIn.Commons.EntityHelper
             return result;
         }
 
-        public IQueryable<TDetail> Details(TEntity entity, CultureInfo cultureInfo = null)
+        public IQueryable<TDetail> GetDetails(TEntity entity, CultureInfo cultureInfo = null)
         {
             var result = _detailRepository.Query(o => o.EntityId == entity.Id);
             if (cultureInfo != null)
@@ -136,12 +136,20 @@ namespace CoreIn.Commons.EntityHelper
             return result;
         }
 
-        public TDetail Detail(TEntity entity, string field)
-            => Details(entity).FirstOrDefault(o => o.Field == field);
+        public IQueryable<TDetail> GetDetails(TEntity entity, string cultureName)
+        {
+            var result = _detailRepository.Query(o => o.EntityId == entity.Id);
+            result = result.Where(o => o.Language == cultureName || o.Language == null);
+            return result;
+        }
+
+
+        public TDetail GetDetail(TEntity entity, string field)
+            => GetDetails(entity).FirstOrDefault(o => o.Field == field);
 
         public void UpdateDetails(TEntity entity, Dictionary<string, string> detailsDictionary, User byUser)
         {
-            var details = Details(entity);
+            var details = GetDetails(entity);
             foreach (var kv in detailsDictionary)
             {
                 var detailPresent = false;
@@ -165,16 +173,18 @@ namespace CoreIn.Commons.EntityHelper
 
         public void UpdateDetails(TEntity entity, IEnumerable<TDetail> details, User byUser)
         {
-            var currentDetails = Details(entity);
+            var currentEntityDetails = GetDetails(entity).ToList();
             var updatedDetails = new List<TDetail>();
             
             foreach (var detail in details)
             {
                 var detailPresent = false;
 
-                foreach (var currentDetail in currentDetails)
+                foreach (var currentDetail in currentEntityDetails)
                  {
-                    if (currentDetail.Field == detail.Field 
+                    if (currentDetail.Field == detail.Field && currentDetail.Language != detail.Language)
+                        updatedDetails.Add(currentDetail);
+                    else if (currentDetail.Field == detail.Field 
                         && currentDetail.Language == detail.Language
                         && currentDetail.Group == detail.Group
                         && currentDetail.Suffix == detail.Suffix
@@ -191,20 +201,15 @@ namespace CoreIn.Commons.EntityHelper
                         updatedDetails.Add(_detailRepository.Update(currentDetail));
 
                         detailPresent = true;
-                        break;
                     }
                 }
                 if (!detailPresent && detail.Value != null)
-                {
                     CreateDetail(entity, detail, byUser);
-                }
             }
 
-            var deletes = currentDetails.Except(updatedDetails);
+            var deletes = currentEntityDetails.Except(updatedDetails);
             foreach (var item in deletes)
-            {
                 _detailRepository.SetState(item, EntityState.Deleted);
-            }
         }
 
         public TEntity Add(TEntity entity, User user = null)

@@ -1,0 +1,48 @@
+.checkbox {
+    position: relative;
+    padding-left: 22px;
+    display: block;
+    margin-top: .5rem;
+    margin-bottom: .5rem;
+
+    input[type=checkbox] {
+        opacity: 0;
+        z-index: 1;
+        cursor: pointer;
+    }
+
+    input[type=checkbox], label:after, label:before {
+        height: 22px;
+        width: 22px;
+        position: absolute;
+        left: 0;
+        top: 0;
+    }
+
+    label:after, label:before {
+        content: "";
+    }
+
+    label:after {
+        line-height: 22px;
+        color: inherit;
+        font-family: FontAwesome;
+        text-align: center;
+        background-color: transparent;
+        font-style: normal;
+        color: #818a91;
+        font-size: .875rem;
+    }
+
+    label:before {
+        background: #fff;
+        border: 1px solid #eceeef;
+        -webkit-transition: background .15s,border-color .15s;
+        transition: background .15s,border-color .15s;
+        border-radius: .25rem;
+    }
+
+    input[type=checkbox]:checked + label:after {
+        content: "\f00c";
+    }
+}

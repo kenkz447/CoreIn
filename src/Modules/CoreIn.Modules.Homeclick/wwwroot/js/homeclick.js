@@ -6,14 +6,15 @@
     post: require('./homeclick/post'),
     optionGroup: require('./homeclick/option-group'),
     construction: require('./homeclick/construction'),
-    page: require('./homeclick/page')
+    page: require('./homeclick/page'),
+    album: require('./homeclick/album')
 }
 
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./homeclick/collection":2,"./homeclick/construction":12,"./homeclick/option-group":22,"./homeclick/page":27,"./homeclick/post":37,"./homeclick/project":47}],2:[function(require,module,exports){
-const index = require('./collection/index');
-const create = require('./collection/create');
-const update = require('./collection/update');
+},{"./homeclick/album":2,"./homeclick/collection":7,"./homeclick/construction":12,"./homeclick/option-group":17,"./homeclick/page":22,"./homeclick/post":27,"./homeclick/project":32}],2:[function(require,module,exports){
+const index = require('./album/index');
+const create = require('./album/create');
+const update = require('./album/update');
 
 module.exports = {
     index,
@@ -21,835 +22,7 @@ module.exports = {
     update
 }
 
-},{"./collection/create":3,"./collection/index":4,"./collection/update":11}],3:[function(require,module,exports){
-const $ = require('jquery');
-const { combineReducers, createStore, bindActionCreators } = require('redux');
-const {connect, Provider} = require('react-redux');
-const { Button, Card, CardHeader, CardBlock } = require('reactstrap');
-const Form = require('./shared/components/form').default;
-
-const store = createStore(require('./shared/redux/reducer'));
-
-const {create: {formUrl, formSubmitData}} = require('./shared');
-
-var PageContent = (props) => {
-
-    const {title, description} = props;
-
-    return (
-        React.createElement("div", null, 
-            React.createElement(Card, null, 
-                React.createElement(CardHeader, null, 
-                    React.createElement("strong", null, title), " ", description && ` ${description}`
-                ), 
-                React.createElement(CardBlock, null, 
-                    React.createElement(Form, {formName: "create", 
-                        formUrl: formUrl, 
-                        formSubmitData: formSubmitData}
-                    )
-                )
-            )
-        )
-    );
-};
-
-const stateToProps = (state) => {
-    return ({
-    });
-}
-
-const reducerToProps = (reducer) => (
-    bindActionCreators({}, reducer)
-);
-
-PageContent = connect(stateToProps, reducerToProps)(PageContent);
-
-module.exports = (props) => {
-    return (
-        React.createElement(Provider, {store: store}, 
-            React.createElement(PageContent, React.__spread({},  props))
-        )
-    );
-};
-
-},{"./shared":7,"./shared/components/form":8,"./shared/redux/reducer":10,"jquery":"XpFelZ","react-redux":"MzQWgz","reactstrap":"jldOQ7","redux":"czVV+t"}],4:[function(require,module,exports){
-const $ = require('jquery');
-const { combineReducers, createStore, bindActionCreators } = require('redux');
-const {connect} = require('react-redux');
-
-const { Provider } = require('react-redux');
-const Table = require('./index/components/table');
-const { Button, Card, CardHeader, CardBlock } = require('reactstrap');
-
-const tableActions = Corein.components.table.actions;
-const PageAlert = Corein.components.pageAlerts.default;
-const pageAlertsReducer = Corein.components.pageAlerts.reducer;
-
-const { createNewUrl, index: { dataUrl, deleteUrl, tableColumns}} = require('./shared');
-
-const reducer = combineReducers({
-    index: require('./index/redux/reducer'),
-    pageAlerts: pageAlertsReducer
-});
-
-const store = createStore(reducer);
-
-var PageContent = (props) => {
-    const { deleteSelectedRows } = props;
-
-    return (
-        React.createElement("div", null, 
-            React.createElement(PageAlert, null), 
-            React.createElement(Card, null, 
-                React.createElement(CardBlock, null, 
-                    React.createElement("a", {className: "btn btn-primary", href: createNewUrl}, "Create new")
-                )
-            ), 
-            React.createElement(Card, null, 
-                React.createElement(CardBlock, null, 
-                    React.createElement(Table, {dataUrl: dataUrl, deleteUrl: deleteUrl, columns: tableColumns})
-                )
-            )
-        )
-    );
-};
-
-const stateToProps = (state) => {
-    return ({
-
-    });
-}
-
-const reducerToProps = (reducer) => (
-    bindActionCreators({}, reducer)
-);
-
-PageContent = connect(stateToProps, reducerToProps)(PageContent);
-
-module.exports = (props) => {
-    return (
-        React.createElement(Provider, {store: store}, 
-            React.createElement(PageContent, null)
-        )
-    );
-};
-
-},{"./index/components/table":5,"./index/redux/reducer":6,"./shared":7,"jquery":"XpFelZ","react-redux":"MzQWgz","reactstrap":"jldOQ7","redux":"czVV+t"}],5:[function(require,module,exports){
-const $ = require('jquery');
-const { connect } = require('react-redux');
-const { bindActionCreators } = require('redux');
-const Table = Corein.components.table.default;
-
-class ReduxTable extends React.Component {
-    constructor(props) {
-        super(props);
-    }
-
-    render() {
-        const { dataUrl, deleteUrl, columns } = this.props;
-
-        const deleteProps = {
-            url: deleteUrl,
-            success: (response) => {
-                console.log(response);
-            }
-        };
-
-        return (
-            React.createElement(Table, React.__spread({},  this.props, {deleteProps: deleteProps, columns: columns, dataUrl: dataUrl}))
-        );
-    }
-};
-
-const stateToProps = (state) => {
-    return state.index.table
-};
-
-const reducerToProps = (reducer) => (
-    bindActionCreators({}, reducer)
-);
-
-module.exports = connect(stateToProps, reducerToProps)(ReduxTable);
-
-
-},{"jquery":"XpFelZ","react-redux":"MzQWgz","redux":"czVV+t"}],6:[function(require,module,exports){
-const $ = require('jquery');
-const { combineReducers } = require('redux');
-
-const { table } = Corein.components;
-
-const initialState = {
-
-};
-
-const reducer = (state = initialState, action) => {
-    const newState = $.extend(true, {}, state);
-    switch (action.type) {
-        default:
-            return state;
-    }
-    return newState;
-};
-
-module.exports = combineReducers({
-    reducer, table: table.reducer
-});
-
-},{"jquery":"XpFelZ","redux":"czVV+t"}],7:[function(require,module,exports){
-const $ = require('jquery');
-
-const mvcController = 'collection';
-
-module.exports = {
-    createNewUrl: `/${mvcController}/create`,
-    index: {
-        dataUrl: `/${mvcController}/GetTableData`,
-        deleteUrl: `/${mvcController}/delete`,
-        tableColumns: [{
-            header: "Thumbnail",
-            accessor: 'thumbnail',
-            render: row => (React.createElement("div", null, React.createElement("img", {className: "table-thumbnail", src: row.value}))),
-            width: 160,
-            sortable: false,
-            hideFilter: true
-        }, {
-            header: "Title",
-            accessor: 'title',
-            render: row => (React.createElement("div", null, React.createElement("a", {href: `/${mvcController}/update/${row.rowValues.id}`, target: "blank"}, row.value))),
-        }]
-    },
-    create: {
-        formUrl: `/${mvcController}/GetForm`,
-        formSubmitData: {
-            url: `/${mvcController}/create`,
-            method: 'POST',
-            successAction: (respo) => {
-                window.location.href = respo.result;
-            }
-        }
-    },
-    update: {
-        formUrl: `/${mvcController}/GetForm`,
-        formSubmitData: {
-            url: `/${mvcController}/update`,
-            method: 'PUT',
-            successAction: (response, props) => {
-                const { alertPush } = props;
-                alertPush("success", response.message);
-                $("html, body").stop().animate({ scrollTop: 0 }, 500, 'swing');
-            },
-        }
-    }
-}
-
-},{"jquery":"XpFelZ"}],8:[function(require,module,exports){
-const $ = require('jquery');
-const { connect } = require('react-redux');
-const { bindActionCreators } = require('redux');
-const { form } = Corein.components;
-const { reduxForm, getFormValues } = require('redux-form');
-const alerts = Corein.components.pageAlerts;
-
-const keys =  {
-    loadNewForm: "LOAD_NEW_FORM",
-};
-
-const actions = {
-    loadNewForm: (formData) => ({
-        type: keys.loadNewForm,
-        formData
-    })
-};
-
-const initialState = {
-    formData: null
-};
-
-const reducer = (state = initialState, action) => {
-    const newState = $.extend(true, {}, state);
-    switch (action.type) {
-        case keys.loadNewForm:
-            newState.formData = action.formData;
-            break;
-
-        default:
-            return state;
-    }
-    return newState;
-};
-
-class ProjectForm extends React.Component {
-    constructor(props) {
-        super(props);
-        this.getCommands = this.getCommands.bind(this);
-        this.getForm = this.getForm.bind(this);
-    }
-
-    getCommands() {
-        return {
-        };
-    }
-
-    getForm() {
-        const { loadNewForm, formUrl, formUrlData, } = this.props;
-
-        $.get(formUrl, formUrlData, (formResult) => {
-            loadNewForm(formResult);
-        });
-
-        return null;
-    }
-
-    render() {
-        const { commands, formData, formName, formSubmitData, alertPush } = this.props;
-
-        if (!formData)
-            return this.getForm();
-
-        const validate = form.validator({ details: formData.details, meta: formData.meta });
-        const sumbitProps = $.extend({ validate, alertPush }, formSubmitData);
-
-        const reduxFormProps = {
-            form: 'create',
-            formData,
-            commands: this.getCommands(),
-            onSubmit: form.submit(sumbitProps),
-            _initialValues: formData.initialValues,
-        };
-
-        return (
-            React.createElement("div", null, 
-                React.createElement(form.default, React.__spread({},  reduxFormProps))
-            )
-        );
-    }
-};
-
-const stateToProps = (state) => {
-    return state.mainForm;
-};
-
-const reducerToProps = (reducer) => (
-    bindActionCreators({ loadNewForm: actions.loadNewForm, alertPush: alerts.actions.push }, reducer)
-);
-
-module.exports = {
-    default: connect(stateToProps, reducerToProps)(ProjectForm),
-    actions,
-    reducer
-};
-
-},{"jquery":"XpFelZ","react-redux":"MzQWgz","redux":"czVV+t","redux-form":"LVfYvK"}],9:[function(require,module,exports){
-module.exports = {
-};
-
-},{}],10:[function(require,module,exports){
-const $ = require('jquery');
-const keys = require('./keys');
-const { combineReducers } = require('redux');
-const formReducer = require('redux-form').reducer;
-
-const { tabControlReducer, fileManager: { fmReducer }, pageAlerts } = Corein.components;
-
-const pageReducer = (state = {}, action) => {
-    return state;
-}
-
-module.exports = combineReducers({
-    pageAlerts: pageAlerts.reducer,
-    page: pageReducer,
-    mainForm: require('../components/form').reducer,
-    form: formReducer,
-    fm: fmReducer,
-    fmTabControl: tabControlReducer,
-});
-
-},{"../components/form":8,"./keys":9,"jquery":"XpFelZ","redux":"czVV+t","redux-form":"LVfYvK"}],11:[function(require,module,exports){
-const $ = require('jquery');
-const { combineReducers, createStore, bindActionCreators } = require('redux');
-const {connect, Provider} = require('react-redux');
-const { Button, Card, CardHeader, CardBlock } = require('reactstrap');
-
-const {createNewUrl, update: {formUrl, formSubmitData}} = require('./shared');
-
-const PageAlerts = Corein.components.pageAlerts.default;
-
-const Form = require('./shared/components/form').default;
-
-const store = createStore(require('./shared/redux/reducer'));
-
-var PageContent = (props) => {
-    const { parameters, title, description } = props;
-
-    return (
-        React.createElement("div", null, 
-            React.createElement(PageAlerts, null), 
-            React.createElement(Card, null, 
-                React.createElement(CardBlock, null, 
-                    React.createElement("a", {className: "btn btn-primary", href: createNewUrl}, "Create new")
-                )
-            ), 
-            React.createElement(Card, null, 
-                React.createElement(CardHeader, null, 
-                    React.createElement("strong", null, title), " ", description && ` ${description}`
-                ), 
-                React.createElement(CardBlock, null, 
-                    React.createElement(Form, {formName: "create", 
-                        formUrl: formUrl, 
-                        formUrlData: parameters, 
-                        formSubmitData: formSubmitData}
-                    )
-                )
-            )
-        )
-    );
-};
-
-const stateToProps = (state) => {
-    return ({
-    });
-}
-
-const reducerToProps = (reducer) => (
-    bindActionCreators({ }, reducer)
-);
-
-PageContent = connect(stateToProps, reducerToProps)(PageContent);
-
-module.exports = (props) => {
-    return (
-        React.createElement(Provider, {store: store}, 
-            React.createElement(PageContent, React.__spread({},  props))
-        )
-    );
-};
-
-},{"./shared":7,"./shared/components/form":8,"./shared/redux/reducer":10,"jquery":"XpFelZ","react-redux":"MzQWgz","reactstrap":"jldOQ7","redux":"czVV+t"}],12:[function(require,module,exports){
-const index = require('./construction/index');
-const create = require('./construction/create');
-const update = require('./construction/update');
-
-module.exports = {
-    index,
-    create,
-    update
-}
-
-},{"./construction/create":13,"./construction/index":14,"./construction/update":21}],13:[function(require,module,exports){
-const $ = require('jquery');
-const { combineReducers, createStore, bindActionCreators } = require('redux');
-const {connect, Provider} = require('react-redux');
-const { Button, Card, CardHeader, CardBlock } = require('reactstrap');
-const Form = require('./shared/components/form').default;
-
-const store = createStore(require('./shared/redux/reducer'));
-
-const {create: {formUrl, formSubmitData}} = require('./shared');
-
-var PageContent = (props) => {
-
-    const {title, description} = props;
-
-    return (
-        React.createElement("div", null, 
-            React.createElement(Card, null, 
-                React.createElement(CardHeader, null, 
-                    React.createElement("strong", null, title), " ", description && ` ${description}`
-                ), 
-                React.createElement(CardBlock, null, 
-                    React.createElement(Form, {formName: "create", 
-                        formUrl: formUrl, 
-                        formSubmitData: formSubmitData}
-                    )
-                )
-            )
-        )
-    );
-};
-
-const stateToProps = (state) => {
-    return ({
-    });
-}
-
-const reducerToProps = (reducer) => (
-    bindActionCreators({}, reducer)
-);
-
-PageContent = connect(stateToProps, reducerToProps)(PageContent);
-
-module.exports = (props) => {
-    return (
-        React.createElement(Provider, {store: store}, 
-            React.createElement(PageContent, React.__spread({},  props))
-        )
-    );
-};
-
-},{"./shared":17,"./shared/components/form":18,"./shared/redux/reducer":20,"jquery":"XpFelZ","react-redux":"MzQWgz","reactstrap":"jldOQ7","redux":"czVV+t"}],14:[function(require,module,exports){
-const $ = require('jquery');
-const { combineReducers, createStore, bindActionCreators } = require('redux');
-const {connect} = require('react-redux');
-
-const { Provider } = require('react-redux');
-const Table = require('./index/components/table');
-const { Button, Card, CardHeader, CardBlock } = require('reactstrap');
-
-const tableActions = Corein.components.table.actions;
-const PageAlert = Corein.components.pageAlerts.default;
-const pageAlertsReducer = Corein.components.pageAlerts.reducer;
-
-const { createNewUrl, index: { dataUrl, deleteUrl, tableColumns}} = require('./shared');
-
-const reducer = combineReducers({
-    index: require('./index/redux/reducer'),
-    pageAlerts: pageAlertsReducer
-});
-
-const store = createStore(reducer);
-
-var PageContent = (props) => {
-    const { deleteSelectedRows } = props;
-
-    return (
-        React.createElement("div", null, 
-            React.createElement(PageAlert, null), 
-            React.createElement(Card, null, 
-                React.createElement(CardBlock, null, 
-                    React.createElement("a", {className: "btn btn-primary", href: createNewUrl}, "Create new")
-                )
-            ), 
-            React.createElement(Card, null, 
-                React.createElement(CardBlock, null, 
-                    React.createElement(Table, {dataUrl: dataUrl, deleteUrl: deleteUrl, columns: tableColumns})
-                )
-            )
-        )
-    );
-};
-
-const stateToProps = (state) => {
-    return ({
-
-    });
-}
-
-const reducerToProps = (reducer) => (
-    bindActionCreators({}, reducer)
-);
-
-PageContent = connect(stateToProps, reducerToProps)(PageContent);
-
-module.exports = (props) => {
-    return (
-        React.createElement(Provider, {store: store}, 
-            React.createElement(PageContent, null)
-        )
-    );
-};
-
-},{"./index/components/table":15,"./index/redux/reducer":16,"./shared":17,"jquery":"XpFelZ","react-redux":"MzQWgz","reactstrap":"jldOQ7","redux":"czVV+t"}],15:[function(require,module,exports){
-const $ = require('jquery');
-const { connect } = require('react-redux');
-const { bindActionCreators } = require('redux');
-const Table = Corein.components.table.default;
-
-class ReduxTable extends React.Component {
-    constructor(props) {
-        super(props);
-    }
-
-    render() {
-        const { dataUrl, deleteUrl, columns } = this.props;
-
-        const deleteProps = {
-            url: deleteUrl,
-            success: (response) => {
-                console.log(response);
-            }
-        };
-
-        return (
-            React.createElement(Table, React.__spread({},  this.props, {deleteProps: deleteProps, columns: columns, dataUrl: dataUrl}))
-        );
-    }
-};
-
-const stateToProps = (state) => {
-    return state.index.table
-};
-
-const reducerToProps = (reducer) => (
-    bindActionCreators({}, reducer)
-);
-
-module.exports = connect(stateToProps, reducerToProps)(ReduxTable);
-
-
-},{"jquery":"XpFelZ","react-redux":"MzQWgz","redux":"czVV+t"}],16:[function(require,module,exports){
-const $ = require('jquery');
-const { combineReducers } = require('redux');
-
-const { table } = Corein.components;
-
-const initialState = {
-
-};
-
-const reducer = (state = initialState, action) => {
-    const newState = $.extend(true, {}, state);
-    switch (action.type) {
-        default:
-            return state;
-    }
-    return newState;
-};
-
-module.exports = combineReducers({
-    reducer, table: table.reducer
-});
-
-},{"jquery":"XpFelZ","redux":"czVV+t"}],17:[function(require,module,exports){
-const $ = require('jquery');
-
-const mvcController = 'construction';
-
-module.exports = {
-    createNewUrl: `/${mvcController}/create`,
-    index: {
-        dataUrl: `/${mvcController}/GetTableData`,
-        deleteUrl: `/${mvcController}/delete`,
-        tableColumns: [{
-            header: "Thumbnail",
-            accessor: 'thumbnail',
-            render: row => (React.createElement("div", null, React.createElement("img", {className: "table-thumbnail", src: row.value}))),
-            width: 160,
-            sortable: false,
-            hideFilter: true
-        }, {
-            header: "Title",
-            accessor: 'title',
-            render: row => (React.createElement("div", null, React.createElement("a", {href: `/${mvcController}/update/${row.rowValues.id}`, target: "blank"}, row.value))),
-        }]
-    },
-    create: {
-        formUrl: `/${mvcController}/GetForm`,
-        formSubmitData: {
-            url: `/${mvcController}/create`,
-            method: 'POST',
-            successAction: (respo) => {
-                window.location.href = respo.result;
-            }
-        }
-    },
-    update: {
-        formUrl: `/${mvcController}/GetForm`,
-        formSubmitData: {
-            url: `/${mvcController}/update`,
-            method: 'PUT',
-            successAction: (response, props) => {
-                const { alertPush } = props;
-                alertPush("success", response.message);
-                $("html, body").stop().animate({ scrollTop: 0 }, 500, 'swing');
-            },
-        }
-    }
-}
-
-},{"jquery":"XpFelZ"}],18:[function(require,module,exports){
-const $ = require('jquery');
-const { connect } = require('react-redux');
-const { bindActionCreators } = require('redux');
-const { form } = Corein.components;
-const { reduxForm, getFormValues } = require('redux-form');
-const alerts = Corein.components.pageAlerts;
-
-const keys =  {
-    loadNewForm: "LOAD_NEW_FORM",
-};
-
-const actions = {
-    loadNewForm: (formData) => ({
-        type: keys.loadNewForm,
-        formData
-    })
-};
-
-const initialState = {
-    formData: null
-};
-
-const reducer = (state = initialState, action) => {
-    const newState = $.extend(true, {}, state);
-    switch (action.type) {
-        case keys.loadNewForm:
-            newState.formData = action.formData;
-            break;
-
-        default:
-            return state;
-    }
-    return newState;
-};
-
-class ProjectForm extends React.Component {
-    constructor(props) {
-        super(props);
-        this.getCommands = this.getCommands.bind(this);
-        this.getForm = this.getForm.bind(this);
-    }
-
-    getCommands() {
-        return {
-        };
-    }
-
-    getForm() {
-        const { loadNewForm, formUrl, formUrlData, } = this.props;
-
-        $.get(formUrl, formUrlData, (formResult) => {
-            loadNewForm(formResult);
-        });
-
-        return null;
-    }
-
-    render() {
-        const { commands, formData, formName, formSubmitData, alertPush } = this.props;
-
-        if (!formData)
-            return this.getForm();
-
-        const validate = form.validator({ details: formData.details, meta: formData.meta });
-        const sumbitProps = $.extend({ validate, alertPush }, formSubmitData);
-
-        const reduxFormProps = {
-            form: 'create',
-            formData,
-            commands: this.getCommands(),
-            onSubmit: form.submit(sumbitProps),
-            _initialValues: formData.initialValues,
-        };
-
-        return (
-            React.createElement("div", null, 
-                React.createElement(form.default, React.__spread({},  reduxFormProps))
-            )
-        );
-    }
-};
-
-const stateToProps = (state) => {
-    return state.mainForm;
-};
-
-const reducerToProps = (reducer) => (
-    bindActionCreators({ loadNewForm: actions.loadNewForm, alertPush: alerts.actions.push }, reducer)
-);
-
-module.exports = {
-    default: connect(stateToProps, reducerToProps)(ProjectForm),
-    actions,
-    reducer
-};
-
-},{"jquery":"XpFelZ","react-redux":"MzQWgz","redux":"czVV+t","redux-form":"LVfYvK"}],19:[function(require,module,exports){
-module.exports = {
-};
-
-},{}],20:[function(require,module,exports){
-const $ = require('jquery');
-const keys = require('./keys');
-const { combineReducers } = require('redux');
-const formReducer = require('redux-form').reducer;
-
-const { tabControlReducer, fileManager: { fmReducer }, pageAlerts } = Corein.components;
-
-const pageReducer = (state = {}, action) => {
-    return state;
-}
-
-module.exports = combineReducers({
-    pageAlerts: pageAlerts.reducer,
-    page: pageReducer,
-    mainForm: require('../components/form').reducer,
-    form: formReducer,
-    fm: fmReducer,
-    fmTabControl: tabControlReducer,
-});
-
-},{"../components/form":18,"./keys":19,"jquery":"XpFelZ","redux":"czVV+t","redux-form":"LVfYvK"}],21:[function(require,module,exports){
-const $ = require('jquery');
-const { combineReducers, createStore, bindActionCreators } = require('redux');
-const {connect, Provider} = require('react-redux');
-const { Button, Card, CardHeader, CardBlock } = require('reactstrap');
-
-const {createNewUrl, update: {formUrl, formSubmitData}} = require('./shared');
-
-const PageAlerts = Corein.components.pageAlerts.default;
-
-const Form = require('./shared/components/form').default;
-
-const store = createStore(require('./shared/redux/reducer'));
-
-var PageContent = (props) => {
-    const { parameters, title, description } = props;
-
-    return (
-        React.createElement("div", null, 
-            React.createElement(PageAlerts, null), 
-            React.createElement(Card, null, 
-                React.createElement(CardBlock, null, 
-                    React.createElement("a", {className: "btn btn-primary", href: createNewUrl}, "Create new")
-                )
-            ), 
-            React.createElement(Card, null, 
-                React.createElement(CardHeader, null, 
-                    React.createElement("strong", null, title), " ", description && ` ${description}`
-                ), 
-                React.createElement(CardBlock, null, 
-                    React.createElement(Form, {formName: "create", 
-                        formUrl: formUrl, 
-                        formUrlData: parameters, 
-                        formSubmitData: formSubmitData}
-                    )
-                )
-            )
-        )
-    );
-};
-
-const stateToProps = (state) => {
-    return ({
-    });
-}
-
-const reducerToProps = (reducer) => (
-    bindActionCreators({ }, reducer)
-);
-
-PageContent = connect(stateToProps, reducerToProps)(PageContent);
-
-module.exports = (props) => {
-    return (
-        React.createElement(Provider, {store: store}, 
-            React.createElement(PageContent, React.__spread({},  props))
-        )
-    );
-};
-
-},{"./shared":17,"./shared/components/form":18,"./shared/redux/reducer":20,"jquery":"XpFelZ","react-redux":"MzQWgz","reactstrap":"jldOQ7","redux":"czVV+t"}],22:[function(require,module,exports){
-const index = require('./option-group/index');
-const create = require('./option-group/create');
-const update = require('./option-group/update');
-
-module.exports = {
-    index,
-    create,
-    update
-}
-
-},{"./option-group/create":23,"./option-group/index":24,"./option-group/update":26}],23:[function(require,module,exports){
+},{"./album/create":3,"./album/index":4,"./album/update":6}],3:[function(require,module,exports){
 const $ = require('jquery');
 
 const { index, create: {formUrl, formSubmitData}} = require('./shared');
@@ -864,26 +37,28 @@ module.exports = (props) => {
     );
 };
 
-},{"./shared":25,"jquery":"XpFelZ"}],24:[function(require,module,exports){
+},{"./shared":5,"jquery":"XpFelZ"}],4:[function(require,module,exports){
 const Index = Corein.pageTemplates.index;
-const { create, index: { dataUrl, deleteUrl, tableColumns}} = require('./shared');
+const { create, index: { dataUrl, deleteUrl, tableColumns } } = require('./shared');
+
+const Create = require('./create');
 
 module.exports = (props) => {
     const { title } = props;
 
     return (
-        React.createElement(Index, {title: title, createNewUrl: create.url, dataUrl: dataUrl, deleteUrl: deleteUrl, tableColumns: tableColumns})
+        React.createElement(Index, {title: title, createNewUrl: create.url, dataUrl: dataUrl, deleteUrl: deleteUrl, tableColumns: tableColumns})            
     );
 };
 
-},{"./shared":25}],25:[function(require,module,exports){
+},{"./create":3,"./shared":5}],5:[function(require,module,exports){
 const $ = require('jquery');
 
-const mvcController = 'optiongroup';
+const mvcController = 'album';
 
 module.exports = {
     index: {
-        url: `/${mvcController}/index`,
+        url: `/${mvcController}`,
         dataUrl: `/${mvcController}/GetTableData`,
         deleteUrl: `/${mvcController}/delete`,
         tableColumns: [{
@@ -904,6 +79,421 @@ module.exports = {
         }
     },
     update: {
+        url: `/${mvcController}/update`,
+        formUrl: `/${mvcController}/GetForm`,
+        formSubmitData: {
+            url: `/${mvcController}/update`,
+            method: 'PUT',
+            successAction: (response, props) => {
+                const { alertPush } = props;
+                alertPush("success", response.message);
+                $("html, body").stop().animate({ scrollTop: 0 }, 500, 'swing');
+            },
+        }
+    }
+}
+
+},{"jquery":"XpFelZ"}],6:[function(require,module,exports){
+const $ = require('jquery');
+const Page = Corein.pageTemplates.update;
+
+const { create, index, update: {formUrl, formSubmitData}} = require('./shared');
+
+module.exports = (props) => {
+    const pageProps = $.extend(true, {
+        createNewUrl: create.url,
+        indexUrl: index.url,
+        formUrl,
+        formSubmitData
+    }, props);
+
+    return (
+        React.createElement(Page, React.__spread({},  pageProps))
+    );
+};
+
+},{"./shared":5,"jquery":"XpFelZ"}],7:[function(require,module,exports){
+const index = require('./collection/index');
+const create = require('./collection/create');
+const update = require('./collection/update');
+
+module.exports = {
+    index,
+    create,
+    update
+}
+
+},{"./collection/create":8,"./collection/index":9,"./collection/update":11}],8:[function(require,module,exports){
+const $ = require('jquery');
+
+const { index, create: {formUrl, formSubmitData}} = require('./shared');
+
+const Page = Corein.pageTemplates.create;
+
+module.exports = (props) => {
+    const pageProps = $.extend(true, { formUrl, formSubmitData, indexUrl: index.url }, props);
+
+    return (
+        React.createElement(Page, React.__spread({},  pageProps))
+    );
+};
+
+},{"./shared":10,"jquery":"XpFelZ"}],9:[function(require,module,exports){
+const Index = Corein.pageTemplates.index;
+const { create, index: { dataUrl, deleteUrl, tableColumns } } = require('./shared');
+
+module.exports = (props) => {
+    const { title } = props;
+
+    return (
+        React.createElement(Index, {title: title, createNewUrl: create.url, dataUrl: dataUrl, deleteUrl: deleteUrl, tableColumns: tableColumns})            
+    );
+};
+
+},{"./shared":10}],10:[function(require,module,exports){
+const $ = require('jquery');
+
+const mvcController = 'collection';
+
+module.exports = {
+    index: {
+        url: `/${mvcController}`,
+        dataUrl: `/${mvcController}/GetTableData`,
+        deleteUrl: `/${mvcController}/delete`,
+        tableColumns: [{
+            header: "Thumbnail",
+            accessor: 'thumbnail',
+            render: row => (React.createElement("div", null, React.createElement("img", {className: "table-thumbnail", src: row.value}))),
+            width: 160,
+            sortable: false,
+            hideFilter: true
+        }, {
+            header: "Title",
+            accessor: 'title',
+            render: row => (React.createElement("div", null, React.createElement("a", {href: `/${mvcController}/update/${row.rowValues.id}`, target: "blank"}, row.value))),
+        }]
+    },
+    create: {
+        url: `/${mvcController}/create`,
+        formUrl: `/${mvcController}/GetForm`,
+        formSubmitData: {
+            url: `/${mvcController}/create`,
+            method: 'POST',
+            successAction: (respo) => {
+                window.location.href = respo.result;
+            }
+        }
+    },
+    update: {
+        url: `/${mvcController}/update`,
+        formUrl: `/${mvcController}/GetForm`,
+        formSubmitData: {
+            url: `/${mvcController}/update`,
+            method: 'PUT',
+            successAction: (response, props) => {
+                const { alertPush } = props;
+                alertPush("success", response.message);
+                $("html, body").stop().animate({ scrollTop: 0 }, 500, 'swing');
+            },
+        }
+    }
+}
+
+},{"jquery":"XpFelZ"}],11:[function(require,module,exports){
+const $ = require('jquery');
+const Page = Corein.pageTemplates.update;
+
+const { create, index, update: {formUrl, formSubmitData}} = require('./shared');
+
+module.exports = (props) => {
+    const pageProps = $.extend(true, {
+        createNewUrl: create.url,
+        indexUrl: index.url,
+        formUrl,
+        formSubmitData
+    }, props);
+
+    return (
+        React.createElement(Page, React.__spread({},  pageProps))
+    );
+};
+
+},{"./shared":10,"jquery":"XpFelZ"}],12:[function(require,module,exports){
+const index = require('./construction/index');
+const create = require('./construction/create');
+const update = require('./construction/update');
+
+module.exports = {
+    index,
+    create,
+    update
+}
+
+},{"./construction/create":13,"./construction/index":14,"./construction/update":16}],13:[function(require,module,exports){
+const $ = require('jquery');
+
+const { index, create: {formUrl, formSubmitData}} = require('./shared');
+
+const Page = Corein.pageTemplates.create;
+
+module.exports = (props) => {
+    const pageProps = $.extend(true, { formUrl, formSubmitData, indexUrl: index.url }, props);
+
+    return (
+        React.createElement(Page, React.__spread({},  pageProps))
+    );
+};
+
+},{"./shared":15,"jquery":"XpFelZ"}],14:[function(require,module,exports){
+const Index = Corein.pageTemplates.index;
+const { create, index: { dataUrl, deleteUrl, tableColumns } } = require('./shared');
+
+const Create = require('./create');
+
+module.exports = (props) => {
+    const { title } = props;
+
+    return (
+        React.createElement(Index, {title: title, createNewUrl: create.url, dataUrl: dataUrl, deleteUrl: deleteUrl, tableColumns: tableColumns})            
+    );
+};
+
+},{"./create":13,"./shared":15}],15:[function(require,module,exports){
+const $ = require('jquery');
+
+const mvcController = 'construction';
+
+module.exports = {
+    index: {
+        url: `/${mvcController}`,
+        dataUrl: `/${mvcController}/GetTableData`,
+        deleteUrl: `/${mvcController}/delete`,
+        tableColumns: [{
+            header: "Thumbnail",
+            accessor: 'thumbnail',
+            render: row => (React.createElement("div", null, React.createElement("img", {className: "table-thumbnail", src: row.value}))),
+            width: 160,
+            sortable: false,
+            hideFilter: true
+        }, {
+            header: "Title",
+            accessor: 'title',
+            render: row => (React.createElement("div", null, React.createElement("a", {href: `/${mvcController}/update/${row.rowValues.id}`, target: "blank"}, row.value))),
+        }]
+    },
+    create: {
+        url: `/${mvcController}/create`,
+        formUrl: `/${mvcController}/GetForm`,
+        formSubmitData: {
+            url: `/${mvcController}/create`,
+            method: 'POST',
+            successAction: (respo) => {
+                window.location.href = respo.result;
+            }
+        }
+    },
+    update: {
+        url: `/${mvcController}/update`,
+        formUrl: `/${mvcController}/GetForm`,
+        formSubmitData: {
+            url: `/${mvcController}/update`,
+            method: 'PUT',
+            successAction: (response, props) => {
+                const { alertPush } = props;
+                alertPush("success", response.message);
+                $("html, body").stop().animate({ scrollTop: 0 }, 500, 'swing');
+            },
+        }
+    }
+}
+
+},{"jquery":"XpFelZ"}],16:[function(require,module,exports){
+const $ = require('jquery');
+const Page = Corein.pageTemplates.update;
+
+const { create, index, update: {formUrl, formSubmitData}} = require('./shared');
+
+module.exports = (props) => {
+    const pageProps = $.extend(true, {
+        createNewUrl: create.url,
+        indexUrl: index.url,
+        formUrl,
+        formSubmitData
+    }, props);
+
+    return (
+        React.createElement(Page, React.__spread({},  pageProps))
+    );
+};
+
+},{"./shared":15,"jquery":"XpFelZ"}],17:[function(require,module,exports){
+const index = require('./option-group/index');
+const create = require('./option-group/create');
+const update = require('./option-group/update');
+
+module.exports = {
+    index,
+    create,
+    update
+}
+
+},{"./option-group/create":18,"./option-group/index":19,"./option-group/update":21}],18:[function(require,module,exports){
+const $ = require('jquery');
+
+const { index, create: {formUrl, formSubmitData}} = require('./shared');
+
+const Page = Corein.pageTemplates.create;
+
+module.exports = (props) => {
+    const pageProps = $.extend(true, { formUrl, formSubmitData, indexUrl: index.url }, props);
+
+    return (
+        React.createElement(Page, React.__spread({},  pageProps))
+    );
+};
+
+},{"./shared":20,"jquery":"XpFelZ"}],19:[function(require,module,exports){
+const Index = Corein.pageTemplates.index;
+const { create, index: { dataUrl, deleteUrl, tableColumns } } = require('./shared');
+
+module.exports = (props) => {
+    const { title } = props;
+
+    return (
+        React.createElement(Index, {title: title, createNewUrl: create.url, dataUrl: dataUrl, deleteUrl: deleteUrl, tableColumns: tableColumns})            
+    );
+};
+
+},{"./shared":20}],20:[function(require,module,exports){
+const $ = require('jquery');
+
+const mvcController = 'optiongroup';
+
+module.exports = {
+    index: {
+        url: `/${mvcController}`,
+        dataUrl: `/${mvcController}/GetTableData`,
+        deleteUrl: `/${mvcController}/delete`,
+        tableColumns: [{
+            header: "Title",
+            accessor: 'title',
+            render: row => (React.createElement("div", null, React.createElement("a", {href: `/${mvcController}/update/${row.rowValues.id}`, target: "blank"}, row.value))),
+        }]
+    },
+    create: {
+        url: `/${mvcController}/create`,
+        formUrl: `/${mvcController}/GetForm`,
+        formSubmitData: {
+            url: `/${mvcController}/create`,
+            method: 'POST',
+            successAction: (respo) => {
+                window.location.href = respo.result;
+            }
+        }
+    },
+    update: {
+        url: `/${mvcController}/update`,
+        formUrl: `/${mvcController}/GetForm`,
+        formSubmitData: {
+            url: `/${mvcController}/update`,
+            method: 'PUT',
+            successAction: (response, props) => {
+                const { alertPush } = props;
+                alertPush("success", response.message);
+                $("html, body").stop().animate({ scrollTop: 0 }, 500, 'swing');
+            },
+        }
+    }
+}
+
+},{"jquery":"XpFelZ"}],21:[function(require,module,exports){
+const $ = require('jquery');
+const Page = Corein.pageTemplates.update;
+
+const { create, index, update: {formUrl, formSubmitData}} = require('./shared');
+
+module.exports = (props) => {
+    const pageProps = $.extend(true, {
+        createNewUrl: create.url,
+        indexUrl: index.url,
+        formUrl,
+        formSubmitData
+    }, props);
+
+    return (
+        React.createElement(Page, React.__spread({},  pageProps))
+    );
+};
+
+},{"./shared":20,"jquery":"XpFelZ"}],22:[function(require,module,exports){
+const index = require('./page/index');
+const create = require('./page/create');
+const update = require('./page/update');
+
+module.exports = {
+    index,
+    create,
+    update
+}
+
+},{"./page/create":23,"./page/index":24,"./page/update":26}],23:[function(require,module,exports){
+const $ = require('jquery');
+
+const { index, create: {formUrl, formSubmitData}} = require('./shared');
+
+const Page = Corein.pageTemplates.create;
+
+module.exports = (props) => {
+    const pageProps = $.extend(true, { formUrl, formSubmitData, indexUrl: index.url }, props);
+
+    return (
+        React.createElement(Page, React.__spread({},  pageProps))
+    );
+};
+
+},{"./shared":25,"jquery":"XpFelZ"}],24:[function(require,module,exports){
+const Index = Corein.pageTemplates.index;
+const { create, index: { dataUrl, deleteUrl, tableColumns } } = require('./shared');
+
+const Create = require('./create');
+
+module.exports = (props) => {
+    const { title } = props;
+
+    return (
+        React.createElement(Index, {title: title, createNewUrl: create.url, dataUrl: dataUrl, deleteUrl: deleteUrl, tableColumns: tableColumns})            
+    );
+};
+
+},{"./create":23,"./shared":25}],25:[function(require,module,exports){
+const $ = require('jquery');
+
+const mvcController = 'page';
+
+module.exports = {
+    index: {
+        url: `/${mvcController}`,
+        dataUrl: `/${mvcController}/GetTableData`,
+        deleteUrl: `/${mvcController}/delete`,
+        tableColumns: [{
+            header: "Title",
+            accessor: 'title',
+            render: row => (React.createElement("div", null, React.createElement("a", {href: `/${mvcController}/update/${row.rowValues.id}`, target: "blank"}, row.value))),
+        }]
+    },
+    create: {
+        url: `/${mvcController}/create`,
+        formUrl: `/${mvcController}/GetForm`,
+        formSubmitData: {
+            url: `/${mvcController}/create`,
+            method: 'POST',
+            successAction: (respo) => {
+                window.location.href = respo.result;
+            }
+        }
+    },
+    update: {
+        url: `/${mvcController}/update`,
         formUrl: `/${mvcController}/GetForm`,
         formSubmitData: {
             url: `/${mvcController}/update`,
@@ -937,370 +527,6 @@ module.exports = (props) => {
 };
 
 },{"./shared":25,"jquery":"XpFelZ"}],27:[function(require,module,exports){
-const index = require('./page/index');
-const create = require('./page/create');
-const update = require('./page/update');
-
-module.exports = {
-    index,
-    create,
-    update
-}
-
-},{"./page/create":28,"./page/index":29,"./page/update":36}],28:[function(require,module,exports){
-const $ = require('jquery');
-const { combineReducers, createStore, bindActionCreators } = require('redux');
-const {connect, Provider} = require('react-redux');
-const { Button, Card, CardHeader, CardBlock } = require('reactstrap');
-const Form = require('./shared/components/form').default;
-
-const store = createStore(require('./shared/redux/reducer'));
-
-const {create: {formUrl, formSubmitData}} = require('./shared');
-
-var PageContent = (props) => {
-
-    const {title, description} = props;
-
-    return (
-        React.createElement("div", null, 
-            React.createElement(Card, null, 
-                React.createElement(CardHeader, null, 
-                    React.createElement("strong", null, title), " ", description && ` ${description}`
-                ), 
-                React.createElement(CardBlock, null, 
-                    React.createElement(Form, {formName: "create", 
-                        formUrl: formUrl, 
-                        formSubmitData: formSubmitData}
-                    )
-                )
-            )
-        )
-    );
-};
-
-const stateToProps = (state) => {
-    return ({
-    });
-}
-
-const reducerToProps = (reducer) => (
-    bindActionCreators({}, reducer)
-);
-
-PageContent = connect(stateToProps, reducerToProps)(PageContent);
-
-module.exports = (props) => {
-    return (
-        React.createElement(Provider, {store: store}, 
-            React.createElement(PageContent, React.__spread({},  props))
-        )
-    );
-};
-
-},{"./shared":32,"./shared/components/form":33,"./shared/redux/reducer":35,"jquery":"XpFelZ","react-redux":"MzQWgz","reactstrap":"jldOQ7","redux":"czVV+t"}],29:[function(require,module,exports){
-const $ = require('jquery');
-const { combineReducers, createStore, bindActionCreators } = require('redux');
-const {connect} = require('react-redux');
-
-const { Provider } = require('react-redux');
-const Table = require('./index/components/table');
-const { Button, Card, CardHeader, CardBlock } = require('reactstrap');
-
-const tableActions = Corein.components.table.actions;
-const PageAlert = Corein.components.pageAlerts.default;
-const pageAlertsReducer = Corein.components.pageAlerts.reducer;
-
-const { createNewUrl, index: { dataUrl, deleteUrl, tableColumns}} = require('./shared');
-
-const reducer = combineReducers({
-    index: require('./index/redux/reducer'),
-    pageAlerts: pageAlertsReducer
-});
-
-const store = createStore(reducer);
-
-var PageContent = (props) => {
-    const { deleteSelectedRows, title } = props;
-
-    return (
-        React.createElement("div", null, 
-            React.createElement(PageAlert, null), 
-            React.createElement("div", {className: "clearfix mb-h"}, 
-                React.createElement("div", {className: "pull-left"}, 
-                    React.createElement("h2", null,  title )
-                ), 
-                React.createElement("div", {className: "pull-right"}, 
-                    React.createElement("a", {className: "btn btn-primary", href: createNewUrl}, "Create new")
-                )
-            ), 
-            React.createElement(Card, null, 
-                React.createElement(CardBlock, null, 
-                    React.createElement(Table, {dataUrl: dataUrl, deleteUrl: deleteUrl, columns: tableColumns})
-                )
-            )
-        )
-    );
-};
-
-const stateToProps = (state) => {
-    return ({
-
-    });
-}
-
-const reducerToProps = (reducer) => (
-    bindActionCreators({}, reducer)
-);
-
-PageContent = connect(stateToProps, reducerToProps)(PageContent);
-
-module.exports = (props) => {
-    return (
-        React.createElement(Provider, {store: store}, 
-            React.createElement(PageContent, React.__spread({},  props))
-        )
-    );
-};
-
-},{"./index/components/table":30,"./index/redux/reducer":31,"./shared":32,"jquery":"XpFelZ","react-redux":"MzQWgz","reactstrap":"jldOQ7","redux":"czVV+t"}],30:[function(require,module,exports){
-const $ = require('jquery');
-const { connect } = require('react-redux');
-const { bindActionCreators } = require('redux');
-const Table = Corein.components.table.default;
-
-class ReduxTable extends React.Component {
-    constructor(props) {
-        super(props);
-    }
-
-    render() {
-        const { dataUrl, deleteUrl, columns } = this.props;
-
-        const deleteProps = {
-            url: deleteUrl,
-            success: (response) => {
-                console.log(response);
-            }
-        };
-
-        return (
-            React.createElement(Table, React.__spread({},  this.props, {deleteProps: deleteProps, columns: columns, dataUrl: dataUrl}))
-        );
-    }
-};
-
-const stateToProps = (state) => {
-    return state.index.table
-};
-
-const reducerToProps = (reducer) => (
-    bindActionCreators({}, reducer)
-);
-
-module.exports = connect(stateToProps, reducerToProps)(ReduxTable);
-
-
-},{"jquery":"XpFelZ","react-redux":"MzQWgz","redux":"czVV+t"}],31:[function(require,module,exports){
-const $ = require('jquery');
-const { combineReducers } = require('redux');
-
-const { table } = Corein.components;
-
-const initialState = {
-
-};
-
-const reducer = (state = initialState, action) => {
-    const newState = $.extend(true, {}, state);
-    switch (action.type) {
-        default:
-            return state;
-    }
-    return newState;
-};
-
-module.exports = combineReducers({
-    reducer, table: table.reducer
-});
-
-},{"jquery":"XpFelZ","redux":"czVV+t"}],32:[function(require,module,exports){
-const $ = require('jquery');
-
-const mvcController = 'page';
-
-module.exports = {
-    createNewUrl: `/${mvcController}/create`,
-    index: {
-        dataUrl: `/${mvcController}/GetTableData`,
-        deleteUrl: `/${mvcController}/delete`,
-        tableColumns: [{
-            header: "Title",
-            accessor: 'title',
-            render: row => (React.createElement("div", null, React.createElement("a", {href: `/${mvcController}/update/${row.rowValues.id}`, target: "blank"}, row.value))),
-        }]
-    },
-    create: {
-        formUrl: `/${mvcController}/GetForm`,
-        formSubmitData: {
-            url: `/${mvcController}/create`,
-            method: 'POST',
-            successAction: (respo) => {
-                window.location.href = respo.result;
-            }
-        }
-    },
-    update: {
-        formUrl: `/${mvcController}/GetForm`,
-        formSubmitData: {
-            url: `/${mvcController}/update`,
-            method: 'PUT',
-            successAction: (response, props) => {
-                const { alertPush } = props;
-                alertPush("success", response.message);
-                $("html, body").stop().animate({ scrollTop: 0 }, 500, 'swing');
-            },
-        }
-    }
-}
-
-},{"jquery":"XpFelZ"}],33:[function(require,module,exports){
-const $ = require('jquery');
-const { connect } = require('react-redux');
-const { bindActionCreators } = require('redux');
-const { form } = Corein.components;
-const { reduxForm, getFormValues } = require('redux-form');
-const alerts = Corein.components.pageAlerts;
-
-const keys =  {
-    loadNewForm: "LOAD_NEW_FORM",
-};
-
-const actions = {
-    loadNewForm: (formData) => ({
-        type: keys.loadNewForm,
-        formData
-    })
-};
-
-const initialState = {
-    formData: null
-};
-
-const reducer = (state = initialState, action) => {
-    const newState = $.extend(true, {}, state);
-    switch (action.type) {
-        case keys.loadNewForm:
-            newState.formData = action.formData;
-            break;
-
-        default:
-            return state;
-    }
-    return newState;
-};
-
-class ProjectForm extends React.Component {
-    constructor(props) {
-        super(props);
-        this.getCommands = this.getCommands.bind(this);
-        this.getForm = this.getForm.bind(this);
-    }
-
-    getCommands() {
-        return {
-        };
-    }
-
-    getForm() {
-        const { loadNewForm, formUrl, formUrlData, } = this.props;
-
-        $.get(formUrl, formUrlData, (formResult) => {
-            loadNewForm(formResult);
-        });
-
-        return null;
-    }
-
-    render() {
-        const { commands, formData, formName, formSubmitData, alertPush } = this.props;
-
-        if (!formData)
-            return this.getForm();
-
-        const validate = form.validator({ details: formData.details, meta: formData.meta });
-        const sumbitProps = $.extend({ validate, alertPush }, formSubmitData);
-
-        const reduxFormProps = {
-            form: 'create',
-            formData,
-            commands: this.getCommands(),
-            onSubmit: form.submit(sumbitProps),
-            _initialValues: formData.initialValues,
-        };
-
-        return (
-            React.createElement("div", null, 
-                React.createElement(form.default, React.__spread({},  reduxFormProps))
-            )
-        );
-    }
-};
-
-const stateToProps = (state) => {
-    return state.mainForm;
-};
-
-const reducerToProps = (reducer) => (
-    bindActionCreators({ loadNewForm: actions.loadNewForm, alertPush: alerts.actions.push }, reducer)
-);
-
-module.exports = {
-    default: connect(stateToProps, reducerToProps)(ProjectForm),
-    actions,
-    reducer
-};
-
-},{"jquery":"XpFelZ","react-redux":"MzQWgz","redux":"czVV+t","redux-form":"LVfYvK"}],34:[function(require,module,exports){
-module.exports = {
-};
-
-},{}],35:[function(require,module,exports){
-const $ = require('jquery');
-const keys = require('./keys');
-const { combineReducers } = require('redux');
-const formReducer = require('redux-form').reducer;
-
-const { tabControlReducer, fileManager: { fmReducer }, pageAlerts } = Corein.components;
-
-const pageReducer = (state = {}, action) => {
-    return state;
-}
-
-module.exports = combineReducers({
-    pageAlerts: pageAlerts.reducer,
-    page: pageReducer,
-    mainForm: require('../components/form').reducer,
-    form: formReducer,
-    fm: fmReducer,
-    fmTabControl: tabControlReducer,
-});
-
-},{"../components/form":33,"./keys":34,"jquery":"XpFelZ","redux":"czVV+t","redux-form":"LVfYvK"}],36:[function(require,module,exports){
-const $ = require('jquery');
-const Page = Corein.pageTemplates.update;
-
-const { createNewUrl, update: { formUrl, formSubmitData } } = require('./shared');
-
-module.exports = (props) => {
-    const pageProps = $.extend(true, { createNewUrl, formUrl, formSubmitData }, props);
-
-    return (
-        React.createElement(Page, React.__spread({},  pageProps))
-    );
-};
-
-},{"./shared":32,"jquery":"XpFelZ"}],37:[function(require,module,exports){
 const index = require('./post/index');
 const create = require('./post/create');
 const update = require('./post/update');
@@ -1311,188 +537,43 @@ module.exports = {
     update
 }
 
-},{"./post/create":38,"./post/index":39,"./post/update":46}],38:[function(require,module,exports){
+},{"./post/create":28,"./post/index":29,"./post/update":31}],28:[function(require,module,exports){
 const $ = require('jquery');
-const { combineReducers, createStore, bindActionCreators } = require('redux');
-const {connect, Provider} = require('react-redux');
-const { Button, Card, CardHeader, CardBlock } = require('reactstrap');
-const Form = require('./shared/components/form').default;
 
-const store = createStore(require('./shared/redux/reducer'));
+const { index, create: {formUrl, formSubmitData}} = require('./shared');
 
-const {create: {formUrl, formSubmitData}} = require('./shared');
-
-var PageContent = (props) => {
-
-    const {title, description} = props;
-
-    return (
-        React.createElement("div", null, 
-            React.createElement(Card, null, 
-                React.createElement(CardHeader, null, 
-                    React.createElement("strong", null, title), " ", description && ` ${description}`
-                ), 
-                React.createElement(CardBlock, null, 
-                    React.createElement(Form, {formName: "create", 
-                        formUrl: formUrl, 
-                        formSubmitData: formSubmitData}
-                    )
-                )
-            )
-        )
-    );
-};
-
-const stateToProps = (state) => {
-    return ({
-    });
-}
-
-const reducerToProps = (reducer) => (
-    bindActionCreators({}, reducer)
-);
-
-PageContent = connect(stateToProps, reducerToProps)(PageContent);
+const Page = Corein.pageTemplates.create;
 
 module.exports = (props) => {
+    const pageProps = $.extend(true, { formUrl, formSubmitData, indexUrl: index.url }, props);
+
     return (
-        React.createElement(Provider, {store: store}, 
-            React.createElement(PageContent, React.__spread({},  props))
-        )
+        React.createElement(Page, React.__spread({},  pageProps))
     );
 };
 
-},{"./shared":42,"./shared/components/form":43,"./shared/redux/reducer":45,"jquery":"XpFelZ","react-redux":"MzQWgz","reactstrap":"jldOQ7","redux":"czVV+t"}],39:[function(require,module,exports){
-const $ = require('jquery');
-const { combineReducers, createStore, bindActionCreators } = require('redux');
-const {connect} = require('react-redux');
+},{"./shared":30,"jquery":"XpFelZ"}],29:[function(require,module,exports){
+const Index = Corein.pageTemplates.index;
+const { create, index: { dataUrl, deleteUrl, tableColumns } } = require('./shared');
 
-const { Provider } = require('react-redux');
-const Table = require('./index/components/table');
-const { Button, Card, CardHeader, CardBlock } = require('reactstrap');
-
-const tableActions = Corein.components.table.actions;
-const PageAlert = Corein.components.pageAlerts.default;
-const pageAlertsReducer = Corein.components.pageAlerts.reducer;
-
-const { createNewUrl, index: { dataUrl, deleteUrl, tableColumns}} = require('./shared');
-
-const reducer = combineReducers({
-    index: require('./index/redux/reducer'),
-    pageAlerts: pageAlertsReducer
-});
-
-const store = createStore(reducer);
-
-var PageContent = (props) => {
-    const { deleteSelectedRows } = props;
-
-    return (
-        React.createElement("div", null, 
-            React.createElement(PageAlert, null), 
-            React.createElement(Card, null, 
-                React.createElement(CardBlock, null, 
-                    React.createElement("a", {className: "btn btn-primary", href: createNewUrl}, "Create new")
-                )
-            ), 
-            React.createElement(Card, null, 
-                React.createElement(CardBlock, null, 
-                    React.createElement(Table, {dataUrl: dataUrl, deleteUrl: deleteUrl, columns: tableColumns})
-                )
-            )
-        )
-    );
-};
-
-const stateToProps = (state) => {
-    return ({
-
-    });
-}
-
-const reducerToProps = (reducer) => (
-    bindActionCreators({}, reducer)
-);
-
-PageContent = connect(stateToProps, reducerToProps)(PageContent);
+const Create = require('./create');
 
 module.exports = (props) => {
+    const { title } = props;
+
     return (
-        React.createElement(Provider, {store: store}, 
-            React.createElement(PageContent, null)
-        )
+        React.createElement(Index, {title: title, createNewUrl: create.url, dataUrl: dataUrl, deleteUrl: deleteUrl, tableColumns: tableColumns})            
     );
 };
 
-},{"./index/components/table":40,"./index/redux/reducer":41,"./shared":42,"jquery":"XpFelZ","react-redux":"MzQWgz","reactstrap":"jldOQ7","redux":"czVV+t"}],40:[function(require,module,exports){
-const $ = require('jquery');
-const { connect } = require('react-redux');
-const { bindActionCreators } = require('redux');
-const Table = Corein.components.table.default;
-
-class ReduxTable extends React.Component {
-    constructor(props) {
-        super(props);
-    }
-
-    render() {
-        const { dataUrl, deleteUrl, columns } = this.props;
-
-        const deleteProps = {
-            url: deleteUrl,
-            success: (response) => {
-                console.log(response);
-            }
-        };
-
-        return (
-            React.createElement(Table, React.__spread({},  this.props, {deleteProps: deleteProps, columns: columns, dataUrl: dataUrl}))
-        );
-    }
-};
-
-const stateToProps = (state) => {
-    return state.index.table
-};
-
-const reducerToProps = (reducer) => (
-    bindActionCreators({}, reducer)
-);
-
-module.exports = connect(stateToProps, reducerToProps)(ReduxTable);
-
-
-},{"jquery":"XpFelZ","react-redux":"MzQWgz","redux":"czVV+t"}],41:[function(require,module,exports){
-const $ = require('jquery');
-const { combineReducers } = require('redux');
-
-const { table } = Corein.components;
-
-const initialState = {
-
-};
-
-const reducer = (state = initialState, action) => {
-    const newState = $.extend(true, {}, state);
-    switch (action.type) {
-        default:
-            return state;
-    }
-    return newState;
-};
-
-module.exports = combineReducers({
-    reducer, table: table.reducer
-});
-
-},{"jquery":"XpFelZ","redux":"czVV+t"}],42:[function(require,module,exports){
+},{"./create":28,"./shared":30}],30:[function(require,module,exports){
 const $ = require('jquery');
 
 const mvcController = 'post';
 
 module.exports = {
-    createNewUrl: `/${mvcController}/create`,
     index: {
+        url: `/${mvcController}`,
         dataUrl: `/${mvcController}/GetTableData`,
         deleteUrl: `/${mvcController}/delete`,
         tableColumns: [{
@@ -1509,6 +590,7 @@ module.exports = {
         }]
     },
     create: {
+        url: `/${mvcController}/create`,
         formUrl: `/${mvcController}/GetForm`,
         formSubmitData: {
             url: `/${mvcController}/create`,
@@ -1519,6 +601,7 @@ module.exports = {
         }
     },
     update: {
+        url: `/${mvcController}/update`,
         formUrl: `/${mvcController}/GetForm`,
         formSubmitData: {
             url: `/${mvcController}/update`,
@@ -1532,189 +615,26 @@ module.exports = {
     }
 }
 
-},{"jquery":"XpFelZ"}],43:[function(require,module,exports){
+},{"jquery":"XpFelZ"}],31:[function(require,module,exports){
 const $ = require('jquery');
-const { connect } = require('react-redux');
-const { bindActionCreators } = require('redux');
-const { form } = Corein.components;
-const { reduxForm, getFormValues } = require('redux-form');
-const alerts = Corein.components.pageAlerts;
+const Page = Corein.pageTemplates.update;
 
-const keys =  {
-    loadNewForm: "LOAD_NEW_FORM",
-};
-
-const actions = {
-    loadNewForm: (formData) => ({
-        type: keys.loadNewForm,
-        formData
-    })
-};
-
-const initialState = {
-    formData: null
-};
-
-const reducer = (state = initialState, action) => {
-    const newState = $.extend(true, {}, state);
-    switch (action.type) {
-        case keys.loadNewForm:
-            newState.formData = action.formData;
-            break;
-
-        default:
-            return state;
-    }
-    return newState;
-};
-
-class ProjectForm extends React.Component {
-    constructor(props) {
-        super(props);
-        this.getCommands = this.getCommands.bind(this);
-        this.getForm = this.getForm.bind(this);
-    }
-
-    getCommands() {
-        return {
-        };
-    }
-
-    getForm() {
-        const { loadNewForm, formUrl, formUrlData, } = this.props;
-
-        $.get(formUrl, formUrlData, (formResult) => {
-            loadNewForm(formResult);
-        });
-
-        return null;
-    }
-
-    render() {
-        const { commands, formData, formName, formSubmitData, alertPush } = this.props;
-
-        if (!formData)
-            return this.getForm();
-
-        const validate = form.validator({ details: formData.details, meta: formData.meta });
-        const sumbitProps = $.extend({ validate, alertPush }, formSubmitData);
-
-        const reduxFormProps = {
-            form: 'create',
-            formData,
-            commands: this.getCommands(),
-            onSubmit: form.submit(sumbitProps),
-            _initialValues: formData.initialValues,
-        };
-
-        return (
-            React.createElement("div", null, 
-                React.createElement(form.default, React.__spread({},  reduxFormProps))
-            )
-        );
-    }
-};
-
-const stateToProps = (state) => {
-    return state.mainForm;
-};
-
-const reducerToProps = (reducer) => (
-    bindActionCreators({ loadNewForm: actions.loadNewForm, alertPush: alerts.actions.push }, reducer)
-);
-
-module.exports = {
-    default: connect(stateToProps, reducerToProps)(ProjectForm),
-    actions,
-    reducer
-};
-
-},{"jquery":"XpFelZ","react-redux":"MzQWgz","redux":"czVV+t","redux-form":"LVfYvK"}],44:[function(require,module,exports){
-module.exports = {
-};
-
-},{}],45:[function(require,module,exports){
-const $ = require('jquery');
-const keys = require('./keys');
-const { combineReducers } = require('redux');
-const formReducer = require('redux-form').reducer;
-
-const { tabControlReducer, fileManager: { fmReducer }, pageAlerts } = Corein.components;
-
-const pageReducer = (state = {}, action) => {
-    return state;
-}
-
-module.exports = combineReducers({
-    pageAlerts: pageAlerts.reducer,
-    page: pageReducer,
-    mainForm: require('../components/form').reducer,
-    form: formReducer,
-    fm: fmReducer,
-    fmTabControl: tabControlReducer,
-});
-
-},{"../components/form":43,"./keys":44,"jquery":"XpFelZ","redux":"czVV+t","redux-form":"LVfYvK"}],46:[function(require,module,exports){
-const $ = require('jquery');
-const { combineReducers, createStore, bindActionCreators } = require('redux');
-const {connect, Provider} = require('react-redux');
-const { Button, Card, CardHeader, CardBlock } = require('reactstrap');
-
-const {createNewUrl, update: {formUrl, formSubmitData}} = require('./shared');
-
-const PageAlerts = Corein.components.pageAlerts.default;
-
-const Form = require('./shared/components/form').default;
-
-const store = createStore(require('./shared/redux/reducer'));
-
-var PageContent = (props) => {
-    const { parameters, title, description } = props;
-
-    return (
-        React.createElement("div", null, 
-            React.createElement(PageAlerts, null), 
-            React.createElement(Card, null, 
-                React.createElement(CardBlock, null, 
-                    React.createElement("a", {className: "btn btn-primary", href: createNewUrl}, "Create new")
-                )
-            ), 
-            React.createElement(Card, null, 
-                React.createElement(CardHeader, null, 
-                    React.createElement("strong", null, title), " ", description && ` ${description}`
-                ), 
-                React.createElement(CardBlock, null, 
-                    React.createElement(Form, {formName: "create", 
-                        formUrl: formUrl, 
-                        formUrlData: parameters, 
-                        formSubmitData: formSubmitData}
-                    )
-                )
-            )
-        )
-    );
-};
-
-const stateToProps = (state) => {
-    return ({
-    });
-}
-
-const reducerToProps = (reducer) => (
-    bindActionCreators({ }, reducer)
-);
-
-PageContent = connect(stateToProps, reducerToProps)(PageContent);
+const { create, index, update: {formUrl, formSubmitData}} = require('./shared');
 
 module.exports = (props) => {
+    const pageProps = $.extend(true, {
+        createNewUrl: create.url,
+        indexUrl: index.url,
+        formUrl,
+        formSubmitData
+    }, props);
+
     return (
-        React.createElement(Provider, {store: store}, 
-            React.createElement(PageContent, React.__spread({},  props))
-        )
+        React.createElement(Page, React.__spread({},  pageProps))
     );
 };
 
-},{"./shared":42,"./shared/components/form":43,"./shared/redux/reducer":45,"jquery":"XpFelZ","react-redux":"MzQWgz","reactstrap":"jldOQ7","redux":"czVV+t"}],47:[function(require,module,exports){
+},{"./shared":30,"jquery":"XpFelZ"}],32:[function(require,module,exports){
 const index = require('./project/index');
 const create = require('./project/create');
 const update = require('./project/update');
@@ -1725,7 +645,7 @@ module.exports = {
     update
 }
 
-},{"./project/create":48,"./project/index":49,"./project/update":57}],48:[function(require,module,exports){
+},{"./project/create":33,"./project/index":34,"./project/update":40}],33:[function(require,module,exports){
 const $ = require('jquery');
 const { combineReducers, createStore, bindActionCreators } = require('redux');
 const {connect, Provider} = require('react-redux');
@@ -1734,7 +654,7 @@ const Form = require('./shared/components/form').default;
 
 const store = createStore(require('./shared/redux/reducer'));
 
-const {create: {formUrl, formSubmitData}} = require('./shared');
+const {index, create: {formUrl, formSubmitData}} = require('./shared');
 
 var PageContent = (props) => {
 
@@ -1742,10 +662,12 @@ var PageContent = (props) => {
 
     return (
         React.createElement("div", null, 
+            React.createElement("div", {className: "clearfix mb-1"}, 
+                React.createElement("div", {className: "pull-left"}, 
+                    React.createElement("h3", null, React.createElement("a", {href: index.url}, title))
+                )
+            ), 
             React.createElement(Card, null, 
-                React.createElement(CardHeader, null, 
-                    React.createElement("strong", null, title), " ", description && ` ${description}`
-                ), 
                 React.createElement(CardBlock, null, 
                     React.createElement(Form, {formName: "create", 
                         formUrl: formUrl, 
@@ -1776,137 +698,26 @@ module.exports = (props) => {
     );
 };
 
-},{"./shared":52,"./shared/components/form":53,"./shared/redux/reducer":56,"jquery":"XpFelZ","react-redux":"MzQWgz","reactstrap":"jldOQ7","redux":"czVV+t"}],49:[function(require,module,exports){
-const $ = require('jquery');
-const { combineReducers, createStore, bindActionCreators } = require('redux');
-const {connect} = require('react-redux');
-
-const { Provider } = require('react-redux');
-const Table = require('./index/components/table');
-const { Button, Card, CardHeader, CardBlock } = require('reactstrap');
-
-const tableActions = Corein.components.table.actions;
-const PageAlert = Corein.components.pageAlerts.default;
-const pageAlertsReducer = Corein.components.pageAlerts.reducer;
-
-const { createNewUrl, index: { dataUrl, deleteUrl, tableColumns}} = require('./shared');
-
-const reducer = combineReducers({
-    index: require('./index/redux/reducer'),
-    pageAlerts: pageAlertsReducer
-});
-
-const store = createStore(reducer);
-
-var PageContent = (props) => {
-    const { deleteSelectedRows } = props;
-
-    return (
-        React.createElement("div", null, 
-            React.createElement(PageAlert, null), 
-            React.createElement(Card, null, 
-                React.createElement(CardBlock, null, 
-                    React.createElement("a", {className: "btn btn-primary", href: createNewUrl}, "Create new")
-                )
-            ), 
-            React.createElement(Card, null, 
-                React.createElement(CardBlock, null, 
-                    React.createElement(Table, {dataUrl: dataUrl, deleteUrl: deleteUrl, columns: tableColumns})
-                )
-            )
-        )
-    );
-};
-
-const stateToProps = (state) => {
-    return ({
-
-    });
-}
-
-const reducerToProps = (reducer) => (
-    bindActionCreators({}, reducer)
-);
-
-PageContent = connect(stateToProps, reducerToProps)(PageContent);
+},{"./shared":35,"./shared/components/form":36,"./shared/redux/reducer":39,"jquery":"XpFelZ","react-redux":"MzQWgz","reactstrap":"jldOQ7","redux":"czVV+t"}],34:[function(require,module,exports){
+const Index = Corein.pageTemplates.index;
+const { create, index: { dataUrl, deleteUrl, tableColumns } } = require('./shared');
 
 module.exports = (props) => {
+    const { title } = props;
+
     return (
-        React.createElement(Provider, {store: store}, 
-            React.createElement(PageContent, null)
-        )
+        React.createElement(Index, {title: title, createNewUrl: create.url, dataUrl: dataUrl, deleteUrl: deleteUrl, tableColumns: tableColumns})
     );
 };
 
-},{"./index/components/table":50,"./index/redux/reducer":51,"./shared":52,"jquery":"XpFelZ","react-redux":"MzQWgz","reactstrap":"jldOQ7","redux":"czVV+t"}],50:[function(require,module,exports){
-const $ = require('jquery');
-const { connect } = require('react-redux');
-const { bindActionCreators } = require('redux');
-const Table = Corein.components.table.default;
-
-class ReduxTable extends React.Component {
-    constructor(props) {
-        super(props);
-    }
-
-    render() {
-        const { dataUrl, deleteUrl, columns } = this.props;
-
-        const deleteProps = {
-            url: deleteUrl,
-            success: (response) => {
-                console.log(response);
-            }
-        };
-
-        return (
-            React.createElement(Table, React.__spread({},  this.props, {deleteProps: deleteProps, columns: columns, dataUrl: dataUrl}))
-        );
-    }
-};
-
-const stateToProps = (state) => {
-    return state.index.table
-};
-
-const reducerToProps = (reducer) => (
-    bindActionCreators({}, reducer)
-);
-
-module.exports = connect(stateToProps, reducerToProps)(ReduxTable);
-
-
-},{"jquery":"XpFelZ","react-redux":"MzQWgz","redux":"czVV+t"}],51:[function(require,module,exports){
-const $ = require('jquery');
-const { combineReducers } = require('redux');
-
-const { table } = Corein.components;
-
-const initialState = {
-
-};
-
-const reducer = (state = initialState, action) => {
-    const newState = $.extend(true, {}, state);
-    switch (action.type) {
-        default:
-            return state;
-    }
-    return newState;
-};
-
-module.exports = combineReducers({
-    reducer, table: table.reducer
-});
-
-},{"jquery":"XpFelZ","redux":"czVV+t"}],52:[function(require,module,exports){
+},{"./shared":35}],35:[function(require,module,exports){
 const $ = require('jquery');
 
 const mvcController = 'project';
 
 module.exports = {
-    createNewUrl: `/${mvcController}/create`,
     index: {
+        url: `/${mvcController}`,
         dataUrl: `/${mvcController}/GetTableData`,
         deleteUrl: `/${mvcController}/delete`,
         tableColumns: [{
@@ -1923,6 +734,7 @@ module.exports = {
         }]
     },
     create: {
+        url: `/${mvcController}/create`,
         formUrl: `/${mvcController}/GetForm`,
         formSubmitData: {
             url: `/${mvcController}/create`,
@@ -1933,6 +745,7 @@ module.exports = {
         }
     },
     update: {
+        url: `/${mvcController}/update`,
         formUrl: `/${mvcController}/GetForm`,
         formSubmitData: {
             url: `/${mvcController}/update`,
@@ -1946,7 +759,7 @@ module.exports = {
     }
 }
 
-},{"jquery":"XpFelZ"}],53:[function(require,module,exports){
+},{"jquery":"XpFelZ"}],36:[function(require,module,exports){
 const $ = require('jquery');
 const { connect } = require('react-redux');
 const { bindActionCreators } = require('redux');
@@ -2058,7 +871,7 @@ module.exports = {
     reducer
 };
 
-},{"./layout-modal":54,"jquery":"XpFelZ","react-redux":"MzQWgz","redux":"czVV+t","redux-form":"LVfYvK"}],54:[function(require,module,exports){
+},{"./layout-modal":37,"jquery":"XpFelZ","react-redux":"MzQWgz","redux":"czVV+t","redux-form":"LVfYvK"}],37:[function(require,module,exports){
 const $ = require('jquery');
 const { connect } = require('react-redux');
 const { bindActionCreators } = require('redux');
@@ -2302,11 +1115,11 @@ module.exports = {
     actions
 }
 
-},{"jquery":"XpFelZ","rc-slider":"6pHinT","react-redux":"MzQWgz","reactstrap":"jldOQ7","redux":"czVV+t"}],55:[function(require,module,exports){
+},{"jquery":"XpFelZ","rc-slider":"6pHinT","react-redux":"MzQWgz","reactstrap":"jldOQ7","redux":"czVV+t"}],38:[function(require,module,exports){
 module.exports = {
 };
 
-},{}],56:[function(require,module,exports){
+},{}],39:[function(require,module,exports){
 const $ = require('jquery');
 const keys = require('./keys');
 const { combineReducers } = require('redux');
@@ -2328,13 +1141,13 @@ module.exports = combineReducers({
     layoutModal: require('../components/layout-modal').reducer
 });
 
-},{"../components/form":53,"../components/layout-modal":54,"./keys":55,"jquery":"XpFelZ","redux":"czVV+t","redux-form":"LVfYvK"}],57:[function(require,module,exports){
+},{"../components/form":36,"../components/layout-modal":37,"./keys":38,"jquery":"XpFelZ","redux":"czVV+t","redux-form":"LVfYvK"}],40:[function(require,module,exports){
 const $ = require('jquery');
 const { combineReducers, createStore, bindActionCreators } = require('redux');
-const {connect, Provider} = require('react-redux');
-const { Button, Card, CardHeader, CardBlock } = require('reactstrap');
+const { connect, Provider } = require('react-redux');
+const { Row, Col, Input, Button, Card, CardHeader, CardBlock } = require('reactstrap');
 
-const {createNewUrl, update: {formUrl, formSubmitData}} = require('./shared');
+const {index, create, update: {formUrl, formSubmitData}} = require('./shared');
 
 const PageAlerts = Corein.components.pageAlerts.default;
 
@@ -2348,17 +1161,38 @@ var PageContent = (props) => {
     return (
         React.createElement("div", null, 
             React.createElement(PageAlerts, null), 
-            React.createElement(Card, null, 
-                React.createElement(CardBlock, null, 
-                    React.createElement("a", {className: "btn btn-primary", href: createNewUrl}, "Create new")
+            React.createElement("div", {className: "clearfix mb-1"}, 
+                React.createElement("div", {className: "pull-left"}, 
+                    React.createElement("h3", null, React.createElement("a", {href: index.url}, title))
+                ), 
+                React.createElement("div", {className: "pull-left ml-1"}, 
+                    React.createElement("a", {className: "btn btn-outline-secondary", href: create.url}, "Create new")
                 )
             ), 
             React.createElement(Card, null, 
                 React.createElement(CardHeader, null, 
-                    React.createElement("strong", null, title), " ", description && ` ${description}`
+                    React.createElement(Row, null, 
+                        React.createElement(Col, {md: "8", className: "card-text"}, 
+                            React.createElement("div", null, 
+                                description && ` ${description}`
+                            )
+                        ), 
+                        React.createElement(Col, {md: "4"}, 
+                            React.createElement("div", {className: "form-language"}, 
+                                React.createElement("div", {className: "pull-right ml-q"}, 
+                                    React.createElement(Button, {className: "btn btn-secondary"}, "OK")
+                                ), 
+                                React.createElement("div", {className: "pull-right"}, 
+                                    React.createElement(Input, {type: "select"}, 
+                                        React.createElement("option", {value: "vi-VN"}, "Tiếng Việt")
+                                    )
+                                )
+                            )
+                        )
+                    )
                 ), 
                 React.createElement(CardBlock, null, 
-                    React.createElement(Form, {formName: "create", 
+                    React.createElement(Form, {formName: "update", 
                         formUrl: formUrl, 
                         formUrlData: parameters, 
                         formSubmitData: formSubmitData}
@@ -2388,6 +1222,6 @@ module.exports = (props) => {
     );
 };
 
-},{"./shared":52,"./shared/components/form":53,"./shared/redux/reducer":56,"jquery":"XpFelZ","react-redux":"MzQWgz","reactstrap":"jldOQ7","redux":"czVV+t"}]},{},[1])
+},{"./shared":35,"./shared/components/form":36,"./shared/redux/reducer":39,"jquery":"XpFelZ","react-redux":"MzQWgz","reactstrap":"jldOQ7","redux":"czVV+t"}]},{},[1])
 
 //# sourceMappingURL=homeclick.js.map

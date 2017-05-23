@@ -13,13 +13,14 @@ module.exports = {
         submit: require('./components/form/submit')
     },
     pageAlerts: require('./components/page-alerts'),
+    pageComponents: require('./components/page'),
     tabControl: require('./components/tab-control'),
     appKeys,
     table,
     fileManager
 };
 
-},{"./components/dynamic-form":2,"./components/file-manager":3,"./components/form/submit":22,"./components/form/validator":23,"./components/page-alerts":24,"./components/tab-control":25,"./components/table":26}],2:[function(require,module,exports){
+},{"./components/dynamic-form":2,"./components/file-manager":3,"./components/form/submit":24,"./components/form/validator":25,"./components/page":27,"./components/page-alerts":26,"./components/tab-control":28,"./components/table":29}],2:[function(require,module,exports){
 const $ = require('jquery');
 const { connect } = require('react-redux');
 const { bindActionCreators } = require('redux');
@@ -80,7 +81,7 @@ const reducerToProps = (reducer) => (
 
 module.exports = connect(stateToProps, reducerToProps)(DynamicForm);
 
-},{"./file-manager/fm-actions":4,"./file-manager/modal":12,"./form/form":18,"jquery":"XpFelZ","react-redux":"MzQWgz","redux":"czVV+t","redux-form":"LVfYvK"}],3:[function(require,module,exports){
+},{"./file-manager/fm-actions":4,"./file-manager/modal":12,"./form/form":20,"jquery":"XpFelZ","react-redux":"MzQWgz","redux":"czVV+t","redux-form":"LVfYvK"}],3:[function(require,module,exports){
 const $ = require('jquery');
 const { connect } = require('react-redux');
 const { bindActionCreators } = require('redux');
@@ -414,7 +415,7 @@ const dispatchToProps = (dispatch) => (
 
 module.exports = connect(stateToProps, dispatchToProps)(FileItem);
 
-},{"../form/form":18,"../form/submit":22,"../form/validator":23,"../tab-control":25,"./fm-actions":4,"./fm-ajaxs":5,"jquery":"XpFelZ","react-redux":"MzQWgz","redux":"czVV+t","redux-form":"LVfYvK"}],7:[function(require,module,exports){
+},{"../form/form":20,"../form/submit":24,"../form/validator":25,"../tab-control":28,"./fm-actions":4,"./fm-ajaxs":5,"jquery":"XpFelZ","react-redux":"MzQWgz","redux":"czVV+t","redux-form":"LVfYvK"}],7:[function(require,module,exports){
 const $ = require('jquery');
 const fmKeys = require('./fm-keys');
 const { getFilesFromServer } = require('./fm-ajaxs');
@@ -689,7 +690,7 @@ const distpatchToProps = (dispatch) => (
 module.exports = connect(stateToProps, distpatchToProps)(SidePanel);
 
 
-},{"../dynamic-form":2,"../form/validator":23,"../tab-control":25,"classnames":"4z/pR8","jquery":"XpFelZ","react":"b6Dds6","react-dom":"Ld8xHf","react-redux":"MzQWgz","reactstrap":"jldOQ7","redux":"czVV+t"}],12:[function(require,module,exports){
+},{"../dynamic-form":2,"../form/validator":25,"../tab-control":28,"classnames":"4z/pR8","jquery":"XpFelZ","react":"b6Dds6","react-dom":"Ld8xHf","react-redux":"MzQWgz","reactstrap":"jldOQ7","redux":"czVV+t"}],12:[function(require,module,exports){
 const $ = require('jquery');
 const _ = require('underscore');
 
@@ -838,7 +839,11 @@ module.exports = (props) => {
                                 React.createElement(CardHeader, null, 
                                     "Member #", index + 1, 
                                     React.createElement("div", {className: "card-actions"}, 
-                                        React.createElement("a", {className: "btn-close", onClick: () => fields.remove(index), href: "#"}, React.createElement("i", {className: "icon-close"}))
+                                        React.createElement("a", {className: "btn-close", onClick: 
+                                            (e) => {
+                                                fields.remove(index);
+                                                e.preventDefault();
+                                            }, href: "#"}, React.createElement("i", {className: "icon-close"}))
                                     )
                                 ), 
                                 React.createElement(CardBlock, null, 
@@ -859,7 +864,7 @@ module.exports = (props) => {
     )
 }
 
-},{"./render-field-type":20,"jquery":"XpFelZ","reactstrap":"jldOQ7"}],14:[function(require,module,exports){
+},{"./render-field-type":22,"jquery":"XpFelZ","reactstrap":"jldOQ7"}],14:[function(require,module,exports){
 var {Input, FormGroup, Label} = require('reactstrap');
 
 module.exports = function(props) {
@@ -938,6 +943,177 @@ module.exports = CheckboxList;
 
 },{"./checkbox":14,"jquery":"XpFelZ","list-to-tree":"3c/Ypl","redux-form":"LVfYvK"}],16:[function(require,module,exports){
 const $ = require('jquery');
+const { Input, InputGroup, InputGroupButton, InputGroupAddon, FormFeedback, FormGroup, FormText, Label, Button } = require('reactstrap');
+
+const { Editor } = require('react-draft-wysiwyg');
+const draftToHtml = require('draftjs-to-html').default;
+
+const { convertToRaw, EditorState, ContentState } = require('draft-js');
+const htmlToDraft = require('html-to-draftjs').default;
+
+class FormInput extends React.Component {
+    constructor(props) {
+        super(props);
+        const { input: { value }, display: { type } } = props;
+        this.editorStateChange = this.editorStateChange.bind(this);
+
+        const state = {};
+        if (value) {
+            if (value) {
+                let blocksFromHtml = htmlToDraft(value);
+                let contentBlocks = blocksFromHtml.contentBlocks;
+                let contentState = ContentState.createFromBlockArray(contentBlocks);
+                let editorState = EditorState.createWithContent(contentState);
+                state.editorState = editorState;
+            }
+            else {
+                state.editorState = EditorState.createEmpty();
+            }
+        }
+        this.state = state;
+    }
+
+    editorStateChange(editorState) {
+        this.setState({ editorState });
+    }
+
+    render() {
+        const { input, fieldValidate, display: { id, type, title, displayName, placeholder, prompt }, meta: { touched, error, warning }, status } = this.props;
+
+        var validationState = fieldValidate && touched ? (error ? 'danger' : (warning && 'warning')) : null;
+
+        return (
+            React.createElement(FormGroup, {color: validationState, className: "form-member"}, 
+                title && React.createElement(Label, {for: id, dangerouslySetInnerHTML: { __html: title}}), 
+
+                React.createElement(Editor, {
+                    placeholder: placeholder, 
+                    editorState: this.state.editorState, 
+                    editorClassName: "editor", 
+                    onEditorStateChange: this.editorStateChange, 
+                    onBlur: (e, editorState) => {
+                        const value = draftToHtml(convertToRaw(this.state.editorState.getCurrentContent()));
+                        input.onChange(value);
+                    }}
+                ), 
+                prompt && React.createElement(FormText, {color: "muted"}, prompt), 
+                touched && ((error && React.createElement(FormFeedback, null, error)) || (warning && React.createElement(FormFeedback, null, warning)))
+            )
+        );
+    }
+}
+
+module.exports = FormInput;
+
+},{"draft-js":"boBfee","draftjs-to-html":"uO7lW/","html-to-draftjs":"ZGWgnz","jquery":"XpFelZ","react-draft-wysiwyg":"pBmj1g","reactstrap":"jldOQ7"}],17:[function(require,module,exports){
+const $ = require('jquery');
+
+var {Input, InputGroup, InputGroupAddon, FormFeedback, FormGroup, FormText, Label, Button, Modal, ModalHeader, ModalBody, ModalFooter} = require('reactstrap');
+
+const FileManagerModal = require('../../file-manager/modal');
+
+class ImageField extends React.Component {
+    constructor(props) {
+        super(props);
+
+    }
+
+    openModal() {
+        const { input: {onChange}, fileManagerModalToggle } = this.props;
+
+        fileManagerModalToggle(
+            (files) => {
+                if (!files.length)
+                    return
+
+                var file = files[0];
+                onChange(file.meta.src);
+            }
+        )
+    }
+
+    render() {
+        const { fieldValidate, input: { value }, display: {id, type, title, displayName, placeholder, prompt}, meta: {touched, error, warning} } = this.props;
+        var validationState = fieldValidate && touched ? (error ? 'danger' : (warning ? 'warning' : 'success')) : undefined;
+        var img = value ? value.replace(/\\/g, "/") : "/img/default.png";
+        return (
+            React.createElement(FormGroup, {color: validationState, className: "form-member"}, 
+                React.createElement(Label, null, title), 
+                React.createElement("div", null, 
+                    React.createElement("div", {className: "image-fill", style: { backgroundImage: `url('${img}')`}, tabIndex: "-1", onClick: this.openModal.bind(this)})
+                ), 
+                touched && ((error && React.createElement(FormFeedback, null, error)) || (warning && React.createElement(FormFeedback, null, warning))), 
+                prompt && React.createElement(FormText, {color: "muted"}, prompt)
+            )
+        );
+    }
+}
+
+module.exports = ImageField;
+
+},{"../../file-manager/modal":12,"jquery":"XpFelZ","reactstrap":"jldOQ7"}],18:[function(require,module,exports){
+const $ = require('jquery');
+const shallowCompare = require('react-addons-shallow-compare');
+
+const {Input, InputGroup, InputGroupButton, InputGroupAddon, FormFeedback, FormGroup, FormText, Label, Button} = require('reactstrap');
+const {Editor} = require('react-draft-wysiwyg');
+const draftToHtml = require('draftjs-to-html').default;
+const { convertToRaw, EditorState, ContentState } = require('draft-js');
+const htmlToDraft = require('html-to-draftjs').default;
+
+class FormInput extends React.Component {
+    constructor(props) {
+        super(props);
+        this.actionBtnClick = this.actionBtnClick.bind(this);
+        this.renderActions = this.renderActions.bind(this);
+    }
+
+    renderActions() {
+        const { actions } = this.props;
+
+        if (!actions)
+            return null;
+
+        return (
+            React.createElement(InputGroupButton, null, 
+                actions.map(props => {
+                    const { title, command } = props;
+                    return React.createElement(Button, {key: command, type: "button", color: "secondary", onClick: () => { this.actionBtnClick(command); }}, title)
+                })
+            )
+        );
+    }
+
+    actionBtnClick(command) {
+        const { executeFormAction } = this.props;
+
+        executeFormAction(command, this.props);
+    }
+
+    render() {
+        const { input, fieldValidate, display: { id, type, title, displayName, placeholder, prompt }, meta: { touched, error, warning }, status } = this.props;
+
+        var validationState = fieldValidate && touched ? (error ? 'danger' : (warning && 'warning')) : null;
+
+        return (
+            React.createElement(FormGroup, {color: validationState, className: "form-member"}, 
+                title && React.createElement(Label, {for: id, dangerouslySetInnerHTML: { __html: title}}), 
+
+                React.createElement(InputGroup, null, 
+                    React.createElement(Input, React.__spread({},  input, {id: id, state: validationState, type: type, placeholder: placeholder ? placeholder : displayName, readOnly: status === 'ReadOnly'})), 
+                    this.renderActions()
+                ), 
+                prompt && React.createElement(FormText, {color: "muted"}, prompt), 
+                touched && ((error && React.createElement(FormFeedback, null, error)) || (warning && React.createElement(FormFeedback, null, warning)))
+            )
+        );
+    }
+}
+
+module.exports = FormInput;
+
+},{"draft-js":"boBfee","draftjs-to-html":"uO7lW/","html-to-draftjs":"ZGWgnz","jquery":"XpFelZ","react-addons-shallow-compare":41,"react-draft-wysiwyg":"pBmj1g","reactstrap":"jldOQ7"}],19:[function(require,module,exports){
+const $ = require('jquery');
 const {Input, FormGroup, Label} = require('reactstrap');
 
 module.exports = function(props) {
@@ -959,100 +1135,7 @@ module.exports = function(props) {
     );
 };
 
-},{"jquery":"XpFelZ","reactstrap":"jldOQ7"}],17:[function(require,module,exports){
-const $ = require('jquery');
-const shallowCompare = require('react-addons-shallow-compare');
-
-const {Input, InputGroup, InputGroupButton, InputGroupAddon, FormFeedback, FormGroup, FormText, Label, Button} = require('reactstrap');
-const {Editor} = require('react-draft-wysiwyg');
-const draftToHtml = require('draftjs-to-html').default;
-const { convertToRaw, EditorState, ContentState } = require('draft-js');
-const htmlToDraft = require('html-to-draftjs').default;
-
-class FormInput extends React.Component {
-    constructor(props) {
-        super(props);
-        const { input: { value }, display: { type }} = props;
-        this.actionBtnClick = this.actionBtnClick.bind(this);
-        this.renderActions = this.renderActions.bind(this);
-        this.editorStateChange = this.editorStateChange.bind(this);
-
-        const state = {};
-        if (type === "textarea" && value) {
-            if (value) {
-                let blocksFromHtml = htmlToDraft(value);
-                let contentBlocks = blocksFromHtml.contentBlocks;
-                let contentState = ContentState.createFromBlockArray(contentBlocks);
-                let editorState = EditorState.createWithContent(contentState);
-                state.editorState = editorState;
-            }
-            else {
-                state.editorState = EditorState.createEmpty();
-            }
-        }
-        this.state = state;
-    }
-
-    editorStateChange(editorState) {
-        this.setState({ editorState });
-    }
-
-    renderActions() {
-        const { actions } = this.props;
-
-        if (!actions)
-            return null;
-
-        return (
-            React.createElement(InputGroupButton, null, 
-                actions.map(props => {
-                    const {title, command} = props;
-                    return React.createElement(Button, {key: command, type: "button", color: "secondary", onClick: () => { this.actionBtnClick(command); }}, title)
-                })
-            )
-        );
-    }
-
-    actionBtnClick(command) {
-        const { executeFormAction } = this.props;
-
-        executeFormAction(command, this.props);
-    }
-
-    render() {
-        const {input, fieldValidate, display: {id, type, title, displayName, placeholder, prompt}, meta: {touched, error, warning}, status} = this.props;
-
-        var validationState = fieldValidate && touched ? (error ? 'danger' : (warning ? 'warning' : 'success')) : undefined;
-
-        return (
-            React.createElement(FormGroup, {color: validationState, className: "form-member"}, 
-                title && React.createElement(Label, {for: id, dangerouslySetInnerHTML: { __html: title}}), 
-                
-                    type === "textarea" ?
-                        React.createElement(Editor, {
-                            editorState: this.state.editorState, 
-                            editorClassName: "editor", 
-                            onEditorStateChange: this.editorStateChange, 
-                            onBlur: (e, editorState) => {
-                                const value = draftToHtml(convertToRaw(this.state.editorState.getCurrentContent()));
-                                input.onChange(value);
-                            }}
-                        ) :
-                        React.createElement(InputGroup, null, 
-                            React.createElement(Input, React.__spread({},  input, {id: id, state: validationState, type: type, placeholder: placeholder ? placeholder : displayName, readOnly: status === 'ReadOnly'})), 
-                            this.renderActions()
-                        ), 
-                
-                touched && ((error && React.createElement(FormFeedback, null, error)) || (warning && React.createElement(FormFeedback, null, warning))), 
-                prompt && React.createElement(FormText, {color: "muted"}, prompt)
-            )
-        );
-    }
-}
-
-module.exports = FormInput;
-
-},{"draft-js":"boBfee","draftjs-to-html":"uO7lW/","html-to-draftjs":"ZGWgnz","jquery":"XpFelZ","react-addons-shallow-compare":38,"react-draft-wysiwyg":"pBmj1g","reactstrap":"jldOQ7"}],18:[function(require,module,exports){
+},{"jquery":"XpFelZ","reactstrap":"jldOQ7"}],20:[function(require,module,exports){
 const $ = require('jquery');
 const { connect } = require('react-redux');
 const { bindActionCreators } = require('redux');
@@ -1127,8 +1210,8 @@ class Form extends React.Component {
                         
                     ), 
                 
-                React.createElement("hr", null), 
-                React.createElement("div", {className: "actions"}, 
+
+                React.createElement("div", {className: "actions mt-1"}, 
                     React.createElement(Button, {className: "mr-1", color: "primary", type: "submit", disabled: submitting}, display ? display.submitLabel : "Submit"), 
                     
                         onClose && React.createElement(Button, {type: "Button", onClick: onClose, disabled: submitting}, display ? display.dismissForm : "Cancel")
@@ -1151,53 +1234,73 @@ const reducerToProps = (reducer) => (
 
 module.exports = connect(stateToProps, reducerToProps)(Form);
 
-},{"../file-manager/fm-actions":4,"./fields/checkboxlist":15,"./render-field":21,"./render-field-type":20,"jquery":"XpFelZ","react-redux":"MzQWgz","reactstrap":"jldOQ7","redux":"czVV+t","redux-form":"LVfYvK"}],19:[function(require,module,exports){
+},{"../file-manager/fm-actions":4,"./fields/checkboxlist":15,"./render-field":23,"./render-field-type":22,"jquery":"XpFelZ","react-redux":"MzQWgz","reactstrap":"jldOQ7","redux":"czVV+t","redux-form":"LVfYvK"}],21:[function(require,module,exports){
 const $ = require('jquery');
+const { Button, Input } = require('reactstrap');
 
-var {Input, InputGroup, InputGroupAddon, FormFeedback, FormGroup, FormText, Label, Button, Modal, ModalHeader, ModalBody, ModalFooter} = require('reactstrap');
+var addUrlParam = function (search, key, val) {
+    var newParam = key + '=' + val,
+        params = '?' + newParam;
 
-const FileManagerModal = require('../file-manager/modal');
+    // If the "search" string exists, then build params from it
+    if (search) {
+        // Try to replace an existance instance
+        params = search.replace(new RegExp('([?&])' + key + '[^&]*'), '$1' + newParam);
 
-class ImageField extends React.Component {
+        // If nothing was replaced, then add the new param to the end
+        if (params === search) {
+            params += '&' + newParam;
+        }
+    }
+
+    return params;
+};
+
+module.exports = class LanguageSelect extends React.Component {
     constructor(props) {
         super(props);
 
+        this.state = {
+            selectedLang: props.defaultLanguage
+        };
+
+        this.onSelectChange = this.onSelectChange.bind(this);
+        this.onButtonClick = this.onButtonClick.bind(this);
     }
 
-    openModal() {
-        const { input: {onChange}, fileManagerModalToggle } = this.props;
+    onSelectChange(e) {
+        var target = e.target;
+        this.setState({ selectedLang: target.value });
+    }
 
-        fileManagerModalToggle(
-            (files) => {
-                if (!files.length)
-                    return
-
-                var file = files[0];
-                onChange(file.meta.src);
-            }
-        )
+    onButtonClick(e) {
+        window.location.href = window.location.pathname + addUrlParam(window.location.search, 'lang', this.state.selectedLang);
     }
 
     render() {
-        const { fieldValidate, input: { value }, display: {id, type, title, displayName, placeholder, prompt}, meta: {touched, error, warning} } = this.props;
-        var validationState = fieldValidate && touched ? (error ? 'danger' : (warning ? 'warning' : 'success')) : undefined;
-        var img = value ? value.replace(/\\/g, "/") : "/img/default.png";
+        const { languages} = this.props;
+
         return (
-            React.createElement(FormGroup, {color: validationState, className: "form-member"}, 
-                React.createElement(Label, null, title), 
-                React.createElement("div", null, 
-                    React.createElement("div", {className: "image-fill", style: { backgroundImage: `url('${img}')`}, tabIndex: "-1", onClick: this.openModal.bind(this)})
+            React.createElement("div", {className: "form-language"}, 
+                React.createElement("div", {className: "pull-right ml-q"}, 
+                    React.createElement(Button, {className: "btn btn-secondary", 
+                        onClick: this.onButtonClick}, "OK")
                 ), 
-                touched && ((error && React.createElement(FormFeedback, null, error)) || (warning && React.createElement(FormFeedback, null, warning))), 
-                prompt && React.createElement(FormText, {color: "muted"}, prompt)
+                React.createElement("div", {className: "pull-right"}, 
+                    React.createElement(Input, {type: "select", value: this.state.selectedLang, onChange: this.onSelectChange}, 
+                        
+                            $.map(languages, (lang, index) => {
+                                return React.createElement("option", {key: index, value: index}, lang);
+                            })
+                        
+                    )
+                )
             )
         );
     }
-}
+};
 
-module.exports = ImageField;
-
-},{"../file-manager/modal":12,"jquery":"XpFelZ","reactstrap":"jldOQ7"}],20:[function(require,module,exports){
+},{"jquery":"XpFelZ","reactstrap":"jldOQ7"}],22:[function(require,module,exports){
 const $ = require('jquery');
 const { Field, FieldArray} = require('redux-form');
 const { renderField } = require('./render-field');
@@ -1212,28 +1315,20 @@ module.exports = function (prefixName, props) {
             key: name
         });
 
-
     if (childFields)
         return React.createElement(FieldArray, React.__spread({},  newProps, {component: renderFieldArray}));
 
     return React.createElement(Field, React.__spread({},  newProps, {component: renderField}));
 }
 
-},{"./array":13,"./render-field":21,"jquery":"XpFelZ","redux-form":"LVfYvK"}],21:[function(require,module,exports){
+},{"./array":13,"./render-field":23,"jquery":"XpFelZ","redux-form":"LVfYvK"}],23:[function(require,module,exports){
 const { Input, InputGroup, InputGroupButton, InputGroupAddon, FormFeedback, FormGroup, FormText, Label, Button, Modal, ModalHeader, ModalBody, ModalFooter} = require('reactstrap');
 
-const FormInput = require('./form-input');
-const ImageField = require('./image');
+const ImageField = require('./fields/image');
 const CheckboxList = require('./fields/checkboxlist');
 const Select = require('./fields/select');
-
-const RenderInput = (props) => {
-    const {input, id, type, placeholder, validationState} = props;
-
-    return (
-        React.createElement(Input, React.__spread({},  input, {id: id, state: validationState, type: type, placeholder: placeholder}))
-    );
-}
+const Editor = require('./fields/editor');
+const FormInput = require('./fields/input');
 
 const RenderInputGroup = (props) => {
     const {input, display: {id, type, title, displayName, placeholder, prompt}, meta: {touched, error, warning}, status} = props;
@@ -1252,18 +1347,11 @@ const RenderInputGroup = (props) => {
     );
 }
 
-const RenderHidden = (props) => {
-    const {input} = props;
-    return (
-        React.createElement("input", React.__spread({},  input, {type: "hidden"}))
-    );
-}
-
 function renderField(props) {
-    const {display, status } = props;
+    const { display, status } = props;
 
-    if (status && status.toLowerCase() == 'hidden')
-        return RenderHidden(props);
+    if (!display)
+        return null;
 
     var rt = display.renderType.toLowerCase();
     switch (rt) {
@@ -1277,6 +1365,8 @@ function renderField(props) {
             return React.createElement(CheckboxList, React.__spread({},  props));
         case 'select':
             return React.createElement(Select, React.__spread({},  props))
+        case 'editor':
+            return React.createElement(Editor, React.__spread({},  props))
         default:
             return React.createElement(FormInput, React.__spread({},  props));
     }
@@ -1287,7 +1377,7 @@ module.exports = {
 }
 
 
-},{"./fields/checkboxlist":15,"./fields/select":16,"./form-input":17,"./image":19,"reactstrap":"jldOQ7"}],22:[function(require,module,exports){
+},{"./fields/checkboxlist":15,"./fields/editor":16,"./fields/image":17,"./fields/input":18,"./fields/select":19,"reactstrap":"jldOQ7"}],24:[function(require,module,exports){
 const $ = require('jquery');
 const {SubmissionError} = require('redux-form');
 
@@ -1340,7 +1430,7 @@ function formSubmit(props) {
 
 module.exports = formSubmit;
 
-},{"jquery":"XpFelZ","redux-form":"LVfYvK"}],23:[function(require,module,exports){
+},{"jquery":"XpFelZ","redux-form":"LVfYvK"}],25:[function(require,module,exports){
 const $ = require('jquery');
 
 const isType = (value, type) => {
@@ -1430,7 +1520,7 @@ const validator = fieldGroups => values => {
 
 module.exports = validator
 
-},{"jquery":"XpFelZ"}],24:[function(require,module,exports){
+},{"jquery":"XpFelZ"}],26:[function(require,module,exports){
 const $ = require('jquery');
 const { connect } = require('react-redux');
 const { bindActionCreators } = require('redux');
@@ -1511,7 +1601,18 @@ module.exports = {
 }
 
 
-},{"jquery":"XpFelZ","react-redux":"MzQWgz","reactstrap":"jldOQ7","redux":"czVV+t"}],25:[function(require,module,exports){
+},{"jquery":"XpFelZ","react-redux":"MzQWgz","reactstrap":"jldOQ7","redux":"czVV+t"}],27:[function(require,module,exports){
+const PageTitle = (props) => {
+    return (
+        React.createElement("h3", {className: "page-title"}, props.children)
+        );
+}
+
+module.exports = {
+    PageTitle
+}
+
+},{}],28:[function(require,module,exports){
 const $ = require('jquery');
 const classnames = require('classnames');
 const { Nav, NavItem, NavLink, TabContent, TabPane } = require('reactstrap');
@@ -1603,12 +1704,12 @@ module.exports = {
 
 
 
-},{"classnames":"4z/pR8","jquery":"XpFelZ","reactstrap":"jldOQ7"}],26:[function(require,module,exports){
+},{"classnames":"4z/pR8","jquery":"XpFelZ","reactstrap":"jldOQ7"}],29:[function(require,module,exports){
 const $ = require('jquery');
 const { connect } = require('react-redux');
 const { bindActionCreators } = require('redux');
 const ReactTable = require('react-table').default;
-const { Button, Input, Row, Col } = require('reactstrap');
+const { ButtonGroup, Button, Input, Row, Col } = require('reactstrap');
 
 // Keys
 const keys = {
@@ -1616,7 +1717,8 @@ const keys = {
     loaded: "LOADED",
     loading: "LOADING",
     selectRow: "SELECT_ROW",
-    deleteSelectedRows: "DETETE_SELECTED_ROWS"
+    deleteSelectedRows: "DETETE_SELECTED_ROWS",
+    deleteRows: "DELETE_ROWS"
 };
 
 // Actions
@@ -1639,6 +1741,11 @@ const actions = {
     }),
     deleteSelectedRows: () => ({
         type: keys.deleteSelectedRows
+    }),
+
+    deleteRows: (indexs) => ({
+        type: keys.deleteRows,
+        indexs
     })
 }
 
@@ -1680,6 +1787,11 @@ const reducer = (state = initialState, action) => {
             newState.data = newState.data.filter((row, index) => newState.selectedRows.indexOf(index) < 0);
             newState.selectedRows = [];
             break;
+        case keys.deleteRows:
+            const filter = (row, index) => (action.indexs.indexOf(index) < 0);
+            newState.data = newState.data.filter(filter);
+            newState.selectedRows = newState.selectedRows.filter(filter);
+            break;
         default:
             return state;
     }
@@ -1696,7 +1808,8 @@ function defaultFilterMethod (filter, row, column)
 class Table extends React.Component {
     constructor(props) {
         super();
-        this.getCheckColumn = this.getCheckColumn.bind(this);
+        this.getFirstColumn = this.getFirstColumn.bind(this);
+        this.deleteRows = this.deleteRows.bind(this);
     }
 
     fetchData(state, instance) {
@@ -1705,7 +1818,7 @@ class Table extends React.Component {
         $.get(dataUrl, onLoaded);
     }
 
-    getCheckColumn() {
+    getFirstColumn() {
         const { selectRow } = this.props;
         return (
             {
@@ -1715,19 +1828,62 @@ class Table extends React.Component {
                     const { selectedRows } = this.props;
                     const checked = selectedRows.indexOf(row.index) >= 0;
                     return  (
-                        React.createElement("div", null, 
+                        React.createElement("div", {className: "checkbox"}, 
                             React.createElement("input", {type: "checkbox", 
                                 onClick: () => {
                                     selectRow(row.index);
-                                }, checked: checked})
+                                }, checked: checked}), 
+                            React.createElement("label", null)
                         )
                     )
                 },
-                width: 22,
+                width: 32,
                 sortable: false,
                 hideFilter: true
             }
         );
+    }
+
+    getActionsColumn() {
+        return {
+            header: "Actions",
+            accessor: 'id',
+            render: row => {
+
+                return (
+                    React.createElement("div", {className: "table-row-actions"}, 
+                        React.createElement(ButtonGroup, null, 
+                            React.createElement("button", {className: "btn btn-icon", 
+                                onClick: () => {
+                                    const { deleteRows, deleteProps: { url, success } } = this.props;
+
+                                    this.deleteRows(url, [row.value], (response) => {
+                                        success(response);
+                                        deleteRows(row.index);
+                                    });
+                                }}, 
+                                React.createElement("i", {className: "fa fa-trash-o", "aria-hidden": "true"})
+                            )
+                        )
+                    )
+                )
+            },
+            width: 120,
+            sortable: false,
+            hideFilter: true
+        }
+    }
+
+    deleteRows(url, rowIds, callback) {
+        var result = window.confirm("delete?");
+        if (result) {
+            $.ajax({
+                url,
+                method: "DELETE",
+                data: { ids: rowIds },
+                success: callback
+            });
+        }
     }
 
     onDelete() {
@@ -1737,15 +1893,11 @@ class Table extends React.Component {
             return selectedRows.indexOf(index) >= 0;
         }).map((row) => row.id);;
 
-        $.ajax({
-            url,
-            method: "DELETE",
-            data: { ids },
-            success: (response) => {
+        this.deleteRows(url, ids,
+            (response) => {
                 success(response);
                 deleteSelectedRows();
-            }
-        });
+            });
     }
 
     render() {
@@ -1753,11 +1905,14 @@ class Table extends React.Component {
 
         if (!columns)
             return;
-        if (!(columns[0].accessor === "id"))
-            columns.unshift(this.getCheckColumn());
+
+        if (!(columns[0].accessor === "id")) {
+            columns.unshift(this.getFirstColumn());
+            columns.push(this.getActionsColumn());   
+        }
 
         return (
-            React.createElement("div", {class: "react-table"}, 
+            React.createElement("div", {className: "react-table"}, 
                 React.createElement("div", {className: "mb-1"}, 
                     React.createElement("div", {className: "clearfix"}, 
                         React.createElement(Button, {className: "ml-h pull-right", outline: true, disabled: !selectedRows.length, onClick: this.onDelete.bind(this)}, 
@@ -1770,18 +1925,19 @@ class Table extends React.Component {
                         )
                     )
                 ), 
-
-                React.createElement(ReactTable, {
-                    className: "-striped -highlight", 
-                    manual: true, 
-                    defaultPageSize: defaultPageSize, 
-                    showFilters: showFilters, 
-                    data: data, 
-                    pages: pages, 
-                    loading: loading, 
-                    columns: columns, 
-                    onChange: this.fetchData.bind(this), 
-                    defaultFilterMethod: defaultFilterMethod}
+                React.createElement("div", {className: "table-wrap"}, 
+                    React.createElement(ReactTable, {
+                        className: "-striped -highlight", 
+                        manual: true, 
+                        defaultPageSize: defaultPageSize, 
+                        showFilters: showFilters, 
+                        data: data, 
+                        pages: pages, 
+                        loading: loading, 
+                        columns: columns, 
+                        onChange: this.fetchData.bind(this), 
+                        defaultFilterMethod: defaultFilterMethod}
+                    )
                 )
             )
         );
@@ -1803,43 +1959,39 @@ module.exports = {
 }
 
 
-},{"jquery":"XpFelZ","react-redux":"MzQWgz","react-table":"OYum5A","reactstrap":"jldOQ7","redux":"czVV+t"}],27:[function(require,module,exports){
+},{"jquery":"XpFelZ","react-redux":"MzQWgz","react-table":"OYum5A","reactstrap":"jldOQ7","redux":"czVV+t"}],30:[function(require,module,exports){
 module.exports = {
     index: require('./page-templates/index'),
     create: require('./page-templates/create'),
     update: require('./page-templates/update')
 };
 
-},{"./page-templates/create":28,"./page-templates/index":29,"./page-templates/update":35}],28:[function(require,module,exports){
+},{"./page-templates/create":31,"./page-templates/index":32,"./page-templates/update":38}],31:[function(require,module,exports){
 const $ = require('jquery');
 const { combineReducers, createStore, bindActionCreators } = require('redux');
 const { connect, Provider } = require('react-redux');
 const { Input, Button, Card, CardHeader, CardBlock } = require('reactstrap');
-const Form = require('./shared/components/form').default;
+const SharedForm = require('./shared/components/form').default;
 
 const store = createStore(require('./shared/redux/reducer'));
+const { PageTitle } = require('../components/page');
 
 var PageContent = (props) => {
-    const { title, description, formUrl, formSubmitData, indexUrl} = props;
+    const { parameters, title, description, formUrl, formSubmitData, indexUrl, Form} = props;
 
     return (
         React.createElement("div", null, 
             React.createElement("div", {className: "clearfix mb-1"}, 
                 React.createElement("div", {className: "pull-left"}, 
-                    React.createElement("h3", null, React.createElement("a", {href: indexUrl}, title))
+                    React.createElement(PageTitle, null, React.createElement("a", {href: indexUrl}, title)), 
+                     description 
                 )
             ), 
             React.createElement(Card, null, 
-                React.createElement(CardHeader, null, 
-                    React.createElement("div", {className: "card-text"}, 
-                        description && ` ${description}`
-                    )
-                ), 
                 React.createElement(CardBlock, null, 
-                    React.createElement(Form, {formName: "create", 
-                        formUrl: formUrl, 
-                        formSubmitData: formSubmitData}
-                    )
+                    
+                        Form ? Form : React.createElement(SharedForm, {formName: "create", formUrlData: parameters, formUrl: formUrl, formSubmitData: formSubmitData})
+                    
                 )
             )
         )
@@ -1865,7 +2017,7 @@ module.exports = (props) => {
     );
 };
 
-},{"./shared/components/form":32,"./shared/redux/reducer":34,"jquery":"XpFelZ","react-redux":"MzQWgz","reactstrap":"jldOQ7","redux":"czVV+t"}],29:[function(require,module,exports){
+},{"../components/page":27,"./shared/components/form":35,"./shared/redux/reducer":37,"jquery":"XpFelZ","react-redux":"MzQWgz","reactstrap":"jldOQ7","redux":"czVV+t"}],32:[function(require,module,exports){
 const $ = require('jquery');
 const { combineReducers, createStore, bindActionCreators } = require('redux');
 const {connect} = require('react-redux');
@@ -1875,6 +2027,7 @@ const { Button, Card, CardHeader, CardBlock } = require('reactstrap');
 
 const pageAlert = require('../components/page-alerts');
 const PageTable = require('./index/components/table');
+const { PageTitle } = require('../components/page');
 
 const pageReducer = require('./index/redux/reducer');
 
@@ -1888,9 +2041,9 @@ var PageContent = (props) => {
             React.createElement(pageAlert.default, null), 
             React.createElement("div", {className: "clearfix mb-1"}, 
                 React.createElement("div", {className: "pull-left"}, 
-                    React.createElement("h3", null,  title )
+                    React.createElement(PageTitle, null,  title )
                 ), 
-                React.createElement("div", {className: "pull-left ml-h"}, 
+                React.createElement("div", {className: "pull-left ml-1"}, 
                     React.createElement("a", {className: "btn btn-outline-primary", href: createNewUrl}, "Create new")
                 )
             ), 
@@ -1923,7 +2076,7 @@ module.exports = (props) => {
     );
 };
 
-},{"../components/page-alerts":24,"./index/components/table":30,"./index/redux/reducer":31,"jquery":"XpFelZ","react-redux":"MzQWgz","reactstrap":"jldOQ7","redux":"czVV+t"}],30:[function(require,module,exports){
+},{"../components/page":27,"../components/page-alerts":26,"./index/components/table":33,"./index/redux/reducer":34,"jquery":"XpFelZ","react-redux":"MzQWgz","reactstrap":"jldOQ7","redux":"czVV+t"}],33:[function(require,module,exports){
 const $ = require('jquery');
 const { connect } = require('react-redux');
 const { bindActionCreators } = require('redux');
@@ -1956,7 +2109,7 @@ const reducerToProps = (reducer) => (
 module.exports = connect(stateToProps, reducerToProps)(ReduxTable);
 
 
-},{"../../../components/table":26,"jquery":"XpFelZ","react-redux":"MzQWgz","redux":"czVV+t"}],31:[function(require,module,exports){
+},{"../../../components/table":29,"jquery":"XpFelZ","react-redux":"MzQWgz","redux":"czVV+t"}],34:[function(require,module,exports){
 const $ = require('jquery');
 const { combineReducers } = require('redux');
 
@@ -1982,15 +2135,18 @@ module.exports = combineReducers({
     pageAlerts
 });
 
-},{"../../../components/page-alerts":24,"../../../components/table":26,"jquery":"XpFelZ","redux":"czVV+t"}],32:[function(require,module,exports){
+},{"../../../components/page-alerts":26,"../../../components/table":29,"jquery":"XpFelZ","redux":"czVV+t"}],35:[function(require,module,exports){
 const $ = require('jquery');
 const { connect } = require('react-redux');
 const { bindActionCreators } = require('redux');
 const { reduxForm, getFormValues } = require('redux-form');
+const { Row, Col, Input, Button } = require('reactstrap');
+
 const alerts = require('../../../components/page-alerts');
 const DynamicForm = require('../../../components/dynamic-form');
 const validator = require('../../../components/form/validator');
 const submit = require('../../../components/form/submit');
+const LanguageSelect = require('../../../components/form/language-select');
 
 const keys =  {
     loadNewForm: "LOAD_NEW_FORM",
@@ -2004,16 +2160,23 @@ const actions = {
 };
 
 const initialState = {
-    formData: null
+    formData: null,
 };
 
 const reducer = (state = initialState, action) => {
     const newState = $.extend(true, {}, state);
     switch (action.type) {
         case keys.loadNewForm:
-            newState.formData = action.formData;
-            break;
+            newState.formTitle = action.formData.title;
+            newState.formLanguages = action.formData.languages;
+            newState.formDefaultLanguage = action.formData.defaultLanguage;
 
+            const newFormData = $.extend(true, {}, action.formData);
+            delete newFormData.languages;
+            delete newFormData.title;
+            newState.formData = newFormData;
+
+            break;
         default:
             return state;
     }
@@ -2043,7 +2206,7 @@ class Form extends React.Component {
     }
 
     render() {
-        const { commands, formData, formName, formSubmitData, alertPush } = this.props;
+        const { commands, formData, formTitle, formLanguages, formDefaultLanguage, formName, formSubmitData, alertPush } = this.props;
 
         if (!formData)
             return this.getForm();
@@ -2061,6 +2224,25 @@ class Form extends React.Component {
 
         return (
             React.createElement("div", null, 
+                React.createElement(Row, {className: "mb-1"}, 
+                    
+                        formTitle && 
+                        React.createElement(Col, {md: "8"}, 
+                            React.createElement("div", {className: "card-text"}, 
+                                React.createElement("h4", null, 
+                                    formTitle
+                                )
+                            )
+                        ), 
+                    
+
+                    
+                        formLanguages && 
+                        React.createElement(Col, {md: "4"}, 
+                            React.createElement(LanguageSelect, {languages: formLanguages, defaultLanguage: formDefaultLanguage})
+                        )
+                    
+                ), 
                 React.createElement(DynamicForm, React.__spread({},  reduxFormProps))
             )
         );
@@ -2081,11 +2263,11 @@ module.exports = {
     reducer
 };
 
-},{"../../../components/dynamic-form":2,"../../../components/form/submit":22,"../../../components/form/validator":23,"../../../components/page-alerts":24,"jquery":"XpFelZ","react-redux":"MzQWgz","redux":"czVV+t","redux-form":"LVfYvK"}],33:[function(require,module,exports){
+},{"../../../components/dynamic-form":2,"../../../components/form/language-select":21,"../../../components/form/submit":24,"../../../components/form/validator":25,"../../../components/page-alerts":26,"jquery":"XpFelZ","react-redux":"MzQWgz","reactstrap":"jldOQ7","redux":"czVV+t","redux-form":"LVfYvK"}],36:[function(require,module,exports){
 module.exports = {
 };
 
-},{}],34:[function(require,module,exports){
+},{}],37:[function(require,module,exports){
 const $ = require('jquery');
 const keys = require('./keys');
 const { combineReducers } = require('redux');
@@ -2105,7 +2287,7 @@ module.exports = combineReducers({
     fmTabControl
 });
 
-},{"../../../components/file-manager":3,"../../../components/page-alerts":24,"../../../components/tab-control":25,"../components/form":32,"./keys":33,"jquery":"XpFelZ","redux":"czVV+t","redux-form":"LVfYvK"}],35:[function(require,module,exports){
+},{"../../../components/file-manager":3,"../../../components/page-alerts":26,"../../../components/tab-control":28,"../components/form":35,"./keys":36,"jquery":"XpFelZ","redux":"czVV+t","redux-form":"LVfYvK"}],38:[function(require,module,exports){
 const $ = require('jquery');
 const { combineReducers, createStore, bindActionCreators } = require('redux');
 const {connect, Provider} = require('react-redux');
@@ -2113,52 +2295,30 @@ const { Row, Col, Input, Button, Card, CardHeader, CardBlock } = require('reacts
 
 const PageAlerts = require('../components/page-alerts').default;
 
-const Form = require('./shared/components/form').default;
+const SharedForm = require('./shared/components/form').default;
+const { PageTitle } = require('../components/page');
 
 const store = createStore(require('./shared/redux/reducer'));
 
 var PageContent = (props) => {
-    const { parameters, title, description, createNewUrl, formUrl, formSubmitData, indexUrl } = props;
+    const { parameters, title, description, createNewUrl, formUrl, formSubmitData, indexUrl, Form } = props;
 
     return (
         React.createElement("div", null, 
             React.createElement(PageAlerts, null), 
             React.createElement("div", {className: "clearfix mb-1"}, 
                 React.createElement("div", {className: "pull-left"}, 
-                    React.createElement("h3", null, React.createElement("a", {href: indexUrl}, title))
+                    React.createElement(PageTitle, null, React.createElement("a", {href: indexUrl}, title))
                 ), 
                 React.createElement("div", {className: "pull-left ml-1"}, 
-                    React.createElement("a", {className: "btn btn-outline-secondary", href: createNewUrl}, "Create new")
+                    React.createElement("a", {className: "btn btn-outline-primary", href: createNewUrl}, "Create new")
                 )
             ), 
             React.createElement(Card, null, 
-                React.createElement(CardHeader, null, 
-                    React.createElement(Row, null, 
-                        React.createElement(Col, {md: "8", className: "card-text"}, 
-                            React.createElement("div", null, 
-                                description && ` ${description}`
-                            )
-                        ), 
-                        React.createElement(Col, {md: "4"}, 
-                            React.createElement("div", {className: "form-language"}, 
-                                React.createElement("div", {className: "pull-right ml-q"}, 
-                                    React.createElement(Button, {className: "btn btn-secondary"}, "OK")
-                                ), 
-                                React.createElement("div", {className: "pull-right"}, 
-                                    React.createElement(Input, {type: "select"}, 
-                                        React.createElement("option", {value: "vi-VN"}, "Tiếng Việt")
-                                    )
-                                )
-                            )
-                        )
-                    )
-                ), 
                 React.createElement(CardBlock, null, 
-                    React.createElement(Form, {formName: "create", 
-                        formUrl: formUrl, 
-                        formUrlData: parameters, 
-                        formSubmitData: formSubmitData}
-                    )
+                    
+                        Form ? Form : React.createElement(SharedForm, {formName: "create", formUrl: formUrl, formUrlData: parameters, formSubmitData: formSubmitData})
+                    
                 )
             )
         )
@@ -2184,7 +2344,7 @@ module.exports = (props) => {
     );
 };
 
-},{"../components/page-alerts":24,"./shared/components/form":32,"./shared/redux/reducer":34,"jquery":"XpFelZ","react-redux":"MzQWgz","reactstrap":"jldOQ7","redux":"czVV+t"}],36:[function(require,module,exports){
+},{"../components/page":27,"../components/page-alerts":26,"./shared/components/form":35,"./shared/redux/reducer":37,"jquery":"XpFelZ","react-redux":"MzQWgz","reactstrap":"jldOQ7","redux":"czVV+t"}],39:[function(require,module,exports){
 (function (global){
 global.Corein = {
     components: require('./corein/components'),
@@ -2192,7 +2352,7 @@ global.Corein = {
 }
 
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./corein/components":1,"./corein/page-templates":27}],37:[function(require,module,exports){
+},{"./corein/components":1,"./corein/page-templates":30}],40:[function(require,module,exports){
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
  * All rights reserved.
@@ -2261,7 +2421,7 @@ function shallowEqual(objA, objB) {
 
 module.exports = shallowEqual;
 
-},{}],38:[function(require,module,exports){
+},{}],41:[function(require,module,exports){
 /**
  * Copyright 2013-present, Facebook, Inc.
  * All rights reserved.
@@ -2292,6 +2452,6 @@ function shallowCompare(instance, nextProps, nextState) {
 module.exports = shallowCompare;
 
 
-},{"fbjs/lib/shallowEqual":37}]},{},[36])
+},{"fbjs/lib/shallowEqual":40}]},{},[39])
 
 //# sourceMappingURL=corein.js.map

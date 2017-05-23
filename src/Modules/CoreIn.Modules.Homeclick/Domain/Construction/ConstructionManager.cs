@@ -6,6 +6,7 @@ using CoreIn.Media.MediaHelper;
 using CoreIn.Models.Authentication;
 using CoreIn.Modules.Homeclick.Domain.Construction.Form;
 using CoreIn.Modules.Homeclick.Models;
+using Microsoft.Extensions.Localization;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -18,12 +19,14 @@ namespace CoreIn.Modules.Homeclick
         private readonly IMediaHelper _mediaHelper;
         private readonly ITaxonomyHelper _taxonomyHelper;
         private readonly EntityTypeManager _entityTypeManager;
+        private readonly IStringLocalizer<Strings> _localizer;
 
         public ConstructionManager(CoreInDbContext dbContext, 
             IMediaHelper mediaHelper, 
             IEntityHelper<Construction, ConstructionDetail> constructionEntityHelper,
             ITaxonomyHelper taxonomyHelper,
-            EntityTypeManager entityTypeManager)
+            EntityTypeManager entityTypeManager,
+            IStringLocalizer<Strings> localizer)
         {
             _dbContext = dbContext;
 
@@ -34,6 +37,7 @@ namespace CoreIn.Modules.Homeclick
 
             _constructionEntityHelper = constructionEntityHelper;
             _constructionEntityHelper.SetContext(_dbContext);
+            _localizer = localizer;
         }
 
         public IQueryable<Construction> Gets()
@@ -55,7 +59,7 @@ namespace CoreIn.Modules.Homeclick
                         Status = FieldStatus.Hidden,
                     }
                 },
-                Details = FormUtitities.ViewModelToFormField(typeof(ConstructionDetailViewModel)),
+                Details = FormUtitities.ViewModelTypeToFormField(typeof(ConstructionDetailViewModel), _localizer),
                 TaxonomyTypes = taxonomyTypesViewModels.Select(o => new FormTaxonomyType(o))
             };
 
@@ -63,7 +67,7 @@ namespace CoreIn.Modules.Homeclick
             {
 
                 var entity = _constructionEntityHelper.Entity(entityId ?? 0);
-                var details = _constructionEntityHelper.Details(entity).ToList();
+                var details = _constructionEntityHelper.GetDetails(entity).ToList();
 
                 var formValues = new ConstructionFormValues()
                 {
@@ -128,7 +132,7 @@ namespace CoreIn.Modules.Homeclick
         {
             foreach (var project in projects)
             {
-                var details = _constructionEntityHelper.Details(project);
+                var details = _constructionEntityHelper.GetDetails(project);
                 yield return new ConstructionViewModel()
                 {
                     Id = project.Id,

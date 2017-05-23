@@ -820,83 +820,6 @@ namespace CoreIn.Commons.Migrations
                     b.ToTable("CoreIn_PageDetail");
                 });
 
-            modelBuilder.Entity("CoreIn.Modules.Homeclick.Models.Post", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<DateTime?>("Created");
-
-                    b.Property<long?>("EntityTypeId");
-
-                    b.Property<string>("Name")
-                        .IsRequired();
-
-                    b.Property<int?>("Order");
-
-                    b.Property<long?>("OwnerId");
-
-                    b.Property<long?>("ParentId");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("EntityTypeId");
-
-                    b.HasIndex("OwnerId");
-
-                    b.ToTable("CoreIn_Post");
-                });
-
-            modelBuilder.Entity("CoreIn.Modules.Homeclick.Models.PostDetail", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<long>("EntityId");
-
-                    b.Property<string>("Field");
-
-                    b.Property<string>("Group");
-
-                    b.Property<string>("Language");
-
-                    b.Property<DateTime?>("Modified");
-
-                    b.Property<long?>("ModifiedById");
-
-                    b.Property<string>("Prefix");
-
-                    b.Property<string>("Suffix");
-
-                    b.Property<string>("Value");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("EntityId");
-
-                    b.HasIndex("ModifiedById");
-
-                    b.ToTable("CoreIn_PostDetail");
-                });
-
-            modelBuilder.Entity("CoreIn.Modules.Homeclick.Models.PostTaxonomy", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<long>("EntityId");
-
-                    b.Property<long>("TaxonomyId");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("EntityId");
-
-                    b.HasIndex("TaxonomyId");
-
-                    b.ToTable("CoreIn_PostTaxonomy");
-                });
-
             modelBuilder.Entity("CoreIn.Modules.Homeclick.Models.Project", b =>
                 {
                     b.Property<long>("Id")
@@ -954,6 +877,83 @@ namespace CoreIn.Commons.Migrations
                     b.HasIndex("ModifiedById");
 
                     b.ToTable("CoreIn_ProjectDetail");
+                });
+
+            modelBuilder.Entity("CoreIn.Modules.Post.Models.PostEntity", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<DateTime?>("Created");
+
+                    b.Property<long?>("EntityTypeId");
+
+                    b.Property<string>("Name")
+                        .IsRequired();
+
+                    b.Property<int?>("Order");
+
+                    b.Property<long?>("OwnerId");
+
+                    b.Property<long?>("ParentId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EntityTypeId");
+
+                    b.HasIndex("OwnerId");
+
+                    b.ToTable("CoreIn_PostEntity");
+                });
+
+            modelBuilder.Entity("CoreIn.Modules.Post.Models.PostEntityDetail", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<long>("EntityId");
+
+                    b.Property<string>("Field");
+
+                    b.Property<string>("Group");
+
+                    b.Property<string>("Language");
+
+                    b.Property<DateTime?>("Modified");
+
+                    b.Property<long?>("ModifiedById");
+
+                    b.Property<string>("Prefix");
+
+                    b.Property<string>("Suffix");
+
+                    b.Property<string>("Value");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EntityId");
+
+                    b.HasIndex("ModifiedById");
+
+                    b.ToTable("CoreIn_PostEntityDetail");
+                });
+
+            modelBuilder.Entity("CoreIn.Modules.Post.Models.PostEntityTaxonomy", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<long>("EntityId");
+
+                    b.Property<long>("TaxonomyId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EntityId");
+
+                    b.HasIndex("TaxonomyId");
+
+                    b.ToTable("CoreIn_PostEntityTaxonomy");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityRoleClaim<long>", b =>
@@ -1361,42 +1361,6 @@ namespace CoreIn.Commons.Migrations
                         .HasForeignKey("ModifiedById");
                 });
 
-            modelBuilder.Entity("CoreIn.Modules.Homeclick.Models.Post", b =>
-                {
-                    b.HasOne("CoreIn.Models.EntityType", "EntityType")
-                        .WithMany()
-                        .HasForeignKey("EntityTypeId");
-
-                    b.HasOne("CoreIn.Models.Authentication.User", "Owner")
-                        .WithMany()
-                        .HasForeignKey("OwnerId");
-                });
-
-            modelBuilder.Entity("CoreIn.Modules.Homeclick.Models.PostDetail", b =>
-                {
-                    b.HasOne("CoreIn.Modules.Homeclick.Models.Post", "Entity")
-                        .WithMany("Details")
-                        .HasForeignKey("EntityId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("CoreIn.Models.Authentication.User", "ModifiedBy")
-                        .WithMany()
-                        .HasForeignKey("ModifiedById");
-                });
-
-            modelBuilder.Entity("CoreIn.Modules.Homeclick.Models.PostTaxonomy", b =>
-                {
-                    b.HasOne("CoreIn.Modules.Homeclick.Models.Post", "Entity")
-                        .WithMany()
-                        .HasForeignKey("EntityId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("CoreIn.Models.Taxonomy", "Taxonomy")
-                        .WithMany()
-                        .HasForeignKey("TaxonomyId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
             modelBuilder.Entity("CoreIn.Modules.Homeclick.Models.Project", b =>
                 {
                     b.HasOne("CoreIn.Models.EntityType", "EntityType")
@@ -1418,6 +1382,42 @@ namespace CoreIn.Commons.Migrations
                     b.HasOne("CoreIn.Models.Authentication.User", "ModifiedBy")
                         .WithMany()
                         .HasForeignKey("ModifiedById");
+                });
+
+            modelBuilder.Entity("CoreIn.Modules.Post.Models.PostEntity", b =>
+                {
+                    b.HasOne("CoreIn.Models.EntityType", "EntityType")
+                        .WithMany()
+                        .HasForeignKey("EntityTypeId");
+
+                    b.HasOne("CoreIn.Models.Authentication.User", "Owner")
+                        .WithMany()
+                        .HasForeignKey("OwnerId");
+                });
+
+            modelBuilder.Entity("CoreIn.Modules.Post.Models.PostEntityDetail", b =>
+                {
+                    b.HasOne("CoreIn.Modules.Post.Models.PostEntity", "Entity")
+                        .WithMany("Details")
+                        .HasForeignKey("EntityId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("CoreIn.Models.Authentication.User", "ModifiedBy")
+                        .WithMany()
+                        .HasForeignKey("ModifiedById");
+                });
+
+            modelBuilder.Entity("CoreIn.Modules.Post.Models.PostEntityTaxonomy", b =>
+                {
+                    b.HasOne("CoreIn.Modules.Post.Models.PostEntity", "Entity")
+                        .WithMany("Taxonomies")
+                        .HasForeignKey("EntityId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("CoreIn.Models.Taxonomy", "Taxonomy")
+                        .WithMany()
+                        .HasForeignKey("TaxonomyId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityRoleClaim<long>", b =>

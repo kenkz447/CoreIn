@@ -96,7 +96,7 @@ module.exports = (props) => {
                             <div className="card p-a-2">
                                 <ReduxLoginForm/>
                             </div>
-                            <div className="card bg-transparent no-border">
+                            <div className="card bg-transparent no-border no-shadow">
                                 <div className="card-block text-xs-center">
                                     <div>
                                         <h2>{resources.register}</h2>

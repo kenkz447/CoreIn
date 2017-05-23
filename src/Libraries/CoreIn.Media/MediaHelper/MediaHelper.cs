@@ -65,7 +65,7 @@ namespace CoreIn.Media.MediaHelper
         private object FileEntityToObject(FileEntity fileEntity, bool includeDetails = false)
         {
             if (includeDetails)
-                fileEntity.Details = _entityHelper.Details(fileEntity).ToList() as IList<FileEntityDetail>;
+                fileEntity.Details = _entityHelper.GetDetails(fileEntity).ToList() as IList<FileEntityDetail>;
 
             return new
             {
@@ -106,7 +106,7 @@ namespace CoreIn.Media.MediaHelper
         {
             try
             {
-                var details = _entityHelper.Details(fileEntity);
+                var details = _entityHelper.GetDetails(fileEntity);
 
                 var fileThumbnail= details.FirstOrDefault(o => o.Field == "src_thumb")?.Value;
                 var filePath = Path.Combine(_environment.WebRootPath, details.FirstOrDefault(o => o.Field == "src").Value);
@@ -314,7 +314,7 @@ namespace CoreIn.Media.MediaHelper
                 {"id", entity.Id.ToString() }
             };
 
-            var entityDetails = _entityHelper.Details(entity);
+            var entityDetails = _entityHelper.GetDetails(entity);
             formValues.Details = entityDetails.ToDictionary(o => o.Field, o => o.Value);
 
             formValues.TaxonomyTypes = new Dictionary<long, Dictionary<long, bool>>();

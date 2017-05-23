@@ -12,7 +12,6 @@ module.exports = function (prefixName, props) {
             key: name
         });
 
-
     if (childFields)
         return <FieldArray {...newProps} component={renderFieldArray} />;
 

@@ -6,7 +6,7 @@ const Form = require('./shared/components/form').default;
 
 const store = createStore(require('./shared/redux/reducer'));
 
-const {create: {formUrl, formSubmitData}} = require('./shared');
+const {index, create: {formUrl, formSubmitData}} = require('./shared');
 
 var PageContent = (props) => {
 
@@ -14,10 +14,12 @@ var PageContent = (props) => {
 
     return (
         <div>
+            <div className="clearfix mb-1">
+                <div className="pull-left">
+                    <h3><a href={index.url}>{title}</a></h3>
+                </div>
+            </div>
             <Card>
-                <CardHeader>
-                    <strong>{title}</strong> {description && ` ${description}` }
-                </CardHeader>
                 <CardBlock>
                     <Form formName="create"
                         formUrl={formUrl}

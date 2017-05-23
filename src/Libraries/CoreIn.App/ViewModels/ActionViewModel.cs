@@ -10,12 +10,12 @@ namespace CoreIn.App.ViewModels
 {
     public class ActionViewModel
     {
-        public string Module { get; }
-        public string Title { get; }
-        public string Description { get; }
-        public string ViewLayout { get; }
-        public string[] Scripts { get; }
-        public string[] Styles { get; }
+        public string Module { get; set; }
+        public string Title { get; set; }
+        public string Description { get; set; }
+        public string ViewLayout { get; set; }
+        public string[] Scripts { get; set; }
+        public string[] Styles { get; set; }
 
         private Dictionary<string, FormViewModel> FormDictionary { get;}
         private Dictionary<string, string> ResourcesDictionary { get;}
@@ -26,7 +26,7 @@ namespace CoreIn.App.ViewModels
 
         }
 
-        public ActionViewModel(string title, 
+        public ActionViewModel(string title = null, 
             string description = null, 
             string module = null, 
             Dictionary<string, string> resourceDictionary = null, 
@@ -57,7 +57,7 @@ namespace CoreIn.App.ViewModels
             {
                 title = this.Title,
                 description = this.Description,
-                forms = this.FormDictionary.ToDictionary(o => o.Key, o => o.Value.GetRawData()),
+                forms = this.FormDictionary?.ToDictionary(o => o.Key, o => o.Value.GetRawData()),
                 resources = this.ResourcesDictionary,
                 parameters = this.Parameters
             };

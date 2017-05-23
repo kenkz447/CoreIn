@@ -5,6 +5,18 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Develop\Scripts\homeclick\project\index\**" />
+    <Content Remove="Develop\Scripts\homeclick\project\index\**" />
+    <EmbeddedResource Remove="Develop\Scripts\homeclick\project\index\**" />
+    <None Remove="Develop\Scripts\homeclick\project\index\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Domain\Construction\ConstructionManager.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Domain\Construction\" />
     <Folder Include="wwwroot\" />
   </ItemGroup>
   <ItemGroup>

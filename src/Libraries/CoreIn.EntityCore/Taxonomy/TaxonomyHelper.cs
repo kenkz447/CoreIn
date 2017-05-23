@@ -109,7 +109,7 @@ namespace CoreIn.EntityCore
                 {AppKey.TaxonomyTypeId, entity.TaxonomyTypeId.ToString() },
             };
 
-            var entityDetails = _taxEntityHelper.Details(entity);
+            var entityDetails = _taxEntityHelper.GetDetails(entity);
 
             formValues.Details = new Dictionary<string, string>();
             foreach (var item in entityDetails)
@@ -173,7 +173,7 @@ namespace CoreIn.EntityCore
 
         public TaxonomyViewModel TaxonomyToViewModel(Taxonomy taxonomy)
         {
-            var details = _taxEntityHelper.Details(taxonomy).ToList();
+            var details = _taxEntityHelper.GetDetails(taxonomy).ToList();
 
             var result = new TaxonomyViewModel
             {
@@ -208,7 +208,7 @@ namespace CoreIn.EntityCore
 
             foreach (var taxonomyType in taxonomytypes)
             {
-                var details = _taxTypeEntityHelper.Details(taxonomyType);
+                var details = _taxTypeEntityHelper.GetDetails(taxonomyType);
                 var entityType = _entityTypeManager.GetEntityType(taxonomyType.EntityTypeId ?? 0);
                 var entityTypeDetails = _entityTypeManager.GetEntityTypeDetails(entityType);
 
@@ -244,7 +244,7 @@ namespace CoreIn.EntityCore
             if (includeDetails)
                 foreach (var taxonomy in taxonomies)
                 {
-                    taxonomy.Details = _taxEntityHelper.Details(taxonomy).ToList();
+                    taxonomy.Details = _taxEntityHelper.GetDetails(taxonomy).ToList();
                 }
 
             return taxonomies;
@@ -292,7 +292,7 @@ namespace CoreIn.EntityCore
         public TaxonomyType GetTaxonomyType(long taxonomyTypeId)
         {
             var type = _taxTypeEntityHelper.Entity(taxonomyTypeId);
-            type.Details = _taxTypeEntityHelper.Details(type).ToList();
+            type.Details = _taxTypeEntityHelper.GetDetails(type).ToList();
             return type;
         }
 

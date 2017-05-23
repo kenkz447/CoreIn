@@ -29,9 +29,11 @@ namespace CoreIn.Commons.EntityHelper
 
         TEntity CreateEntity(EntityType entityType, TEntity parentEntity, string name, User owner, DateTime? created = null);
 
-        TDetail Detail(TEntity entity, string name);
+        TDetail GetDetail(TEntity entity, string name);
 
-        IQueryable<TDetail> Details(TEntity entity, CultureInfo cultureInfo = null);
+        IQueryable<TDetail> GetDetails(TEntity entity, CultureInfo cultureInfo = null);
+
+        IQueryable<TDetail> GetDetails(TEntity entity, string cultureName);
 
         TDetail CreateDetail(TEntity entity, string field, object value, string group, string prefix, string suffix, User owner, DateTime? dateTime = null);
 

@@ -12,7 +12,7 @@ namespace CoreIn.Modules.Homeclick
 {
     public class ModularInitializer : IModuleInitializer
     {
-        private void InitDatabase(UserManager<User> userManager, IMenuHelper menuHelper)
+        private void InitDatabase(UserManager<User> userManager, IMenuHelper menuHelper, EntityTypeManager entityTypeManager)
         {
             var supperUser = userManager.FindByNameAsync(AppKey.SupperAdminUserName).Result;
             var appMenu = menuHelper.Menu(AppKey.AppMenuName);
@@ -71,6 +71,7 @@ namespace CoreIn.Modules.Homeclick
                             },
                             supperUser, false
                             ),
+
                         menuHelper.CreateMenuEntity(
                             new Menu {
                                 Name = "collections",
@@ -119,54 +120,7 @@ namespace CoreIn.Modules.Homeclick
                             },
                             supperUser, false
                             ),
-                        menuHelper.CreateMenuEntity(
-                            new Menu {
-                                Name = "posts",
-                                Children = new List<Menu>
-                                {
-                                     menuHelper.CreateMenuEntity(
-                                        new Menu
-                                        {
-                                            Name = "post-index",
-                                        },
-                                        new MenuDetail[]
-                                        {
-                                            new MenuDetail { Field = "title", Value = "All post", Language="en-US"},
-                                            new MenuDetail { Field = "title", Value = "Tất cả bài viết", Language="vi-VN"},
-                                            new MenuDetail { Field = "controller", Value = "post"},
-                                            new MenuDetail { Field = "action", Value = "index"},
-                                            new MenuDetail { Field = "url", Value = "/post"},
-                                            new MenuDetail { Field = "icon", Value = "<i class=\"fa fa-bars\" aria-hidden=\"true\"></i>"},
-                                        },
-                                        supperUser, false
-                                    ),
-                                    menuHelper.CreateMenuEntity(
-                                        new Menu
-                                        {
-                                            Name = "post-new",
-                                        },
-                                        new MenuDetail[]
-                                        {
-                                            new MenuDetail { Field = "title", Value = "New post", Language="en-US"},
-                                            new MenuDetail { Field = "title", Value = "Bài viết mới", Language="vi-VN"},
-                                            new MenuDetail { Field = "controller", Value = "post"},
-                                            new MenuDetail { Field = "action", Value = "create"},
-                                            new MenuDetail { Field = "url", Value = "/post/create"},
-                                            new MenuDetail { Field = "icon", Value = "<i class=\"fa fa-plus\" aria-hidden=\"true\"></i>"},
-                                        },
-                                        supperUser, false
-                                    )
-                                }
-                            },
-                            new MenuDetail[]
-                            {
-                                new MenuDetail { Field = "title", Value = "Post", Language="en-US"},
-                                new MenuDetail { Field = "title", Value = "Bài viết", Language="vi-VN"},
-                                new MenuDetail { Field = "url", Value = "#"},
-                                new MenuDetail { Field = "icon", Value = "<i class=\"fa fa-sticky-note\" aria-hidden=\"true\"></i>"},
-                            },
-                            supperUser, false
-                            ),
+
                         menuHelper.CreateMenuEntity(
                             new Menu {
                                 Name = "options",
@@ -215,6 +169,7 @@ namespace CoreIn.Modules.Homeclick
                             },
                             supperUser, false
                             ),
+
                         menuHelper.CreateMenuEntity(
                             new Menu {
                                 Name = "construction",
@@ -247,7 +202,7 @@ namespace CoreIn.Modules.Homeclick
                                             new MenuDetail { Field = "title", Value = "Thêm công trình", Language="vi-VN"},
                                             new MenuDetail { Field = "controller", Value = "construction"},
                                             new MenuDetail { Field = "action", Value = "create"},
-                                            new MenuDetail { Field = "url", Value = "/construction/create"},
+                                            new MenuDetail { Field = "url", Value = $"/construction/create?entityTypeId={entityTypeManager.Construction.Id}"},
                                             new MenuDetail { Field = "icon", Value = "<i class=\"fa fa-plus\" aria-hidden=\"true\"></i>"},
                                         },
                                         supperUser, false
@@ -263,7 +218,8 @@ namespace CoreIn.Modules.Homeclick
                             },
                             supperUser, false
                             ),
-                            menuHelper.CreateMenuEntity(
+
+                        menuHelper.CreateMenuEntity(
                             new Menu {
                                 Name = "pages",
                                 Children = new List<Menu>
@@ -311,6 +267,54 @@ namespace CoreIn.Modules.Homeclick
                             },
                             supperUser, false
                             ),
+                        menuHelper.CreateMenuEntity(
+                            new Menu {
+                                Name = "albums",
+                                Children = new List<Menu>
+                                {
+                                     menuHelper.CreateMenuEntity(
+                                        new Menu
+                                        {
+                                            Name = "albums-index",
+                                        },
+                                        new MenuDetail[]
+                                        {
+                                            new MenuDetail { Field = "title", Value = "All album", Language="en-US"},
+                                            new MenuDetail { Field = "title", Value = "Tất cả album", Language="vi-VN"},
+                                            new MenuDetail { Field = "controller", Value = "album"},
+                                            new MenuDetail { Field = "action", Value = "index"},
+                                            new MenuDetail { Field = "url", Value = "/album"},
+                                            new MenuDetail { Field = "icon", Value = "<i class=\"fa fa-bars\" aria-hidden=\"true\"></i>"},
+                                        },
+                                        supperUser, false
+                                    ),
+                                    menuHelper.CreateMenuEntity(
+                                        new Menu
+                                        {
+                                            Name = "albums-new",
+                                        },
+                                        new MenuDetail[]
+                                        {
+                                            new MenuDetail { Field = "title", Value = "New album", Language="en-US"},
+                                            new MenuDetail { Field = "title", Value = "Tạo album mới", Language="vi-VN"},
+                                            new MenuDetail { Field = "controller", Value = "album"},
+                                            new MenuDetail { Field = "action", Value = "create"},
+                                            new MenuDetail { Field = "url", Value = "/album/create"},
+                                            new MenuDetail { Field = "icon", Value = "<i class=\"fa fa-plus\" aria-hidden=\"true\"></i>"},
+                                        },
+                                        supperUser, false
+                                    )
+                                }
+                            },
+                            new MenuDetail[]
+                            {
+                                new MenuDetail { Field = "title", Value = "Gallery", Language="en-US"},
+                                new MenuDetail { Field = "title", Value = "Hình ảnh", Language="vi-VN"},
+                                new MenuDetail { Field = "url", Value = "#"},
+                                new MenuDetail { Field = "icon", Value = "<i class=\"fa fa-picture-o\" aria-hidden=\"true\"></i>"},
+                            },
+                            supperUser, false
+                            ),
                     }
                 },
                 new MenuDetail[]
@@ -334,14 +338,7 @@ namespace CoreIn.Modules.Homeclick
 
             services.AddSingleton(new TaxonomyTypeManager(entityTypeManager, taxonomyHelper, userManager));
 
-            services.AddSingleton(typeof(ProjectManager));
-            services.AddSingleton(typeof(PostManager));
-            services.AddSingleton(typeof(CollectionManager));
-            services.AddSingleton(typeof(OptionGroupManager));
-            services.AddSingleton(typeof(ConstructionManager));
-            services.AddSingleton(typeof(PageManager));
-
-            InitDatabase(userManager, menuHelper);
+            InitDatabase(userManager, menuHelper, entityTypeManager);
         }
     }
 }

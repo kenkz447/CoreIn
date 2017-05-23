@@ -8,18 +8,18 @@ const { combineReducers, createStore } = require('redux');
 const { Provider } = require('react-redux');
 const formReducer = require('redux-form').reducer;
 
-const { tabControlReducer, fileManager: {fmReducer} } = Corein.components;
+const { tabControl, fileManager: {fmReducer} } = Corein.components;
 
-const tuReducer = require('./index/redux/tu-reducer');
-const EntityTypeList = require('./index/components/tu-taxonomyTypeList');
-const Tabs = require('./index/components/tu-actionTabControl');
-const TaxonomyTree = require('./index/components/tu-taxonomyList');
+const tuReducer = require('./index/redux/reducer');
+const EntityTypeList = require('./index/components/taxonomy-type-list');
+const Tabs = require('./index/components/tab-control');
+const TaxonomyTree = require('./index/components/taxonomy-list');
 
 const reducers = {
     fm: fmReducer,
     form: formReducer,
     tu: tuReducer,
-    tc: tabControlReducer
+    tc: tabControl.reducer
 }
 
 const reducer = combineReducers(reducers);
@@ -44,17 +44,19 @@ module.exports = (props) => {
     );
 }
 
-},{"./index/components/tu-actionTabControl":3,"./index/components/tu-taxonomyList":4,"./index/components/tu-taxonomyTypeList":5,"./index/redux/tu-reducer":10,"react-redux":"MzQWgz","redux":"czVV+t","redux-form":"LVfYvK"}],3:[function(require,module,exports){
+},{"./index/components/tab-control":3,"./index/components/taxonomy-list":4,"./index/components/taxonomy-type-list":5,"./index/redux/reducer":10,"react-redux":"MzQWgz","redux":"czVV+t","redux-form":"LVfYvK"}],3:[function(require,module,exports){
 const $ = require('jquery');
-const { loadEntityTypes, entityTypeChange, newTaxonomyFormChange, newTaxonomy } = require('../redux/tu-actions');
 const { bindActionCreators } = require('redux');
 const { connect } = require('react-redux');
 const classnames = require('classnames');
-const { form, TabControl, tabControlActions: { tabChange, tabAdd } } = Corein.components;
-const { getNewTaxonomyForm } = require('../redux/tu-ajaxs');
 const { Label } = require('reactstrap');
 const { reduxForm } = require('redux-form');
-const { newTaxonomySubmit } = require('../redux/tu-formSubmits');
+
+const { newTaxonomySubmit } = require('../redux/formSubmits');
+const { loadEntityTypes, entityTypeChange, newTaxonomyFormChange, newTaxonomy } = require('../redux/actions');
+const { getNewTaxonomyForm } = require('../redux/ajaxs');
+
+const { form, tabControl, tabControl: { actions: { tabChange, tabAdd } } } = Corein.components;
 
 const ActionTabControl = (props) => {
     const { taxonomyTypeChanged, currentTaxonomyType, newTaxonomyFormChange, activeTab, tabs, tabAdd, tabChange, newTaxonomy } = props;
@@ -84,7 +86,7 @@ const ActionTabControl = (props) => {
     }
     return (
         React.createElement("div", {className: "card"}, 
-            React.createElement(TabControl, {activeTab: activeTab, tabs: tabs, tabChange: tabChange})
+            React.createElement(tabControl.default, {activeTab: activeTab, tabs: tabs, tabChange: tabChange})
         )
     );
 };
@@ -105,23 +107,22 @@ module.exports = connect(stateToProps, reducerToProps)(ActionTabControl);
 
 
 
-},{"../redux/tu-actions":6,"../redux/tu-ajaxs":7,"../redux/tu-formSubmits":8,"classnames":"4z/pR8","jquery":"XpFelZ","react-redux":"MzQWgz","reactstrap":"jldOQ7","redux":"czVV+t","redux-form":"LVfYvK"}],4:[function(require,module,exports){
+},{"../redux/actions":6,"../redux/ajaxs":7,"../redux/formSubmits":8,"classnames":"4z/pR8","jquery":"XpFelZ","react-redux":"MzQWgz","reactstrap":"jldOQ7","redux":"czVV+t","redux-form":"LVfYvK"}],4:[function(require,module,exports){
 (function (global){
 ﻿const _ = require('underscore');
 const { bindActionCreators } = require('redux');
 const { connect } = require('react-redux');
 const classnames = require('classnames');
 const Tree = require('react-ui-tree');
-const ajaxs = require('../redux/tu-ajaxs');
-const { form, tabControlActions: { tabRemove, tabAdd } } = Corein.components;
-const { loadTaxonomies, taxonomyClick, taxonomySelect, taxonomiesDeleted, taxonomiesUpdating, taxonomiesUpdated, taxonomyUpdated, componentLoaded} = require('../redux/tu-actions');
 const listToTree = require('list-to-tree');
 const { Button, ButtonGroup } = require('reactstrap');
+
+const ajaxs = require('../redux/ajaxs');
+const { loadTaxonomies, taxonomyClick, taxonomySelect, taxonomiesDeleted, taxonomiesUpdating, taxonomiesUpdated, taxonomyUpdated, componentLoaded} = require('../redux/actions');
 const { reduxForm } = require('redux-form');
-const {updateTaxonomySubmit} = require('../redux/tu-formSubmits');
+const {updateTaxonomySubmit} = require('../redux/formSubmits');
 
-
-const componentName = "taxonomyList";
+const { form, tabControl: { actions: { tabChange, tabAdd, tabRemove } } } = Corein.components;
 
 class TaxonomyTypeList extends React.Component {
     constructor(props) {
@@ -287,14 +288,15 @@ module.exports = connect(stateToProps, reducerToProps)(TaxonomyTypeList);
 
 
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"../redux/tu-actions":6,"../redux/tu-ajaxs":7,"../redux/tu-formSubmits":8,"classnames":"4z/pR8","list-to-tree":"3c/Ypl","react-redux":"MzQWgz","react-ui-tree":"0pOQFP","reactstrap":"jldOQ7","redux":"czVV+t","redux-form":"LVfYvK","underscore":"vBgcj5"}],5:[function(require,module,exports){
+},{"../redux/actions":6,"../redux/ajaxs":7,"../redux/formSubmits":8,"classnames":"4z/pR8","list-to-tree":"3c/Ypl","react-redux":"MzQWgz","react-ui-tree":"0pOQFP","reactstrap":"jldOQ7","redux":"czVV+t","redux-form":"LVfYvK","underscore":"vBgcj5"}],5:[function(require,module,exports){
 const $ = require('jquery');
 const _ = require('underscore');
-const ajaxs = require('../redux/tu-ajaxs');
-const { loadTaxonomyTypes, loadTaxonomies, entityTypeChange, taxonomyTypeChange } = require('../redux/tu-actions');
+const { ListGroup, ListGroupItem, Label, Collapse, Card, CardBlock } = require('reactstrap');
 const { bindActionCreators } = require('redux');
 const { connect } = require('react-redux');
-const { ListGroup, ListGroupItem, Label, Collapse, Card, CardBlock } = require('reactstrap');
+
+const ajaxs = require('../redux/ajaxs');
+const { loadTaxonomyTypes, loadTaxonomies, entityTypeChange, taxonomyTypeChange } = require('../redux/actions');
 
 _.groupByMulti = function (obj, values, context) {
     if (!values.length)
@@ -378,8 +380,8 @@ const reducerToProps = (reducer) => (
 
 module.exports = connect(stateToProps, reducerToProps)(TaxonomyTypeList);
 
-},{"../redux/tu-actions":6,"../redux/tu-ajaxs":7,"jquery":"XpFelZ","react-redux":"MzQWgz","reactstrap":"jldOQ7","redux":"czVV+t","underscore":"vBgcj5"}],6:[function(require,module,exports){
-const keys = require('./tu-keys');
+},{"../redux/actions":6,"../redux/ajaxs":7,"jquery":"XpFelZ","react-redux":"MzQWgz","reactstrap":"jldOQ7","redux":"czVV+t","underscore":"vBgcj5"}],6:[function(require,module,exports){
+const keys = require('./keys');
 
 const loadTaxonomyTypes = (taxonomyTypes) => ({
     type: keys.loadTaxonomyTypes,
@@ -460,7 +462,7 @@ module.exports = {
     componentLoaded
 };
 
-},{"./tu-keys":9}],7:[function(require,module,exports){
+},{"./keys":9}],7:[function(require,module,exports){
 const $ = require('jquery');
 
 const getTaxonomyTypes = (handler) => {
@@ -630,7 +632,7 @@ module.exports = keys;
 
 },{}],10:[function(require,module,exports){
 const $ = require('jquery');
-const keys = require('./tu-keys');
+const keys = require('./keys');
 const _ = require('underscore');
 
 const initState = {
@@ -709,7 +711,7 @@ const reducer = (state = initState, action) => {
 
 module.exports = reducer;
 
-},{"./tu-keys":9,"jquery":"XpFelZ","underscore":"vBgcj5"}],11:[function(require,module,exports){
+},{"./keys":9,"jquery":"XpFelZ","underscore":"vBgcj5"}],11:[function(require,module,exports){
 (function (global){
 ﻿global.Admin = {
     taxonomyUI: require('./admin/taxonomy-UI')

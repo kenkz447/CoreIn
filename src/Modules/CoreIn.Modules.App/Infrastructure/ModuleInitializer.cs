@@ -7,6 +7,7 @@ using CoreIn.Models.Authentication;
 using CoreIn.Resources.ConstantKeys;
 using Microsoft.AspNetCore.Identity;
 using CoreIn.EntityCore;
+using CoreIn.App;
 
 namespace CoreIn.Modules.App
 {
@@ -33,6 +34,9 @@ namespace CoreIn.Modules.App
 
         public void Init(IServiceCollection services)
         {
+            services.AddScoped(typeof(EntityController<,,,>));
+            services.AddScoped(typeof(EntityControllerWithTaxonomy<,,,,>));
+
             var serviceProvider = services.BuildServiceProvider();
             this.InitDatabase(serviceProvider.GetService<UserManager<User>>(), serviceProvider.GetService<IMenuHelper>());
         }

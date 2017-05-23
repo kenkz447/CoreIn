@@ -6,3 +6,15 @@
   background: $footer-bg;
   @include borders($footer-borders);
 }
+
+.site-footer {
+    @include borders($footer-borders);
+    background: $footer-bg;
+    padding: 1.5rem;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-flex: 0;
+    -ms-flex: 0 0 auto;
+    flex: 0 0 auto;
+}

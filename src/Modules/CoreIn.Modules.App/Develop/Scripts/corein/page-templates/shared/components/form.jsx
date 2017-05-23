@@ -2,10 +2,13 @@
 const { connect } = require('react-redux');
 const { bindActionCreators } = require('redux');
 const { reduxForm, getFormValues } = require('redux-form');
+const { Row, Col, Input, Button } = require('reactstrap');
+
 const alerts = require('../../../components/page-alerts');
 const DynamicForm = require('../../../components/dynamic-form');
 const validator = require('../../../components/form/validator');
 const submit = require('../../../components/form/submit');
+const LanguageSelect = require('../../../components/form/language-select');
 
 const keys =  {
     loadNewForm: "LOAD_NEW_FORM",
@@ -19,16 +22,23 @@ const actions = {
 };
 
 const initialState = {
-    formData: null
+    formData: null,
 };
 
 const reducer = (state = initialState, action) => {
     const newState = $.extend(true, {}, state);
     switch (action.type) {
         case keys.loadNewForm:
-            newState.formData = action.formData;
-            break;
+            newState.formTitle = action.formData.title;
+            newState.formLanguages = action.formData.languages;
+            newState.formDefaultLanguage = action.formData.defaultLanguage;
 
+            const newFormData = $.extend(true, {}, action.formData);
+            delete newFormData.languages;
+            delete newFormData.title;
+            newState.formData = newFormData;
+
+            break;
         default:
             return state;
     }
@@ -58,7 +68,7 @@ class Form extends React.Component {
     }
 
     render() {
-        const { commands, formData, formName, formSubmitData, alertPush } = this.props;
+        const { commands, formData, formTitle, formLanguages, formDefaultLanguage, formName, formSubmitData, alertPush } = this.props;
 
         if (!formData)
             return this.getForm();
@@ -76,6 +86,25 @@ class Form extends React.Component {
 
         return (
             <div>
+                <Row className="mb-1">
+                    {
+                        formTitle && 
+                        <Col md="8">
+                            <div className="card-text">
+                                <h4>
+                                    {formTitle}
+                                </h4>
+                            </div>
+                        </Col>
+                    }
+
+                    {
+                        formLanguages && 
+                        <Col md="4">
+                            <LanguageSelect languages={formLanguages} defaultLanguage={formDefaultLanguage}/>
+                        </Col>
+                    }
+                </Row>
                 <DynamicForm {...reduxFormProps} />
             </div>
         );

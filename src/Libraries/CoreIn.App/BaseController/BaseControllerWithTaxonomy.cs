@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace CoreIn.App
 {
@@ -26,6 +27,32 @@ namespace CoreIn.App
             : base(userManager, entityController)
         {
             _entityController = entityController;
+        }
+
+        public override void OnActionExecuted(ActionExecutedContext context)
+        {
+            var actionResult = context.Result as ViewResult;
+            if (actionResult != null && actionResult.Model is ActionViewModel)
+            {
+                var actionViewModel = actionResult.Model as ActionViewModel;
+
+                var entityTypeId = actionViewModel.Parameters != null && actionViewModel.Parameters.ContainsKey("entityTypeId") ? 
+                    actionViewModel.Parameters["entityTypeId"] : HttpContext.Request.Query["entityTypeId"][0];
+
+                actionViewModel.Urls = new Dictionary<string, string>()
+                {
+                    ["index"] = Url.Action("index", new { entityTypeId = entityTypeId }),
+                    ["create"] = Url.Action("create", new { entityTypeId = entityTypeId }),
+                    ["update"] = Url.Action("update")
+                };
+            }
+            base.OnActionExecuted(context);
+        }
+
+        public override ActionResult Index()
+        {
+            var actionViewModel = new ActionViewModel();
+            return View(actionViewModel);
         }
 
         public override JsonResult GetForm(long? id, string lang = null)

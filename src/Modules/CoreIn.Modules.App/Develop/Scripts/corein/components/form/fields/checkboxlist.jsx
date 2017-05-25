@@ -43,7 +43,7 @@ class CheckboxList extends React.Component {
 
         return (
             <div className="checkbox-list">
-                <h4>{title}</h4>
+                <h6>{title}</h6>
                 {tree &&
                     <div className="items">
                         {

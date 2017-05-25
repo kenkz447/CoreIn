@@ -65,10 +65,13 @@ namespace CoreIn.App
                 form.DefaultLanguage = formInputLanguage;
 
                 var entity = EntityHelper.Entity(entityId ?? 0);
+
                 var details = EntityHelper.GetDetails(entity, formInputLanguage).ToList();
+                var localizationFieldNames = details.Where(o => o.Language != null).Select(o => o.Field);
+                var localizationFilteredDetails = details.AsEnumerable().Where(o => !(localizationFieldNames.Contains(o.Field) && o.Language == null));
 
                 form.InitialValues.Meta = new Dictionary<string, string>() { { "id", entityId.ToString() } };
-                (form.InitialValues as FormValues<TFormDetailViewModel>).Details = FormUtitities.EntityDetailsToFieldValues<TEntityDetail, TFormDetailViewModel>(details);
+                (form.InitialValues as FormValues<TFormDetailViewModel>).Details = FormUtitities.EntityDetailsToFieldValues<TEntityDetail, TFormDetailViewModel>(localizationFilteredDetails);
             }
 
             return form;

@@ -11,26 +11,22 @@ const { PageTitle } = require('../components/page');
 const store = createStore(require('./shared/redux/reducer'));
 
 var PageContent = (props) => {
-    const { parameters, title, description, createNewUrl, formUrl, formSubmitData, indexUrl, Form } = props;
+    const { parameters, title, description, createNewUrl, formUrl, formSubmitData, indexUrl, Form, urls } = props;
 
     return (
         <div>
             <PageAlerts />
             <div className="clearfix mb-1">
                 <div className="pull-left">
-                    <PageTitle><a href={indexUrl}>{title}</a></PageTitle>
+                    <PageTitle><a href={indexUrl || urls.index}>{title}</a></PageTitle>
                 </div>
                 <div className="pull-left ml-1">
-                    <a className="btn btn-outline-primary" href={createNewUrl}>Create new</a>
+                    <a className="btn btn-outline-primary" href={createNewUrl || urls.create}>Create new</a>
                 </div>
             </div>
-            <Card>
-                <CardBlock>
-                    {
-                        Form ? Form : <SharedForm formName="create" formUrl={formUrl} formUrlData={parameters} formSubmitData={formSubmitData}/>
-                    }
-                </CardBlock>
-            </Card>
+            {
+                Form ? Form : <SharedForm formName="create" formUrl={formUrl} formUrlData={parameters} formSubmitData={formSubmitData} />
+            }
         </div>
     );
 };

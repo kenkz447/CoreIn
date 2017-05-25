@@ -19,7 +19,8 @@ namespace CoreIn.App.ViewModels
 
         private Dictionary<string, FormViewModel> FormDictionary { get;}
         private Dictionary<string, string> ResourcesDictionary { get;}
-        private Dictionary<string, object> Parameters { get; }
+        public Dictionary<string, object> Parameters { get; }
+        public Dictionary<string, string> Urls { get; set; }
 
         public ActionViewModel()
         {
@@ -30,7 +31,8 @@ namespace CoreIn.App.ViewModels
             string description = null, 
             string module = null, 
             Dictionary<string, string> resourceDictionary = null, 
-            Dictionary<string, object> parameters = null, 
+            Dictionary<string, object> parameters = null,
+            Dictionary<string, string> urls = null,
             string viewLayout = null,
             string[] scripts = null, 
             string [] styles = null)
@@ -44,6 +46,7 @@ namespace CoreIn.App.ViewModels
             this.Parameters = parameters;
             this.Scripts = scripts;
             this.Styles = styles;
+            this.Urls = urls;
         }
 
         public void AddForm(FormViewModel formViewModel, string formName)
@@ -59,7 +62,8 @@ namespace CoreIn.App.ViewModels
                 description = this.Description,
                 forms = this.FormDictionary?.ToDictionary(o => o.Key, o => o.Value.GetRawData()),
                 resources = this.ResourcesDictionary,
-                parameters = this.Parameters
+                parameters = this.Parameters,
+                urls = this.Urls
             };
             return result;
         }

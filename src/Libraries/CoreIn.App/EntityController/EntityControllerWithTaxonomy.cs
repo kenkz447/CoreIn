@@ -49,6 +49,7 @@ namespace CoreIn.App
 
             return entity;
         }
+
         public int Update(long entityId, IEnumerable<TEntityDetail> details, Dictionary<long, long[]> taxonomyTypeIdTaxonomyIds = null, User user = null)
         {
             var entity = EntityHelper.Entity(entityId);

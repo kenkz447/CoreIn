@@ -14,7 +14,7 @@ const pageReducer = require('./index/redux/reducer');
 const store = createStore(pageReducer);
 
 var PageContent = (props) => {
-    const { title, createNewUrl, dataUrl, deleteUrl, tableColumns } = props;
+    const { title, createNewUrl, dataUrl, deleteUrl, tableColumns, urls } = props;
 
     return (
         <div>
@@ -24,7 +24,7 @@ var PageContent = (props) => {
                     <PageTitle>{ title }</PageTitle>
                 </div>
                 <div className="pull-left ml-1">
-                    <a className="btn btn-outline-primary" href={createNewUrl}>Create new</a>
+                    <a className="btn btn-outline-primary" href={ createNewUrl || urls.create }>Create new</a>
                 </div>
             </div>
             <Card>

@@ -22,13 +22,16 @@ $brand-danger:              #f86c6b;
 
 //** Background color for `<body>`.
 $body-bg: #fafafb;
+$text-color: #39527b;
 
 // Options
 //
 // Quickly modify global styling by enabling or disabling optional features.
-
-$enable-transitions:        true;
+$enable-transitions: true;
 $enable-rounded:            true;
+
+//** Link hover decoration.
+$link-hover-decoration: none;
 
 // Spacing
 //

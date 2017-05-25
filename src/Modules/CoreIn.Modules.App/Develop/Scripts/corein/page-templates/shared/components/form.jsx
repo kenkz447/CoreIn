@@ -86,25 +86,17 @@ class Form extends React.Component {
 
         return (
             <div>
-                <Row className="mb-1">
+                <div className="docs-brief-intro font-italic">
                     {
-                        formTitle && 
-                        <Col md="8">
-                            <div className="card-text">
-                                <h4>
-                                    {formTitle}
-                                </h4>
-                            </div>
-                        </Col>
+                        formTitle &&
+                        <div className="card-text">
+                            <h6>
+                                {formTitle}
+                            </h6>
+                        </div>
                     }
-
-                    {
-                        formLanguages && 
-                        <Col md="4">
-                            <LanguageSelect languages={formLanguages} defaultLanguage={formDefaultLanguage}/>
-                        </Col>
-                    }
-                </Row>
+                    { formLanguages && <LanguageSelect languages={formLanguages} defaultLanguage={formDefaultLanguage} /> }
+                </div>
                 <DynamicForm {...reduxFormProps} />
             </div>
         );

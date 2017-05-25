@@ -1,12 +1,17 @@
-﻿const Index = Corein.pageTemplates.index;
-const { create, index: { dataUrl, deleteUrl, tableColumns } } = require('./shared');
+﻿const $ = require('jquery');
+const Page = Corein.pageTemplates.index;
+const { index: { dataUrl, deleteUrl, tableColumns } } = require('./shared');
 
 const Create = require('./create');
 
 module.exports = (props) => {
-    const { title } = props;
+    const pageProps = $.extend(true, {
+        dataUrl,
+        deleteUrl,
+        tableColumns
+    }, props);
 
     return (
-        <Index title={title} createNewUrl={create.url} dataUrl={dataUrl} deleteUrl={deleteUrl} tableColumns={tableColumns} />            
+        <Page {...pageProps} />            
     );
 };

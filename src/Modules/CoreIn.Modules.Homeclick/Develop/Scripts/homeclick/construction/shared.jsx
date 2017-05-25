@@ -4,7 +4,6 @@ const mvcController = 'construction';
 
 module.exports = {
     index: {
-        url: `/${mvcController}`,
         dataUrl: `/${mvcController}/GetTableData`,
         deleteUrl: `/${mvcController}/delete`,
         tableColumns: [{
@@ -21,7 +20,6 @@ module.exports = {
         }]
     },
     create: {
-        url: `/${mvcController}/create`,
         formUrl: `/${mvcController}/GetForm`,
         formSubmitData: {
             url: `/${mvcController}/create`,

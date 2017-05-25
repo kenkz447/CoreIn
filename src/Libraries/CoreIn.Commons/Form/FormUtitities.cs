@@ -143,6 +143,7 @@ namespace CoreIn.Commons.Form
 
                 if (value != null)
                 {
+
                     if (isGenericType &&
                     (propType.GetGenericTypeDefinition() == typeof(IEnumerable<>) ||
                     propType.GetGenericTypeDefinition() == typeof(List<>))

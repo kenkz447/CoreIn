@@ -186,7 +186,7 @@ namespace CoreIn.Modules.Homeclick
                                             new MenuDetail { Field = "title", Value = "Tất cả công trình", Language="vi-VN"},
                                             new MenuDetail { Field = "controller", Value = "construction"},
                                             new MenuDetail { Field = "action", Value = "index"},
-                                            new MenuDetail { Field = "url", Value = "/construction"},
+                                            new MenuDetail { Field = "url", Value = $"/construction?entityTypeId={entityTypeManager.Construction.Id}"},
                                             new MenuDetail { Field = "icon", Value = "<i class=\"fa fa-bars\" aria-hidden=\"true\"></i>"},
                                         },
                                         supperUser, false

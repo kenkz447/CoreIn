@@ -12,7 +12,9 @@ namespace CoreIn.Modules.Homeclick.Controllers
 {
     public class ConstructionController : BaseControllerWithTaxonomy<Construction, ConstructionDetail, ConstructionTaxonomy, Strings, ConstructionViewModel>
     {
-        public ConstructionController(UserManager<User> userManager, EntityControllerWithTaxonomy<Construction, ConstructionDetail, ConstructionTaxonomy, Strings, ConstructionViewModel> entityController, ITaxonomyHelper taxonomyHelper) : base(userManager, entityController, taxonomyHelper)
+        public ConstructionController(UserManager<User> userManager, 
+            EntityControllerWithTaxonomy<Construction, ConstructionDetail, ConstructionTaxonomy, Strings, ConstructionViewModel> entityController)
+            : base(userManager, entityController)
         {
 
         }

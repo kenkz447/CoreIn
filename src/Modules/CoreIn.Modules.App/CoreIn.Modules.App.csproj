@@ -31,6 +31,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Develop\Scripts\corein\components\form\base\" />
     <Folder Include="wwwroot\" />
   </ItemGroup>
 

@@ -1,4 +1,6 @@
 ﻿const $ = require('jquery');
+const classnames = require('classnames');
+
 const { Button, Input } = require('reactstrap');
 
 var addUrlParam = function (search, key, val) {
@@ -29,6 +31,20 @@ module.exports = class LanguageSelect extends React.Component {
 
         this.onSelectChange = this.onSelectChange.bind(this);
         this.onButtonClick = this.onButtonClick.bind(this);
+        this.getUrl = this.getUrl.bind(this);
+        this.isCurrentLang = this.isCurrentLang.bind(this);
+    }
+
+    isCurrentLang(lang) {
+        let url = new URL(window.location.href);
+        let searchParams = new URLSearchParams(url.search);
+        var langParam = searchParams.get('lang');
+
+        return (langParam === lang) || (!langParam && this.props.defaultLanguage === lang);
+    }
+
+    getUrl(lang) {
+        return window.location.pathname + addUrlParam(window.location.search, 'lang', lang);
     }
 
     onSelectChange(e) {
@@ -45,19 +61,40 @@ module.exports = class LanguageSelect extends React.Component {
 
         return (
             <div className="form-language">
-                <div className="pull-right ml-q">
-                    <Button className="btn btn-secondary"
-                        onClick={this.onButtonClick}>OK</Button>
-                </div>
-                <div className="pull-right" >
-                    <Input type="select" value={this.state.selectedLang} onChange={this.onSelectChange}>
-                        {
-                            $.map(languages, (lang, index) => {
-                                return <option key={index} value={index}>{lang}</option>;
-                            })
-                        }
-                    </Input>
-                </div>
+                {(languages.length >= 5) ?
+                    <div>
+                        <div className="pull-right ml-q">
+                            <Button className="btn btn-secondary"
+                                onClick={this.onButtonClick}>OK</Button>
+                        </div>
+                        <div className="pull-right" >
+                            <Input type="select" value={this.state.selectedLang} onChange={this.onSelectChange}>
+                                {
+                                    $.map(languages, (lang, index) => {
+                                        return <option key={index} value={index}>{lang}</option>;
+                                    })
+                                }
+                            </Input>
+                        </div>
+                    </div> :
+                    <div className="clearfix">
+                        <div className="pull-left">
+                            Nhập nội dung cho: 
+                        </div>
+                        <div className="pull-left">
+                            {
+                                $.map(languages, (lang, index) => {
+                                    const isCurrentLang = this.isCurrentLang(index);
+                                    return (
+                                        <div key={index} className="pull-right ml-h">
+                                            <a className={classnames({ 'current-lang': isCurrentLang })} href={!isCurrentLang ? this.getUrl(index) : "#"}>{lang}</a>
+                                        </div>
+                                    );
+                                })
+                            }
+                        </div>
+                    </div>
+                }
             </div>
         );
     }

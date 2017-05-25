@@ -1,13 +1,12 @@
 ﻿const $ = require('jquery');
 
-var {Input, InputGroup, InputGroupAddon, FormFeedback, FormGroup, FormText, Label, Button, Modal, ModalHeader, ModalBody, ModalFooter} = require('reactstrap');
+var { Card, CardBlock, Input, FormFeedback, FormGroup, FormText, Label, Button } = require('reactstrap');
 
 const FileManagerModal = require('../../file-manager/modal');
 
 class ImageField extends React.Component {
     constructor(props) {
         super(props);
-
     }
 
     openModal() {
@@ -31,11 +30,13 @@ class ImageField extends React.Component {
         return (
             <FormGroup color={validationState} className="form-member">
                 <Label>{title}</Label>
-                <div>
-                    <div className="image-fill" style={{ backgroundImage: `url('${img}')` }} tabIndex="-1" onClick={this.openModal.bind(this)} />
-                </div>
-                {touched && ((error && <FormFeedback>{error}</FormFeedback>) || (warning && <FormFeedback>{warning}</FormFeedback>))}
+                <Card>
+                    <CardBlock>
+                        <div className="image-fill" style={{ backgroundImage: `url('${img}')` }} tabIndex="-1" onClick={this.openModal.bind(this)} />
+                    </CardBlock>
+                </Card>
                 {prompt && <FormText color="muted">{prompt}</FormText>}
+                {touched && ((error && <FormFeedback>{error}</FormFeedback>) || (warning && <FormFeedback>{warning}</FormFeedback>))}
             </FormGroup>
         );
     }

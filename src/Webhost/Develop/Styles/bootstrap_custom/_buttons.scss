@@ -16,4 +16,8 @@
         border: 1px solid #eceeef;
         cursor: pointer;
     }
+
+    &.btn-rounded {
+        border-radius: 1000px;
+    }
 }

@@ -25,7 +25,7 @@ namespace CoreIn.App
             _entityController = entityController;
         }
 
-        public ActionResult Index()
+        public virtual ActionResult Index()
         {
             var actionViewModel = new ActionViewModel();
             return View(actionViewModel);

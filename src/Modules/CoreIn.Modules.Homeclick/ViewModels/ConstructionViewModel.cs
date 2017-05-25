@@ -20,6 +20,7 @@ namespace CoreIn.Modules.Homeclick.ViewModels
     public class ConstructionViewModel : BaseEntityViewModel
     {
         [Required]
+        [FormFieldLocalization]
         [FormFieldDisplay(Placeholder: "Construction title here...")]
         public override string Title { get; set; }
 

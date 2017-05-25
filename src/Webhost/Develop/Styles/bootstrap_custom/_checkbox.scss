@@ -1,4 +1,4 @@
-.checkbox {
+.checkbox, .form-check-label {
     position: relative;
     padding-left: 22px;
     display: block;
@@ -11,7 +11,12 @@
         cursor: pointer;
     }
 
-    input[type=checkbox], label:after, label:before {
+    span {
+        margin-left: 0.5rem;
+        font-size:.8rem;
+    }
+
+    input[type=checkbox], span:after, span:before {
         height: 22px;
         width: 22px;
         position: absolute;
@@ -19,11 +24,11 @@
         top: 0;
     }
 
-    label:after, label:before {
+    span:after, span:before {
         content: "";
     }
 
-    label:after {
+    span:after {
         line-height: 22px;
         color: inherit;
         font-family: FontAwesome;
@@ -34,7 +39,7 @@
         font-size: .875rem;
     }
 
-    label:before {
+    span:before {
         background: #fff;
         border: 1px solid #eceeef;
         -webkit-transition: background .15s,border-color .15s;
@@ -42,7 +47,7 @@
         border-radius: .25rem;
     }
 
-    input[type=checkbox]:checked + label:after {
+    input[type=checkbox]:checked + span:after {
         content: "\f00c";
     }
 }

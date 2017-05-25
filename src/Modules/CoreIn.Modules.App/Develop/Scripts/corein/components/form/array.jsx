@@ -8,16 +8,16 @@ module.exports = (props) => {
 
     return (
         <div>
-            <div className="mb-1">
+            <div>
                 <label>{title}</label>
-                <Button type="button" className="ml-1" onClick={() => fields.push({})}>+</Button>
             </div>
             
-            <div>
+            <div className="form-array-container">
                 {
                     fields.map((field, index) => {
                         return (
-                            <Card key={index}>
+                            <Card key={index} className="form-array-item">
+                                <span className="dot"/>
                                 <CardHeader>
                                     Member #{index + 1}
                                     <div className="card-actions">
@@ -41,6 +41,11 @@ module.exports = (props) => {
                         )
                     }
                 )}
+                <div className="form-array-actions">
+                    <div>
+                        <Button type="button" className="btn-rounded" outline color="primary" onClick={() => fields.push({})}>Add +</Button>
+                    </div>
+                </div>
             </div>
         </div>
     )

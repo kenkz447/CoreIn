@@ -274,15 +274,15 @@ module.exports = {
         deleteUrl: `/${mvcController}/delete`,
         tableColumns: [{
             header: "Thumbnail",
-            accessor: 'thumbnail',
-            render: row => (React.createElement("div", null, React.createElement("img", {className: "table-thumbnail", src: row.value}))),
-            width: 160,
+            accessor: 'thumbnailUrl',
+            render: row => (React.createElement("div", {className: "image-fill table-thumbnail", style: { backgroundImage: `url(${row.value})`}})),
+            width: 85,
             sortable: false,
             hideFilter: true
         }, {
             header: "Title",
             accessor: 'title',
-            render: row => (React.createElement("div", null, React.createElement("a", {href: `/${mvcController}/update/${row.rowValues.id}`, target: "blank"}, row.value))),
+            render: row => (React.createElement("div", null, React.createElement("a", {href: `/${mvcController}/update/${row.rowValues.id}`}, row.value))),
         }]
     },
     create: {

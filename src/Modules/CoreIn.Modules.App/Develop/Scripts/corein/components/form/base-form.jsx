@@ -1,4 +1,6 @@
 ﻿const $ = require('jquery');
+const _ = require('underscore');
+
 const { modalToggle } = require('../file-manager/fm-actions');
 const { Alert, Button } = require('reactstrap');
 const renderFieldType = require('./render-field-type')

@@ -29,5 +29,10 @@ namespace CoreIn.Models.Infrastructure
 
         [ForeignKey("ModifiedById")]
         public User ModifiedBy { get; set; }
+
+        public BaseEntityDetail Clone()
+        {
+            return this.MemberwiseClone() as BaseEntityDetail;
+        }
     }
 }

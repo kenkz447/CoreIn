@@ -32,7 +32,7 @@ var libs = [
     'react-draft-wysiwyg',
     'draft-js',
     'draftjs-to-html',
-    'html-to-draftjs'
+    'html-to-draftjs',
 ];
 
 var production = (process.env.NODE_ENV === 'production');

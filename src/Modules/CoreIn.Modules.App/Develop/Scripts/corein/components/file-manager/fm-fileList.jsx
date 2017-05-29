@@ -35,7 +35,7 @@ class FileThumbList extends React.Component {
             <div id="FileThumbList" className="container-fluid">
                 <div className="row">
                     {files.map(item => (
-                        <FileItem key={item.fileId} data={item} />
+                        <FileItem key={item.id} data={item} />
                     ))}
                 </div>
                 <div className="row">

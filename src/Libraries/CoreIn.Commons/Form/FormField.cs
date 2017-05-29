@@ -13,6 +13,9 @@ namespace CoreIn.Commons.Form
         public string Name { get; set; }
 
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+        public string Group { get; set; }
+
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public FieldValidate FieldValidate { get; set; }
 
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
@@ -30,5 +33,7 @@ namespace CoreIn.Commons.Form
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         [JsonConverter(typeof(StringEnumConverter))]
         public FieldStatus Status { get; set; }
+
+        public bool IsChildField { get; set; }
     }
 }

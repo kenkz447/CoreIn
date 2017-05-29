@@ -17,7 +17,7 @@ using Microsoft.Extensions.Localization;
 using Microsoft.Net.Http.Headers;
 using CoreIn.EntityCore;
 
-namespace CoreIn.Media.MediaHelper
+namespace CoreIn.Media
 {
     public class MediaHelper : IMediaHelper
     {
@@ -28,6 +28,7 @@ namespace CoreIn.Media.MediaHelper
         private readonly ITaxonomyHelper _taxonomyHelper;
         private readonly IEntityTaxonomyRelationHelper<FileEntityTaxonomy> _entityTaxonomyRelationHelper;
         private readonly IEntityTypeManager _entityTypeManager;
+
         private EntityType TypeImage { get; set; }
         private EntityType TypeOther { get; set; }
 
@@ -55,71 +56,11 @@ namespace CoreIn.Media.MediaHelper
             _entityTaxonomyRelationHelper = entityTaxonomyRelationHelper;
         }
 
-        private void RegisterTypes()
-        {
-            var entityTypeGroup = "File Type";
-            TypeImage = _entityTypeManager.RegisterEntityType(AppKey.FileTypeImage, new Dictionary<string, string> { { "title", "Image" }, { "group", entityTypeGroup } });
-            TypeOther = _entityTypeManager.RegisterEntityType(AppKey.FileTypeOther, new Dictionary<string, string> { { "title", "Other" }, { "group", entityTypeGroup } });
-        }
-
-        private object FileEntityToObject(FileEntity fileEntity, bool includeDetails = false)
-        {
-            if (includeDetails)
-                fileEntity.Details = _entityHelper.GetDetails(fileEntity).ToList() as IList<FileEntityDetail>;
-
-            return new
-            {
-                fileId = fileEntity.Id.ToString(),
-                fileName = fileEntity.Name,
-                meta = fileEntity.Details?.ToDictionary(o => o.Field, o => o.Value)
-            };
-        }
-
-        private void CropThumbnail(string imagePath, string savePath, Size thumbnailSize)
+        public Size GetImageDimension(string imagePath)
         {
             using (var image = new Image(imagePath))
             {
-                image.Resize(new ResizeOptions { Mode = ResizeMode.Crop, Size = thumbnailSize });
-                image.Save(savePath);
-            }
-        }
-
-        private string GetThumbnailFileName(string sourceFileName)
-            => $"{Path.GetFileNameWithoutExtension(sourceFileName)}_thumb{Path.GetExtension(sourceFileName)}";
-
-        private FileType CheckFileType(string fileName)
-        {
-            switch (Path.GetExtension(fileName))
-            {
-                case ".jpg":
-                case ".png":
-                    return FileType.Image;
-                default:
-                    return FileType.Other;
-            }
-        }
-
-        private DirectoryInfo UploadFolder()
-            => new DirectoryInfo(_environment.WebRootPath);
-
-        private void DeleteFileOnDisk(FileEntity fileEntity)
-        {
-            try
-            {
-                var details = _entityHelper.GetDetails(fileEntity);
-
-                var fileThumbnail= details.FirstOrDefault(o => o.Field == "src_thumb")?.Value;
-                var filePath = Path.Combine(_environment.WebRootPath, details.FirstOrDefault(o => o.Field == "src").Value);
-
-                if (File.Exists(filePath))
-                    File.Delete(filePath);
-
-                if (fileThumbnail != null && File.Exists(fileThumbnail))
-                        File.Delete(fileThumbnail);
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
+                return new Size(image.Width, image.Height);
             }
         }
 
@@ -128,13 +69,14 @@ namespace CoreIn.Media.MediaHelper
             if (TypeImage == null || TypeOther == null)
                 RegisterTypes();
 
-            var uploadDirectory = UploadFolder().ToString();
+            var uploadDirectory = GetWebRootDirectoryInfo().ToString();
             var currentYear = DateTime.UtcNow.Year.ToString();
             var currentMonth = DateTime.UtcNow.Month.ToString();
             var currentDay = DateTime.UtcNow.Day.ToString();
             foreach (var file in files)
             {
-                if (file.Length == 0)
+                var fileLength = file.Length;
+                if (fileLength == 0)
                     return new FileEntityResult(JsonResultState.Failed, file.FileName, _stringLocalizer["The uploaded file lenght is zero!"]);
 
                 var fileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
@@ -158,6 +100,7 @@ namespace CoreIn.Media.MediaHelper
                         await file.CopyToAsync(fileStream);
                         fileStream.Flush();
                     }
+
                     var thumbFileName = string.Empty;
                     if (fileType == FileType.Image)
                     {
@@ -170,22 +113,27 @@ namespace CoreIn.Media.MediaHelper
 
                     var fileEntity = _entityHelper.CreateEntity(entityType, fileName, uploader);
 
-                    var detailDictionary = new Dictionary<string, string>()
+                    var detailViewModel = new ImageViewModel()
                     {
-                        {"type", fileType.ToString()},
-                        {"ext", fileExtension},
-                        {"title", fileNameWithoutExtension},
-                        {"src", Path.Combine(@"\", rawPath, fileName)},
+                        Url = Path.Combine(rawPath, fileName).Replace('\\','/'),
+                        Size = fileLength.SizeSuffix(),
+                        Title = fileNameWithoutExtension,
+                        Extension = fileExtension,
+                        Type = fileType.ToString()
                     };
 
                     if (thumbFileName != string.Empty)
-                        detailDictionary.Add("src_thumb", Path.Combine(@"\", rawPath, thumbFileName));
+                        detailViewModel.UrlThumb = Path.Combine(rawPath, thumbFileName).Replace('\\', '/');
 
+                    if (fileType == FileType.Image)
+                        detailViewModel.Dimension = GetImageDimension(fileSavePath).ToString();
+
+                    var detailDictionary = detailViewModel.ToDictionary<string>();
                     _entityHelper.CreateDetails(fileEntity, detailDictionary, uploader);
 
                     Save();
 
-                    return new FileEntityResult(JsonResultState.Success, fileName, "Upload completed!",FileEntityToObject(fileEntity));
+                    return new FileEntityResult(JsonResultState.Success, fileName, "Upload completed!",FileEntityToViewModel(fileEntity));
                 }
                 catch (Exception e)
                 {
@@ -195,13 +143,13 @@ namespace CoreIn.Media.MediaHelper
             return null;
         }
 
-        public object GetFileObject(string fileName)
+        public ImageViewModel GetFileViewModel(string fileName)
         {
             var entity = _entityHelper.Entity(fileName);
-            return FileEntityToObject(entity, true);
+            return FileEntityToViewModel(entity);
         }
 
-        public IEnumerable<object> GetFileObjects(bool orderByAsc, int selectFrom, int take)
+        public IEnumerable<ImageViewModel> GetFileViewModels(bool orderByAsc, int selectFrom, int take)
         {
             var queryFiles = _entityHelper.Entities();
             if (!orderByAsc)
@@ -214,7 +162,7 @@ namespace CoreIn.Media.MediaHelper
             var files = queryFiles.ToList();
             foreach (var fileEntity in files)
             {
-                yield return FileEntityToObject(fileEntity, true);
+                yield return FileEntityToViewModel(fileEntity);
             }
         }
 
@@ -232,27 +180,19 @@ namespace CoreIn.Media.MediaHelper
             return new FileEntityResult(JsonResultState.Failed, fileName, _stringLocalizer["Delete failed!"]);
         }
 
-        public FileEntity Entity(string fileName)
-            => _entityHelper.Entity(fileName);
-
-        public FileEntityResult UpdateFile(long fileId, Dictionary<string, string> detailDictionary, Dictionary<long, long[]> taxonomyTypeTaxonomies, User byUser = null)
+        public FileEntity Entity(string fileNameOrPath, bool includeDetails = false)
         {
-            var entity = _entityHelper.Entity(fileId);
+            var entity = _entityHelper.Entity(Path.GetFileName(fileNameOrPath));
+            if (entity != null && includeDetails)
+                entity.Details = _entityHelper.GetDetails(entity).ToList();
+            return entity;
+        }
+
+        public FileEntityResult Update(long fileId, IEnumerable<FileEntityDetail> details, Dictionary<long, long[]> taxonomyTypeTaxonomies, User byUser = null)
+        {
+            var entity = BaseEntityController.Update<FileEntity, FileEntityDetail, FileEntityTaxonomy>(_entityHelper, _taxonomyHelper, fileId, details, taxonomyTypeTaxonomies, byUser, false);
             try
             {
-                var form = GetEntityForm(entity.EntityTypeId ?? 0);
-
-                var newDetails = new Dictionary<string, string>();
-                foreach (var formDetail in form.Details)
-                {
-                    var detailName = formDetail.Name.ToLower();
-                    newDetails.Add(formDetail.Name, detailDictionary[detailName]);
-                }
-
-                _entityHelper.UpdateDetails(entity, newDetails, byUser);
-
-                _taxonomyHelper.UpdateTaxonomiesForEntity<FileEntityTaxonomy>(entity.Id, entity.EntityTypeId ?? 0, taxonomyTypeTaxonomies);
-
                 Save();
                 return new FileEntityResult(JsonResultState.Success, entity.Name, _stringLocalizer["Update successfuly!"]);
             }
@@ -268,42 +208,72 @@ namespace CoreIn.Media.MediaHelper
 
             return new DynamicForm
             {
-                Details = new List<FormField>
-                {
-                    new FormField
-                    {
-                        Status = FieldStatus.ReadOnly,
-                        Name = "src",
-                        Display = new FieldDisplay
-                        {
-                            Title = _stringLocalizer["Url"]
-                        }
-                    },
-                    new FormField
-                    {
-                        Name = "title",
-                        Display = new FieldDisplay
-                        {
-                            Title = _stringLocalizer["Title"]
-                        }
-                    }
-                },
-
+                Details = FormUtitities.ViewModelTypeToFormField(typeof(ImageViewModel), _stringLocalizer),
                 TaxonomyTypes = taxonomyTypesViewModels.Select( o => new FormTaxonomyType(o) )
             };
         }
 
-        private List<FormField> GetTheFormMeta()
+        public FileEntityResult GetEntityForm(string fileName)
         {
-            var result = new List<FormField>
-            {
-                new FormField
-                {
-                    Status = FieldStatus.Hidden,
-                    Name = "id",
-                }
-            };
+            var entity = Entity(fileName);
+            var form = GetEntityForm(entity.EntityTypeId ?? 0);
+
+            form.InitialValues = GetFormValueFor(entity);
+
+            var result = new FileEntityResult(JsonResultState.Success, fileName, null, form);
             return result;
+        }
+
+        public string GetThumbnailPath(string sourceImage)
+        {
+            if (sourceImage == null || sourceImage == string.Empty)
+                return null;
+
+            var fileName = Path.GetFileName(sourceImage);
+            var thumbFileName = GetThumbnailFileName(fileName);
+
+            var webroot = GetWebRootDirectoryInfo().FullName;
+
+            var thumbFilePath = Path.Combine(Path.GetDirectoryName(sourceImage), thumbFileName);
+
+            if (File.Exists(webroot + thumbFilePath))
+                return thumbFilePath;
+
+            return sourceImage;
+        }
+
+        private int Save()
+            => _dbContext.SaveChanges();
+
+        #region Private Methods
+        private void RegisterTypes()
+        {
+            var entityTypeGroup = "File Type";
+            TypeImage = _entityTypeManager.RegisterEntityType(AppKey.FileTypeImage, new Dictionary<string, string> { { "title", "Image" }, { "group", entityTypeGroup } });
+            TypeOther = _entityTypeManager.RegisterEntityType(AppKey.FileTypeOther, new Dictionary<string, string> { { "title", "Other" }, { "group", entityTypeGroup } });
+        }
+
+        private ImageViewModel FileEntityToViewModel(FileEntity fileEntity)
+        {
+            fileEntity.Details = _entityHelper.GetDetails(fileEntity).ToList() as IList<FileEntityDetail>;
+
+            foreach (var detail in fileEntity.Details)
+                detail.Suffix = detail.Field;
+
+            var viewModel = FormUtitities.CreateObjectFormEntityDetails(typeof(ImageViewModel), fileEntity.Details) as ImageViewModel;
+            viewModel.SetId(fileEntity.Id);
+            viewModel.FileName = fileEntity.Name;
+
+            return viewModel;
+        }
+
+        private void CropThumbnail(string imagePath, string savePath, Size thumbnailSize)
+        {
+            using (var image = new Image(imagePath))
+            {
+                image.Resize(new ResizeOptions { Mode = ResizeMode.Crop, Size = thumbnailSize });
+                image.Save(savePath);
+            }
         }
 
         private FormValues GetFormValueFor(FileEntity entity)
@@ -328,37 +298,44 @@ namespace CoreIn.Media.MediaHelper
             return formValues;
         }
 
-        public FileEntityResult GetEntityForm(string fileName)
+        private string GetThumbnailFileName(string sourceFileName)
+            => $"{Path.GetFileNameWithoutExtension(sourceFileName)}_thumb{Path.GetExtension(sourceFileName)}";
+
+        private FileType CheckFileType(string fileName)
         {
-            var entity = Entity(fileName);
-            var form = GetEntityForm(entity.EntityTypeId ?? 0);
-
-            form.Meta.AddRange(GetTheFormMeta());
-            form.InitialValues = GetFormValueFor(entity);
-
-            var result = new FileEntityResult(JsonResultState.Success, fileName, null, form);
-            return result;
+            switch (Path.GetExtension(fileName))
+            {
+                case ".jpg":
+                case ".png":
+                    return FileType.Image;
+                default:
+                    return FileType.Other;
+            }
         }
 
-        public string GetThumbnailPath(string sourceImage)
+        private DirectoryInfo GetWebRootDirectoryInfo()
+            => new DirectoryInfo(_environment.WebRootPath);
+
+        private void DeleteFileOnDisk(FileEntity fileEntity)
         {
-            if (sourceImage == null || sourceImage == string.Empty)
-                return null;
+            try
+            {
+                var details = _entityHelper.GetDetails(fileEntity);
 
-            var fileName = Path.GetFileName(sourceImage);
-            var thumbFileName = GetThumbnailFileName(fileName);
+                var fileThumbnail = Path.Combine(_environment.WebRootPath, details.FirstOrDefault(o => o.Field == AppKey.FileThumbUrlPropertyName)?.Value);
+                var filePath = Path.Combine(_environment.WebRootPath, details.FirstOrDefault(o => o.Field == AppKey.FileUrlPropertyName).Value);
 
-            var webroot = UploadFolder().FullName;
+                if (File.Exists(filePath))
+                    File.Delete(filePath);
 
-            var thumbFilePath = Path.Combine(Path.GetDirectoryName(sourceImage), thumbFileName);
-
-            if (File.Exists(webroot + thumbFilePath))
-                return thumbFilePath;
-
-            return sourceImage;
+                if (fileThumbnail != null && File.Exists(fileThumbnail))
+                    File.Delete(fileThumbnail);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
         }
-
-        private int Save()
-            => _dbContext.SaveChanges();
+        #endregion
     }
 }

@@ -20,11 +20,11 @@ const actions = {
         type: keys.init,
         initValue
     }),
-    onLoading: (isLoading) => ({
+    dataLoading: (isLoading) => ({
         type: keys.loading,
         isLoading
     }),
-    onLoaded: (data) => ({
+    dataLoad: (data) => ({
         type: keys.loaded,
         data
     }),
@@ -97,6 +97,15 @@ function defaultFilterMethod (filter, row, column)
     return void 0 === row[id] || String(row[id]).startsWith(filter.value)
 }
 
+const requestData = (url, pageSize, page, sorted, filtering, callback) => {
+    $.ajax({
+        url,
+        method: "POST",
+        data: { pageSize, page, sorted, filtering },
+        success: callback
+    });
+}
+
 // Component
 class Table extends React.Component {
     constructor(props) {
@@ -106,9 +115,9 @@ class Table extends React.Component {
     }
 
     fetchData(state, instance) {
-        const { dataUrl, onLoaded } = this.props;
+        const { dataUrl, dataLoad } = this.props;
 
-        $.get(dataUrl, onLoaded);
+        requestData(dataUrl, state.pageSize, state.page, state.sorted, state.filtering, dataLoad);
     }
 
     getFirstColumn() {
@@ -126,7 +135,7 @@ class Table extends React.Component {
                                 onClick={() => {
                                     selectRow(row.index);
                                 }} checked={checked} />
-                            <label />
+                            <span />
                         </div>
                     )
                 },
@@ -146,13 +155,13 @@ class Table extends React.Component {
                 return (
                     <div className="table-row-actions">       
                         <ButtonGroup>
-                            <button className="btn btn-icon"
+                            <button className="btn btn-icon text-danger"
                                 onClick={() => {
                                     const { deleteRows, deleteProps: { url, success } } = this.props;
 
                                     this.deleteRows(url, [row.value], (response) => {
                                         success(response);
-                                        deleteRows(row.index);
+                                        deleteRows([row.index]);
                                     });
                                 }}>
                                 <i className="fa fa-trash-o" aria-hidden="true"></i>
@@ -229,7 +238,6 @@ class Table extends React.Component {
                         loading={loading}
                         columns={columns}
                         onChange={this.fetchData.bind(this)}
-                        defaultFilterMethod={defaultFilterMethod}
                     />
                 </div>
             </div>

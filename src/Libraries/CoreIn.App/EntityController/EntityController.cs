@@ -2,10 +2,10 @@
 using CoreIn.Commons.EntityHelper;
 using CoreIn.Commons.Form;
 using CoreIn.Commons.ViewModels;
-using CoreIn.EntityCore;
-using CoreIn.Media.MediaHelper;
+using CoreIn.Media;
 using CoreIn.Models.Authentication;
 using CoreIn.Models.Infrastructure;
+using CoreIn.Resources.ConstantKeys;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Options;
@@ -16,10 +16,10 @@ namespace CoreIn.App
 {
     public class EntityController<TEntity, TEntityDetail, TLocalizer, TFormDetailViewModel>
         where TEntity: BaseEntity
-        where TEntityDetail: BaseEntityDetail
+        where TEntityDetail: BaseEntityDetail, new()
         where TFormDetailViewModel: class, new()
     {
-        private readonly CoreInDbContext _dbContext;
+        public CoreInDbContext DbContext { get; }
         private readonly IMediaHelper _mediaHelper;
 
         private readonly IStringLocalizer<TLocalizer> _localizer;
@@ -33,7 +33,7 @@ namespace CoreIn.App
             IStringLocalizer<TLocalizer> localizer,
             IOptions<RequestLocalizationOptions> localizationOptions)
         {
-            _dbContext = dbContext;
+            DbContext = dbContext;
             EntityHelper = fieldEntityHelper;
             EntityHelper.SetContext(dbContext);
             _mediaHelper = mediaHelper;
@@ -68,7 +68,28 @@ namespace CoreIn.App
 
                 var details = EntityHelper.GetDetails(entity, formInputLanguage).ToList();
                 var localizationFieldNames = details.Where(o => o.Language != null).Select(o => o.Field);
-                var localizationFilteredDetails = details.AsEnumerable().Where(o => !(localizationFieldNames.Contains(o.Field) && o.Language == null));
+                var localizationFilteredDetails = details.AsEnumerable().Where(o => !(localizationFieldNames.Contains(o.Field) && o.Language == null)).ToList();
+
+                //kiểm tra Detail trong list có móc vào file(chứa "Suffix" == "url")
+                //thêm các Detail vào list để bổ sung chi tiết(dimension, size,..etc)
+                var tempDetails = new List<TEntityDetail>();
+                foreach (var detail in localizationFilteredDetails.Where(o => o.Suffix == AppKey.FileUrlPropertyName))
+                {
+                    var fileEntity = _mediaHelper.Entity(detail.Value, true);
+                    if(fileEntity != null)
+                        foreach (var fileDetail in fileEntity.Details)
+                        {
+                            if (fileDetail.Field == AppKey.FileUrlPropertyName)
+                                continue;
+
+                            var tempDetail = detail.Clone() as TEntityDetail;
+                            tempDetail.Suffix = fileDetail.Field;
+                            tempDetail.Value = fileDetail.Value;
+
+                            tempDetails.Add(tempDetail);
+                        }
+                }
+                localizationFilteredDetails.AddRange(tempDetails);
 
                 form.InitialValues.Meta = new Dictionary<string, string>() { { "id", entityId.ToString() } };
                 (form.InitialValues as FormValues<TFormDetailViewModel>).Details = FormUtitities.EntityDetailsToFieldValues<TEntityDetail, TFormDetailViewModel>(localizationFilteredDetails);
@@ -116,19 +137,20 @@ namespace CoreIn.App
 
         public IEnumerable<BaseEntityViewModel> ToViewModels(IEnumerable<TEntity> entities)
         {
-            foreach (var project in entities)
+            foreach (var entity in entities)
             {
-                var details = EntityHelper.GetDetails(project);
-                yield return new BaseEntityViewModel()
+                var details = EntityHelper.GetDetails(entity);
+                var viewModel = new BaseEntityViewModel()
                 {
-                    Id = project.Id,
                     Title = details.FirstOrDefault(o => o.Field == "title")?.Value,
-                    Thumbnail = _mediaHelper.GetThumbnailPath(details.FirstOrDefault(o => o.Field == "thumbnail")?.Value)
                 };
+                viewModel.SetId(entity.Id);
+                viewModel.SetThumbnail(details.FirstOrDefault(o => o.Field == "thumbnail" && o.Suffix == AppKey.FileUrlPropertyName)?.Value);
+                yield return viewModel;
             }
         }
 
         public int Save()
-            => _dbContext.SaveChanges();
+            => DbContext.SaveChanges();
     }
 }

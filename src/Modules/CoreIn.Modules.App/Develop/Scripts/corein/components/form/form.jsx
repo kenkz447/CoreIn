@@ -3,10 +3,13 @@ const { bindActionCreators } = require('redux');
 const { connect } = require('react-redux');
 const { modalToggle } = require('../file-manager/fm-actions');
 
-const FormLayout2 = require('./form-layout-two');
+const FormLayout1 = require('./form-layout-one');
+const FormLayout2 = require('./form-layout-two');//default: 2
 
 const form = (props) => {
     return (
+        props.layout && props.layout === 1 ?
+            <FormLayout1 {...props} /> :
         <FormLayout2 {...props} />
     );
 }

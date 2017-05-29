@@ -73,10 +73,9 @@ a {
             right: 0;
             bottom: 0;
             left: 0;
-            border: 2px solid #3c7dcf;
             border-radius: 0;
             box-shadow: none;
-
+            border: 1rem solid transparent;
 
             .modal-header {
                 position: absolute;
@@ -90,8 +89,6 @@ a {
             }
 
             .modal-title {
-                font-weight: 300;
-                font-size: 2em;
                 color: #fff;
                 line-height: 30px;
             }
@@ -130,9 +127,7 @@ a {
     background-size: cover;
     background-repeat: no-repeat;
     background-position: 50% 50%;
-    border: 5px solid #f3f3f3;
     border-radius: 10px;
-    cursor: pointer;
 }
 
 .editor {
@@ -147,6 +142,11 @@ a {
 .ReactTable {
     .rt-thead.-header {
         font-weight: 500;
+    }
+
+    .rt-tbody .rt-td {
+        display: flex;
+        align-items: center;
     }
 
     a, span {
@@ -227,4 +227,9 @@ a {
 
     &:after {
     }
+}
+
+.table-thumbnail {
+    height: 75px;
+    width:75px;
 }

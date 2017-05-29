@@ -1,4 +1,6 @@
 ﻿const $ = require('jquery');
+const _ = require('underscore');
+
 const { connect } = require('react-redux');
 const { bindActionCreators } = require('redux');
 const { reduxForm, getFormValues } = require('redux-form');
@@ -16,7 +18,7 @@ class DynamicForm extends React.Component {
     }
 
     render() {
-        const { form, commands, onSubmit, formData, _initialValues} = this.props;
+        const { layout, form, commands, onSubmit, formData, _initialValues} = this.props;
 
         const initialValues = _initialValues || {};
         if ($.isEmptyObject(initialValues.taxonomyTypes)) {
@@ -28,9 +30,13 @@ class DynamicForm extends React.Component {
             }
         }
 
+        const _formData = $.extend(true, {}, formData);
+        _formData.details = _.sortBy(formData.details, (o) => o.group);
+
         var ReduxDynamicForm = reduxForm({
+            layout,
             form,
-            formData,
+            formData: _formData,
             commands,
             onSubmit,
             initialValues,

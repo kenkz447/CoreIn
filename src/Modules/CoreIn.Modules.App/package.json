@@ -39,6 +39,7 @@
     "react-draft-wysiwyg": "1.9.8",
     "draft-js": "0.10.0",
     "draftjs-to-html": "0.7.2",
-    "html-to-draftjs": "0.1.0-beta7"
+    "html-to-draftjs": "0.1.0-beta7",
+    "react-sticky": "6.0.1"
   }
 }

@@ -1500,7 +1500,9 @@ pre {
 
 .table-row-actions {
   width: 100%;
-  height: 100%; }
+  height: 100%;
+  display: flex;
+  align-items: center; }
   .table-row-actions .btn-group {
     display: none; }
   .table-row-actions:hover .btn-group {
@@ -11335,9 +11337,9 @@ a {
     right: 0;
     bottom: 0;
     left: 0;
-    border: 2px solid #3c7dcf;
     border-radius: 0;
-    box-shadow: none; }
+    box-shadow: none;
+    border: 1rem solid transparent; }
     .modal .modal-dialog.fullscreen .modal-content .modal-header {
       position: absolute;
       top: 0;
@@ -11348,8 +11350,6 @@ a {
       background: #6598d9;
       border: 0; }
     .modal .modal-dialog.fullscreen .modal-content .modal-title {
-      font-weight: 300;
-      font-size: 2em;
       color: #fff;
       line-height: 30px; }
     .modal .modal-dialog.fullscreen .modal-content .modal-body {
@@ -11377,9 +11377,7 @@ a {
   background-size: cover;
   background-repeat: no-repeat;
   background-position: 50% 50%;
-  border: 5px solid #f3f3f3;
-  border-radius: 10px;
-  cursor: pointer; }
+  border-radius: 10px; }
 
 .editor {
   min-height: 300px;
@@ -11391,6 +11389,10 @@ a {
 
 .ReactTable .rt-thead.-header {
   font-weight: 500; }
+
+.ReactTable .rt-tbody .rt-td {
+  display: flex;
+  align-items: center; }
 
 .ReactTable a, .ReactTable span {
   line-height: 32px; }
@@ -11440,5 +11442,9 @@ a {
     height: 10px;
     width: 10px;
     top: 1.2rem; }
+
+.table-thumbnail {
+  height: 75px;
+  width: 75px; }
 
 /*# sourceMappingURL=style.css.map */

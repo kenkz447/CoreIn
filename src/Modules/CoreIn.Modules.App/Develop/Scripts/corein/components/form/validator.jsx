@@ -19,10 +19,10 @@ function fieldValidate(fields, values) {
         const fieldObj = fields[field];
 
         var fieldName = fieldObj.name;
-
-        if (fieldObj.childFields) {
-            for (var value in values[fieldName]) {
-                var validateResult = fieldValidate(fieldObj.childFields, values[fieldName][value]);
+        var isArray = fieldObj.display && fieldObj.display.renderType != 'Image' && fieldObj.childFields;
+        if (isArray && values[fieldName].length) {
+            for (var index in values[fieldName]) {
+                var validateResult = fieldValidate(fieldObj.childFields, values[fieldName][index]);
                 if (validateResult) {
                     if (!errors[fieldName])
                         errors[fieldName] = [];
@@ -48,7 +48,7 @@ function fieldValidate(fields, values) {
         var hasContainSpecialChar = validate.containSpecial;
 
         if (hasRequired && !values[fieldName] || (Array.isArray(values[fieldName]) && !values[fieldName].length)) {
-            errors[fieldName] = hasRequired;
+            errors[fieldName] = !isArray ? hasRequired : { _error: hasRequired };
         }
         else if (typeRequired && !isType(values[fieldName], typeRequired.value)) {
             errors[fieldName] = typeRequired.error;

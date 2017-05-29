@@ -123,11 +123,17 @@
   <data name="FieldTitle" xml:space="preserve">
     <value>Title</value>
   </data>
+  <data name="FileThumbUrlPropertyName" xml:space="preserve">
+    <value>urlThumb</value>
+  </data>
   <data name="FileTypeImage" xml:space="preserve">
     <value>File Type Image</value>
   </data>
   <data name="FileTypeOther" xml:space="preserve">
     <value>File Type Other</value>
+  </data>
+  <data name="FileUrlPropertyName" xml:space="preserve">
+    <value>url</value>
   </data>
   <data name="ParentId" xml:space="preserve">
     <value>parentId</value>

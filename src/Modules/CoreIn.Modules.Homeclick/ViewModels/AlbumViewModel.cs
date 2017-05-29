@@ -1,6 +1,7 @@
 ﻿using CoreIn.Commons.Form;
 using CoreIn.Commons.Form.Attributes;
 using CoreIn.Commons.ViewModels;
+using CoreIn.Media;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -11,7 +12,7 @@ namespace CoreIn.Modules.Homeclick.ViewModels
     {
         [Required]
         [FormFieldDisplay(RenderType: (int)FieldRenderType.Image, Title: "Image")]
-        public string Image { get; set; }
+        public ImageViewModel Image { get; set; }
     }
 
     public class AlbumViewModel : BaseEntityViewModel

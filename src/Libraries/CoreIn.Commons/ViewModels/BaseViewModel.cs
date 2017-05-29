@@ -5,12 +5,16 @@ namespace CoreIn.Commons.ViewModels
     public class BaseEntityViewModel
     {
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
-        public long Id { get; set; }
+        private long? Id { get; set; }
 
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
-        public virtual string Thumbnail { get; set; }
+        private string ThumbnailUrl { get; set; }
 
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public virtual string Title { get; set; }
+
+        public void SetId(long id) => Id = id;
+        public void SetThumbnail(string thumbnailUrl) => ThumbnailUrl = thumbnailUrl;
+
     }
 }

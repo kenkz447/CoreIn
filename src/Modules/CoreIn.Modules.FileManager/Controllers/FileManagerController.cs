@@ -1,8 +1,10 @@
-﻿using CoreIn.App.Attributes;
+﻿using CoreIn.App;
+using CoreIn.App.Attributes;
 using CoreIn.App.ViewModels;
 using CoreIn.Commons;
 using CoreIn.Commons.Form;
-using CoreIn.Media.MediaHelper;
+using CoreIn.Media;
+using CoreIn.Models;
 using CoreIn.Models.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -33,12 +35,13 @@ namespace CoreIn.Modules.FileManager.Controllers
         }
 
         [HttpPut]
-        public async Task<JsonResult> Update(FormValues formValues)
+        public async Task<JsonResult> Update(FormValues<ImageViewModel> formValues)
         {
             var user = await _userManager.FindByNameAsync(User.Identity.Name);
             var fileId = long.Parse(formValues.GetMetaValue("id"));
             Dictionary<long, long[]> taxonomyTypeTaxonomies = formValues.TaxonomyTypes?.ToDictionary(o => o.Key, o => o.Value.Keys.ToArray());
-            var result = _mediaHelper.UpdateFile(fileId, formValues.Details, taxonomyTypeTaxonomies, user);
+            var entityDetails = FormUtitities.ViewModelToEntityDetails<FileEntityDetail>(formValues.Details, formValues.Language);
+            var result = _mediaHelper.Update(fileId, entityDetails, taxonomyTypeTaxonomies, user);
             return Json(result);
         }
 
@@ -54,15 +57,14 @@ namespace CoreIn.Modules.FileManager.Controllers
         [HttpGet]
         public JsonResult GetFile(string fileName)
         {
-            var result = _mediaHelper.GetFileObject(fileName);
+            var result = _mediaHelper.GetFileViewModel(fileName);
             return Json(result);
         }
 
         [HttpGet]
         public JsonResult GetFiles(int? selectFrom, int? take)
         {
-            var result = _mediaHelper.GetFileObjects(false, selectFrom ?? 0, take ?? 0);
-
+            var result = _mediaHelper.GetFileViewModels(false, selectFrom ?? 0, take ?? 0);
             return Json(result);
         }
 
@@ -84,8 +86,5 @@ namespace CoreIn.Modules.FileManager.Controllers
             var result = _mediaHelper.GetEntityForm(fileName);
             return Json(result);
         }
-
-        public JsonResult GetThumbnail(string sourceImage)
-            => Json(_mediaHelper.GetThumbnailPath(sourceImage));
     }
 }

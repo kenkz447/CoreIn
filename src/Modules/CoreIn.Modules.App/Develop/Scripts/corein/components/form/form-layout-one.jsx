@@ -7,10 +7,18 @@ class Form extends BaseForm {
 
         return (
             <form onSubmit={handleSubmit}>
-                {this.renderFormHeader()}
-                {this.renderMetaFields()}
-                {this.renderDetailFields()}
-                {this.renderTaxonomies()}
+                <div>
+                    {this.renderFormHeader()}
+                </div>
+                <div className="mb-1">
+                    {this.renderMetaFields()}
+                </div>
+                <div className="mb-1">
+                    {this.renderDetailFields()}
+                </div>
+                <div className="mb-1">
+                    {this.renderTaxonomies()}
+                </div>
                 {this.renderFormActions()}
             </form>
         );

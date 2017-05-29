@@ -22,6 +22,7 @@
     <ProjectReference Include="..\..\Libraries\CoreIn.App\CoreIn.App.csproj" />
     <ProjectReference Include="..\..\Libraries\CoreIn.Commons\CoreIn.Commons.csproj" />
     <ProjectReference Include="..\..\Libraries\CoreIn.EntityCore\CoreIn.EntityCore.csproj" />
+    <ProjectReference Include="..\..\Libraries\CoreIn.Media\CoreIn.Media.csproj" />
     <ProjectReference Include="..\..\Libraries\CoreIn.Models\CoreIn.Models.csproj" />
     <ProjectReference Include="..\..\Libraries\CoreIn.Modular\CoreIn.Modular.csproj" />
     <ProjectReference Include="..\..\Libraries\CoreIn.Package\CoreIn.Package.csproj" />

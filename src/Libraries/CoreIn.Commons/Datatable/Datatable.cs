@@ -21,7 +21,7 @@ namespace CoreIn.Commons
     {
         public int Page { get; set; }
         public int PageSize { get; set; }
-        public DatatableSort[] Sorting { get; set; }
-        public DatatableFilter[] filtering { get; set; }
+        public DatatableSort[] Sorted { get; set; }
+        public List<DatatableFilter> Filtering { get; set; }
     }
 }

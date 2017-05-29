@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Authorization;
 using CoreIn.Resources.ConstantKeys;
 using CoreIn.Models;
 using CoreIn.App.ViewModels;
+using CoreIn.Models.Infrastructure;
 
 namespace CoreIn.Modules.TaxonomyUI.Controllers
 {

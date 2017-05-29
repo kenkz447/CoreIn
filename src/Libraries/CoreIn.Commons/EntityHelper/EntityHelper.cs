@@ -106,14 +106,14 @@ namespace CoreIn.Commons.EntityHelper
             return detail;
         }
 
-        public IEnumerable<TDetail> CreateDetails(TEntity entity, Dictionary<string, string> detailDictionary, User owner, DateTime? dateTime = null)
+        public IEnumerable<TDetail> CreateDetails(TEntity entity, IDictionary<string, string> detailDictionary, User owner, DateTime? dateTime = null)
         {
             var result = new List<TDetail>();
             foreach (var kv in detailDictionary)
             {
                 if (kv.Value == null)
                     continue;
-                result.Add(CreateDetail(entity, kv.Key, kv.Value, null, null, null, owner, dateTime));
+                result.Add(CreateDetail(entity, kv.Key.FirstCharacterToLower(), kv.Value, null, null, null, owner, dateTime));
             }
             return result;
         }
@@ -171,7 +171,7 @@ namespace CoreIn.Commons.EntityHelper
             }
         }
 
-        public void UpdateDetails(TEntity entity, IEnumerable<TDetail> details, User byUser)
+        public void UpdateDetails(TEntity entity, IEnumerable<TDetail> details, User byUser, bool deleteExcept = true)
         {
             var currentEntityDetails = GetDetails(entity).ToList();
             var updatedDetails = new List<TDetail>();
@@ -206,10 +206,19 @@ namespace CoreIn.Commons.EntityHelper
                 if (!detailPresent && detail.Value != null)
                     CreateDetail(entity, detail, byUser);
             }
+            if (deleteExcept)
+            {
+                var deletes = currentEntityDetails.Except(updatedDetails);
+                foreach (var item in deletes)
+                {
+                    if (true)
+                    {
 
-            var deletes = currentEntityDetails.Except(updatedDetails);
-            foreach (var item in deletes)
-                _detailRepository.SetState(item, EntityState.Deleted);
+                    }
+                    _detailRepository.SetState(item, EntityState.Deleted);
+                }
+            }
+
         }
 
         public TEntity Add(TEntity entity, User user = null)

@@ -4,13 +4,21 @@ using System.Text;
 
 namespace CoreIn.Commons.Form.Attributes
 {
-    public class FormFieldActionAttribute : Attribute
+    public class FormFieldDisplayAttribute : Attribute
     {
-        public FieldAction FieldAction{ get; }
+        public FieldDisplay FieldDisplay { get; }
 
-        public FormFieldActionAttribute(string Title, string Command)
+        public FormFieldDisplayAttribute(int RenderType = 0, string Type = null, string Title = null, string DisplayName = null, string Placeholder = null, string Prompt = null)
         {
-            this.FieldAction = new FieldAction(Title, Command);
+            this.FieldDisplay = new FieldDisplay()
+            {
+                RenderType = (FieldRenderType)RenderType,
+                Type = Type,
+                Title = Title,
+                DisplayName = DisplayName,
+                Placeholder = Placeholder,
+                Prompt = Prompt
+            };
         }
     }
 }

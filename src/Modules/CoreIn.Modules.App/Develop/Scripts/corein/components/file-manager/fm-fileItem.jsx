@@ -1,4 +1,6 @@
 ﻿const $ = require('jquery');
+const _ = require('underscore');
+
 const { connect } = require('react-redux');
 const { fileChecked, toggleAside} = require('./fm-actions');
 const { getFormInfoFromServer } = require('./fm-ajaxs');
@@ -72,11 +74,14 @@ class FileItem extends React.Component {
                 }
             });
 
+            const _form = $.extend(true, {}, form);
+            _form.details = _.sortBy(form.details, (o) => o.group);
+
             const ReduxDynamicForm = reduxForm({
                 form: formId,
                 validate,
                 initialValues: form.initialValues,
-                formData: form,
+                formData: _form,
                 onSubmit
             })(require('../form/form'));
 
@@ -93,25 +98,25 @@ class FileItem extends React.Component {
                 toggleAside(true);
             }
             else {
-                setNestedModal({ title: formResult.fileName, content: <ReduxDynamicForm onClose={() => { setNestedModal({ toggle: false }); }}/>, toggle: true });
+                setNestedModal({ title: formResult.fileName, content: <ReduxDynamicForm layout={1} onClose={() => { setNestedModal({ toggle: false }); }}/>, toggle: true });
             }
 
         }, this.props.data.fileName);
     }
 
     render() {
-        const { data: {fileId, fileName, meta: {type, src_thumb, ext}} } = this.props;
-        const fieldId = `file_${fileId}`;
-        const fieldName = `file[${fileId}]`;
+        const { data: {id, fileName, type, urlThumb, extension} } = this.props;
+        const fieldId = `file_${id}`;
+        const fieldName = `file[${id}]`;
         return (
             <div className="col-sm-6 col-md-4 col-lg-3 col-xl-2 p-0">
                 <div className="card card-fileThumb mb-1 mr-1">
                     <label className="fancy-checkbox-label" htmlFor={fieldId}>
-                        <input type="checkbox" className="thumb-checkbox" id={fieldId} name={fieldName} data-file-id={fileId} data-file-name={fileName} onClick={this.onClick.bind(this)} />
+                        <input type="checkbox" className="thumb-checkbox" id={fieldId} name={fieldName} data-file-id={id} data-file-name={fileName} onClick={this.onClick.bind(this)} />
                         <span className="fancy-checkbox fancy-checkbox-img"/>
                         {(type === 'Image'
-                            ? <img src={src_thumb} alt={fileName}/>
-                            : <span className="fancy-thumb-icon"><i className="fa fa-file"></i> <b>{ext}</b></span>)}
+                            ? <img src={`\\${urlThumb}`} alt={fileName}/>
+                            : <span className="fancy-thumb-icon"><i className="fa fa-file"></i> <b>{extension}</b></span>)}
                     </label>
                     <div className="file-info p-1" onClick={this.onInfoClick.bind(this)}>
                         <i className="fa fa-info" aria-hidden="true"></i>

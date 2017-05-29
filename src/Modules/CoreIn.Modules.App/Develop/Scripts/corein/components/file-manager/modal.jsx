@@ -13,6 +13,8 @@ const JFiler = require('./fm-filer.jsx');
 const FileList = require('./fm-fileList');
 const SidePanel = require('./fm-sidePanel');
 
+const ModalSingleFile = require('./modal-single-file');
+
 class FileManagerModal extends React.Component {
     constructor(props) {
         super(props);
@@ -73,7 +75,7 @@ class FileManagerModal extends React.Component {
 
         return (
             <Modal isOpen={modalOpened} toggle={this.toggle} className="fullscreen ">
-                <ModalHeader toggle={this.toggle}>Modal title</ModalHeader>
+                <ModalHeader toggle={this.toggle}>Files and media</ModalHeader>
                 <ModalBody>
                     <div id="file-manager">
                         <div id="UploadPane">
@@ -89,10 +91,7 @@ class FileManagerModal extends React.Component {
                         {files.length !== 0 ? <FileList /> : getFilesFromServer(loadFiles, 0, initLoadItems)}
                     </div>
 
-                    <Modal isOpen={nestedModal.toggle} toggle={this.toggleNested}>
-                        <ModalHeader>{nestedModal.title}</ModalHeader>
-                        <ModalBody>{nestedModal.content}</ModalBody>
-                    </Modal>
+                    <ModalSingleFile />
 
                 </ModalBody>
 
@@ -109,7 +108,6 @@ const stateToProps = (state) => {
         modalOpened: state.fm.modal.toggle,
         onFileSelected: state.fm.modal.onSelect,
         nestedModal: state.fm.modal.nestedModal,
-
         files: state.fm.files,
         options: state.fm.options,
         checkedFiles: state.fm.checkedFiles

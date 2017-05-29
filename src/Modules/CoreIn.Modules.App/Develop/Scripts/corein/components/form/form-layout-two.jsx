@@ -4,6 +4,10 @@ const { Row, Col, Card, CardBlock } = require('reactstrap');
 const BaseForm = require('./base-form');
 
 class Form extends BaseForm {
+    componentDidMount() {
+        jQuery("#FormActions").stick_in_parent({ offset_top: 70 });
+    }
+
     render() {
         const { handleSubmit } = this.props;
 
@@ -20,7 +24,7 @@ class Form extends BaseForm {
                                 {this.renderTaxonomies()}
                             </CardBlock>
                         </Card>
-                        <Card>
+                        <Card id="FormActions">
                             <CardBlock>
                                 {this.renderMetaFields()}
                                 {this.renderFormActions()}

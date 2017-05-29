@@ -1,22 +1,20 @@
 ﻿using CoreIn.Commons;
 using CoreIn.Commons.EntityHelper;
-using CoreIn.Commons.Form;
-using CoreIn.Commons.ViewModels;
 using CoreIn.EntityCore;
-using CoreIn.Media.MediaHelper;
+using CoreIn.Media;
 using CoreIn.Models.Authentication;
 using CoreIn.Models.Infrastructure;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Options;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace CoreIn.App
 {
-    public class EntityControllerWithTaxonomy<TEntity, TEntityDetail, TTaxonomy, TLocalizer, TFormDetailViewModel> : EntityController<TEntity, TEntityDetail, TLocalizer, TFormDetailViewModel>
-        where TEntity: BaseEntity
-        where TEntityDetail: BaseEntityDetail
+    public class EntityControllerWithTaxonomy<TEntity, TEntityDetail, TTaxonomy, TLocalizer, TFormDetailViewModel> : 
+        EntityController<TEntity, TEntityDetail, TLocalizer, TFormDetailViewModel>
+        where TEntity: BaseEntity, new()
+        where TEntityDetail: BaseEntityDetail, new()
         where TTaxonomy: BaseEntityTaxonomy, new()
         where TFormDetailViewModel: class, new()
     {
@@ -52,12 +50,7 @@ namespace CoreIn.App
 
         public int Update(long entityId, IEnumerable<TEntityDetail> details, Dictionary<long, long[]> taxonomyTypeIdTaxonomyIds = null, User user = null)
         {
-            var entity = EntityHelper.Entity(entityId);
-            entity.Name = EntityHelper.GenerateEntityName(details.FirstOrDefault(o => o.Field == "title")?.Value);
-
-            EntityHelper.UpdateDetails(entity, details, user);
-            TaxonomyHelper.UpdateTaxonomiesForEntity<TTaxonomy>(entity.Id, entity.EntityTypeId ?? 0, taxonomyTypeIdTaxonomyIds);
-
+            BaseEntityController.Update<TEntity,TEntityDetail,TTaxonomy>(EntityHelper, TaxonomyHelper, entityId, details, taxonomyTypeIdTaxonomyIds, user);
             return Save();
         }
     }

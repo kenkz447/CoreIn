@@ -30,7 +30,8 @@ var libs = [
     'react-draft-wysiwyg',
     'draft-js',
     'draftjs-to-html',
-    'html-to-draftjs'
+    'html-to-draftjs',
+    'react-sticky'
 ];
 
 var updateDestFolders = [

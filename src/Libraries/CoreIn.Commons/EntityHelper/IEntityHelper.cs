@@ -37,13 +37,20 @@ namespace CoreIn.Commons.EntityHelper
 
         TDetail CreateDetail(TEntity entity, string field, object value, string group, string prefix, string suffix, User owner, DateTime? dateTime = null);
 
-        IEnumerable<TDetail> CreateDetails(TEntity entity, Dictionary<string, string> detailDictionary, User owner, DateTime? dateTime = null);
+        IEnumerable<TDetail> CreateDetails(TEntity entity, IDictionary<string, string> detailDictionary, User owner, DateTime? dateTime = null);
 
         IEnumerable<TDetail> CreateDetails(TEntity entity, IEnumerable<TDetail> details, User owner = null, DateTime? dateTime = null);
 
         void UpdateDetails(TEntity entity, Dictionary<string, string> detailsDictionary, User byUser);
 
-        void UpdateDetails(TEntity entity, IEnumerable<TDetail> details, User byUser);
+        /// <summary>
+        /// Update details of an entity
+        /// </summary>
+        /// <param name="entity">Entity to update</param>
+        /// <param name="details">List of details to update</param>
+        /// <param name="byUser">Update made by the user</param>
+        /// <param name="deleteExcept">Delete all non-update fields</param>
+        void UpdateDetails(TEntity entity, IEnumerable<TDetail> details, User byUser, bool deleteExcept = true);
 
         TEntity Add(TEntity entity, User user = null);
 

@@ -5,6 +5,7 @@ const CheckboxList = require('./fields/checkboxlist');
 const Select = require('./fields/select');
 const Editor = require('./fields/editor');
 const FormInput = require('./fields/input');
+const Text = require('./fields/text');
 
 const RenderInputGroup = (props) => {
     const {input, display: {id, type, title, displayName, placeholder, prompt}, meta: {touched, error, warning}, status} = props;
@@ -29,20 +30,21 @@ function renderField(props) {
     if (!display)
         return null;
 
-    var rt = display.renderType.toLowerCase();
-    switch (rt) {
-        case 'image':
+    switch (display.renderType) {
+        case 'Image':
             return <ImageField {...props} />
-        case 'inputgroup':
+        case 'InputGroup':
             return RenderInputGroup(props);
-        case 'checkbox':
+        case 'Checkbox':
             return RenderCheckBox(props);
-        case 'checkboxlist':
+        case 'CheckboxList':
             return <CheckboxList {...props} />;
-        case 'select':
+        case 'Select':
             return <Select {...props} />
-        case 'editor':
+        case 'Editor':
             return <Editor {...props} />
+        case 'Text':
+            return <Text {...props} />
         default:
             return <FormInput {...props} />;
     }

@@ -4,12 +4,15 @@ const {Card, CardBlock, CardHeader, Input, InputGroup, InputGroupAddon, FormFeed
 const renderFieldType = require('./render-field-type');
 
 module.exports = (props) => {
-    const { fields, childFields, display: { title }, fileManagerModalToggle, executeFormAction } = props;
+    const { fields, childFields, fieldValidate, display: { title }, fileManagerModalToggle, executeFormAction, meta: {error, warning } } = props;
+
+    var validationState = fieldValidate ? (error ? 'danger' : (warning && 'warning')) : null;
 
     return (
-        <div>
-            <div>
+        <div className="form-member">
+            <div >
                 <label>{title}</label>
+                {prompt && <FormText color="muted">{prompt}</FormText>}
             </div>
             
             <div className="form-array-container">
@@ -47,6 +50,12 @@ module.exports = (props) => {
                     </div>
                 </div>
             </div>
+            {
+                validationState &&
+                <FormGroup color={validationState}>
+                    {(error && <FormFeedback>{error}</FormFeedback>) || (warning && <FormFeedback>{warning}</FormFeedback>)}
+                </FormGroup>
+            }
         </div>
     )
 }

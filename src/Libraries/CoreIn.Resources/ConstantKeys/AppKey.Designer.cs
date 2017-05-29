@@ -80,6 +80,15 @@ namespace CoreIn.Resources.ConstantKeys {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to urlThumb.
+        /// </summary>
+        public static string FileThumbUrlPropertyName {
+            get {
+                return ResourceManager.GetString("FileThumbUrlPropertyName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to File Type Image.
         /// </summary>
         public static string FileTypeImage {
@@ -94,6 +103,15 @@ namespace CoreIn.Resources.ConstantKeys {
         public static string FileTypeOther {
             get {
                 return ResourceManager.GetString("FileTypeOther", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to url.
+        /// </summary>
+        public static string FileUrlPropertyName {
+            get {
+                return ResourceManager.GetString("FileUrlPropertyName", resourceCulture);
             }
         }
         

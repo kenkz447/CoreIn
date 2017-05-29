@@ -2,7 +2,6 @@
 using CoreIn.Commons;
 using CoreIn.Commons.Form;
 using CoreIn.Commons.ViewModels;
-using CoreIn.EntityCore;
 using CoreIn.Models.Authentication;
 using CoreIn.Models.Infrastructure;
 using Microsoft.AspNetCore.Identity;
@@ -13,8 +12,8 @@ using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace CoreIn.App
 {
-    public abstract class BaseControllerWithTaxonomy<TEntity, TEntityDetail, TTaxonomy, TLocalizer, TFormDetailViewModel> : BaseController<TEntity, TEntityDetail, TLocalizer, TFormDetailViewModel>
-        where TEntity : BaseEntity, new()
+    public abstract class BaseControllerWithTaxonomy<TEntity, TEntityDetail, TTaxonomy, TLocalizer, TFormDetailViewModel> : BaseController2<TEntity, TEntityDetail, TLocalizer, TFormDetailViewModel>
+        where TEntity : BaseEntity, IBaseEntityWithDetails<TEntityDetail>, new()
         where TEntityDetail : BaseEntityDetail, new()
         where TTaxonomy : BaseEntityTaxonomy, new()
         where TFormDetailViewModel : BaseEntityViewModel, new()
@@ -90,7 +89,7 @@ namespace CoreIn.App
         [HttpPost]
         public override JsonResult Create(FormValues<TFormDetailViewModel> formValues)
         {
-            var entityDetails = FormUtitities.ViewModelToEntityDetails<TEntityDetail, TFormDetailViewModel>(formValues.Details, formValues.Language);
+            var entityDetails = FormUtitities.ViewModelToEntityDetails<TEntityDetail>(formValues.Details, formValues.Language);
 
             var entity = new TEntity
             {
@@ -121,7 +120,7 @@ namespace CoreIn.App
         [HttpPut]
         public override JsonResult Update(FormValues<TFormDetailViewModel> formValues)
         {
-            var entityDetails = FormUtitities.ViewModelToEntityDetails<TEntityDetail, TFormDetailViewModel>(formValues.Details, formValues.Language);
+            var entityDetails = FormUtitities.ViewModelToEntityDetails<TEntityDetail>(formValues.Details, formValues.Language);
             var result = _entityController.Update(long.Parse(formValues.Meta["id"]), entityDetails.ToArray(), formValues.GetTaxonomuTypeIdTaxonomyId(), _userManager.FindByNameAsync(User.Identity.Name).Result);
 
             return Json(

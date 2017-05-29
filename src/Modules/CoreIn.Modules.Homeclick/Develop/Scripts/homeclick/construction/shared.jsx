@@ -8,15 +8,15 @@ module.exports = {
         deleteUrl: `/${mvcController}/delete`,
         tableColumns: [{
             header: "Thumbnail",
-            accessor: 'thumbnail',
-            render: row => (<div><img className="table-thumbnail" src={row.value} /></div>),
-            width: 160,
+            accessor: 'thumbnailUrl',
+            render: row => (<div className="image-fill table-thumbnail" style={{ backgroundImage: `url(${row.value})`}}></div>),
+            width: 85,
             sortable: false,
             hideFilter: true
         }, {
             header: "Title",
             accessor: 'title',
-            render: row => (<div><a href={`/${mvcController}/update/${row.rowValues.id}`} target="blank">{row.value}</a></div>),
+            render: row => (<div><a href={`/${mvcController}/update/${row.rowValues.id}`}>{row.value}</a></div>),
         }]
     },
     create: {

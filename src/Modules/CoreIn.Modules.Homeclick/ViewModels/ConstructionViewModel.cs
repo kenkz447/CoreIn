@@ -1,6 +1,7 @@
 ﻿using CoreIn.Commons.Form;
 using CoreIn.Commons.Form.Attributes;
 using CoreIn.Commons.ViewModels;
+using CoreIn.Media;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -11,7 +12,7 @@ namespace CoreIn.Modules.Homeclick.ViewModels
     {
         [Required]
         [FormFieldDisplay(RenderType: (int)FieldRenderType.Image, Title: "Image")]
-        public string PhotoImage { get; set; }
+        public ImageViewModel PhotoImage { get; set; }
 
         [FormFieldDisplay(Title: "Photo description")]
         public string PhotoDescription { get; set; }
@@ -30,7 +31,7 @@ namespace CoreIn.Modules.Homeclick.ViewModels
 
         [Required]
         [FormFieldDisplay(RenderType: (int)FieldRenderType.Image, Title: "Thumbnail")]
-        public override string Thumbnail { get; set; }
+        public ImageViewModel Thumbnail { get; set; }
 
         [Required]
         [FormFieldDisplay(Title: "Photos")]

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using CoreIn.Commons;
 using CoreIn.Commons.EntityHelper;
-using CoreIn.Media.MediaHelper;
+using CoreIn.Media;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;

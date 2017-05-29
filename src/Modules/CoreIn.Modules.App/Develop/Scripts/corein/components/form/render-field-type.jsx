@@ -3,7 +3,7 @@ const { Field, FieldArray} = require('redux-form');
 const { renderField } = require('./render-field');
 
 module.exports = function (prefixName, props) {
-    const { name, childFields } = props;
+    const { name, childFields, display } = props;
     const renderFieldArray = require('./array');
 
     const newProps = $.extend(true, {}, props,
@@ -12,7 +12,7 @@ module.exports = function (prefixName, props) {
             key: name
         });
 
-    if (childFields)
+    if (childFields && !(display && display.renderType == "Image"))
         return <FieldArray {...newProps} component={renderFieldArray} />;
 
     return <Field {...newProps} component={renderField} />;

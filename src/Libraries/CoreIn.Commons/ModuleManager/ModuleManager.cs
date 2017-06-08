@@ -5,6 +5,7 @@ using System.Reflection;
 using Microsoft.Extensions.DependencyModel;
 using System.Linq;
 using Microsoft.Extensions.Configuration;
+using System;
 
 namespace CoreIn.Commons
 {
@@ -53,6 +54,8 @@ namespace CoreIn.Commons
             var a = dependencies.Select(o => o.Name);
             foreach (var library in dependencies)
             {
+                System.Diagnostics.Debug.WriteLine(library.Name);
+
                 if (library.Name == (assemblyName) || library.Dependencies.Any(d => d.Name.StartsWith(assemblyName)))
                 {
                     var assembly = Assembly.Load(new AssemblyName(library.Name));

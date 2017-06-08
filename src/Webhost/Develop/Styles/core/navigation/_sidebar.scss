@@ -84,6 +84,10 @@
             margin: 0;
             transition: background .3s ease-in-out;
 
+            &.current {
+                border-left: 2px solid $brand-primary;
+            }
+
             ul {
                 max-height: 0;
                 padding: 0;
@@ -101,7 +105,7 @@
                 > .nav-item {
                     > .nav-link {
                         text-transform: none;
-                        padding: 0.75rem 1rem 0.75rem 2rem;
+                        padding-left: calc(20px + 1.5rem);
                     }
                 }
             }
@@ -132,6 +136,17 @@
                     color: $sidebar-nav-link-active-color;
                     background: $sidebar-nav-link-active-bg;
                     @include borders($sidebar-nav-link-active-borders);
+
+                    &:before {
+                        content: " ";
+                        position: absolute;
+                        left: 0;
+                        width: 0;
+                        height: 0;
+                        border-style: solid;
+                        border-width: 10px 0 10px 10px;
+                        border-color: transparent transparent transparent $sidebar-nav-link-active-icon-color;
+                    }
 
                     i {
                         color: $sidebar-nav-link-active-icon-color;

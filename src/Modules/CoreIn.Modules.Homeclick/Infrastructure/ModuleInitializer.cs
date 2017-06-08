@@ -40,7 +40,6 @@ namespace CoreIn.Modules.Homeclick
                                             new MenuDetail { Field = "controller", Value = "project"},
                                             new MenuDetail { Field = "action", Value = "index"},
                                             new MenuDetail { Field = "url", Value = "/project"},
-                                            new MenuDetail { Field = "icon", Value = "<i class=\"fa fa-bars\" aria-hidden=\"true\"></i>"},
                                         },
                                         supperUser, false
                                     ),
@@ -56,7 +55,6 @@ namespace CoreIn.Modules.Homeclick
                                             new MenuDetail { Field = "controller", Value = "project"},
                                             new MenuDetail { Field = "action", Value = "create"},
                                             new MenuDetail { Field = "url", Value = "/project/create"},
-                                            new MenuDetail { Field = "icon", Value = "<i class=\"fa fa-plus\" aria-hidden=\"true\"></i>"},
                                         },
                                         supperUser, false
                                     )
@@ -67,6 +65,7 @@ namespace CoreIn.Modules.Homeclick
                                 new MenuDetail { Field = "title", Value = "Project", Language="en-US"},
                                 new MenuDetail { Field = "title", Value = "Dự Án", Language="vi-VN"},
                                 new MenuDetail { Field = "url", Value = "#"},
+                                new MenuDetail { Field = "baseUrl", Value = "/project"},
                                 new MenuDetail { Field = "icon", Value = "<i class=\"fa fa-building-o\" aria-hidden=\"true\"></i>"},
                             },
                             supperUser, false
@@ -89,7 +88,6 @@ namespace CoreIn.Modules.Homeclick
                                             new MenuDetail { Field = "controller", Value = "collection"},
                                             new MenuDetail { Field = "action", Value = "index"},
                                             new MenuDetail { Field = "url", Value = "/collection"},
-                                            new MenuDetail { Field = "icon", Value = "<i class=\"fa fa-bars\" aria-hidden=\"true\"></i>"},
                                         },
                                         supperUser, false
                                     ),
@@ -105,7 +103,6 @@ namespace CoreIn.Modules.Homeclick
                                             new MenuDetail { Field = "controller", Value = "collection"},
                                             new MenuDetail { Field = "action", Value = "create"},
                                             new MenuDetail { Field = "url", Value = "/collection/create"},
-                                            new MenuDetail { Field = "icon", Value = "<i class=\"fa fa-plus\" aria-hidden=\"true\"></i>"},
                                         },
                                         supperUser, false
                                     )
@@ -116,6 +113,7 @@ namespace CoreIn.Modules.Homeclick
                                 new MenuDetail { Field = "title", Value = "Collections", Language="en-US"},
                                 new MenuDetail { Field = "title", Value = "Bộ sưu tập", Language="vi-VN"},
                                 new MenuDetail { Field = "url", Value = "#"},
+                                new MenuDetail { Field = "baseUrl", Value = "/collection"},
                                 new MenuDetail { Field = "icon", Value = "<i class=\"fa fa-suitcase\" aria-hidden=\"true\"></i>"},
                             },
                             supperUser, false
@@ -138,7 +136,6 @@ namespace CoreIn.Modules.Homeclick
                                             new MenuDetail { Field = "controller", Value = "optiongroup"},
                                             new MenuDetail { Field = "action", Value = "index"},
                                             new MenuDetail { Field = "url", Value = "/optiongroup"},
-                                            new MenuDetail { Field = "icon", Value = "<i class=\"fa fa-bars\" aria-hidden=\"true\"></i>"},
                                         },
                                         supperUser, false
                                     ),
@@ -154,7 +151,6 @@ namespace CoreIn.Modules.Homeclick
                                             new MenuDetail { Field = "controller", Value = "optiongroup"},
                                             new MenuDetail { Field = "action", Value = "create"},
                                             new MenuDetail { Field = "url", Value = "/optiongroup/create"},
-                                            new MenuDetail { Field = "icon", Value = "<i class=\"fa fa-plus\" aria-hidden=\"true\"></i>"},
                                         },
                                         supperUser, false
                                     )
@@ -165,6 +161,7 @@ namespace CoreIn.Modules.Homeclick
                                 new MenuDetail { Field = "title", Value = "Options", Language="en-US"},
                                 new MenuDetail { Field = "title", Value = "Tùy chỉnh", Language="vi-VN"},
                                 new MenuDetail { Field = "url", Value = "#"},
+                                new MenuDetail { Field = "baseUrl", Value = "/optiongroup"},
                                 new MenuDetail { Field = "icon", Value = "<i class=\"fa fa-cog\" aria-hidden=\"true\"></i>"},
                             },
                             supperUser, false
@@ -187,7 +184,6 @@ namespace CoreIn.Modules.Homeclick
                                             new MenuDetail { Field = "controller", Value = "construction"},
                                             new MenuDetail { Field = "action", Value = "index"},
                                             new MenuDetail { Field = "url", Value = $"/construction?entityTypeId={entityTypeManager.Construction.Id}"},
-                                            new MenuDetail { Field = "icon", Value = "<i class=\"fa fa-bars\" aria-hidden=\"true\"></i>"},
                                         },
                                         supperUser, false
                                     ),
@@ -203,7 +199,6 @@ namespace CoreIn.Modules.Homeclick
                                             new MenuDetail { Field = "controller", Value = "construction"},
                                             new MenuDetail { Field = "action", Value = "create"},
                                             new MenuDetail { Field = "url", Value = $"/construction/create?entityTypeId={entityTypeManager.Construction.Id}"},
-                                            new MenuDetail { Field = "icon", Value = "<i class=\"fa fa-plus\" aria-hidden=\"true\"></i>"},
                                         },
                                         supperUser, false
                                     )
@@ -214,6 +209,7 @@ namespace CoreIn.Modules.Homeclick
                                 new MenuDetail { Field = "title", Value = "Constructions", Language="en-US"},
                                 new MenuDetail { Field = "title", Value = "Công trình", Language="vi-VN"},
                                 new MenuDetail { Field = "url", Value = "#"},
+                                new MenuDetail { Field = "baseUrl", Value = "/construction"},
                                 new MenuDetail { Field = "icon", Value = "<i class=\"fa fa-home\" aria-hidden=\"true\"></i>"},
                             },
                             supperUser, false
@@ -236,7 +232,6 @@ namespace CoreIn.Modules.Homeclick
                                             new MenuDetail { Field = "controller", Value = "page"},
                                             new MenuDetail { Field = "action", Value = "index"},
                                             new MenuDetail { Field = "url", Value = "/page"},
-                                            new MenuDetail { Field = "icon", Value = "<i class=\"fa fa-bars\" aria-hidden=\"true\"></i>"},
                                         },
                                         supperUser, false
                                     ),
@@ -252,7 +247,6 @@ namespace CoreIn.Modules.Homeclick
                                             new MenuDetail { Field = "controller", Value = "page"},
                                             new MenuDetail { Field = "action", Value = "create"},
                                             new MenuDetail { Field = "url", Value = "/page/create"},
-                                            new MenuDetail { Field = "icon", Value = "<i class=\"fa fa-plus\" aria-hidden=\"true\"></i>"},
                                         },
                                         supperUser, false
                                     )
@@ -263,6 +257,7 @@ namespace CoreIn.Modules.Homeclick
                                 new MenuDetail { Field = "title", Value = "Pages", Language="en-US"},
                                 new MenuDetail { Field = "title", Value = "Trang", Language="vi-VN"},
                                 new MenuDetail { Field = "url", Value = "#"},
+                                new MenuDetail { Field = "baseUrl", Value = "/page"},
                                 new MenuDetail { Field = "icon", Value = "<i class=\"fa fa-clone\" aria-hidden=\"true\"></i>"},
                             },
                             supperUser, false
@@ -284,7 +279,6 @@ namespace CoreIn.Modules.Homeclick
                                             new MenuDetail { Field = "controller", Value = "album"},
                                             new MenuDetail { Field = "action", Value = "index"},
                                             new MenuDetail { Field = "url", Value = "/album"},
-                                            new MenuDetail { Field = "icon", Value = "<i class=\"fa fa-bars\" aria-hidden=\"true\"></i>"},
                                         },
                                         supperUser, false
                                     ),
@@ -300,7 +294,6 @@ namespace CoreIn.Modules.Homeclick
                                             new MenuDetail { Field = "controller", Value = "album"},
                                             new MenuDetail { Field = "action", Value = "create"},
                                             new MenuDetail { Field = "url", Value = "/album/create"},
-                                            new MenuDetail { Field = "icon", Value = "<i class=\"fa fa-plus\" aria-hidden=\"true\"></i>"},
                                         },
                                         supperUser, false
                                     )
@@ -311,6 +304,7 @@ namespace CoreIn.Modules.Homeclick
                                 new MenuDetail { Field = "title", Value = "Gallery", Language="en-US"},
                                 new MenuDetail { Field = "title", Value = "Hình ảnh", Language="vi-VN"},
                                 new MenuDetail { Field = "url", Value = "#"},
+                                new MenuDetail { Field = "baseUrl", Value = "/album"},
                                 new MenuDetail { Field = "icon", Value = "<i class=\"fa fa-picture-o\" aria-hidden=\"true\"></i>"},
                             },
                             supperUser, false

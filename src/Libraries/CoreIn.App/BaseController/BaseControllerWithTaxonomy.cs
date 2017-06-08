@@ -12,8 +12,8 @@ using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace CoreIn.App
 {
-    public abstract class BaseControllerWithTaxonomy<TEntity, TEntityDetail, TTaxonomy, TLocalizer, TFormDetailViewModel> : BaseController2<TEntity, TEntityDetail, TLocalizer, TFormDetailViewModel>
-        where TEntity : BaseEntity, IBaseEntityWithDetails<TEntityDetail>, new()
+    public abstract class BaseControllerWithTaxonomy<TEntity, TEntityDetail, TTaxonomy, TLocalizer, TFormDetailViewModel> : BaseController<TEntity, TEntityDetail, TLocalizer, TFormDetailViewModel>
+        where TEntity : BaseEntity, IEntityWithDetails<TEntityDetail>, IEntityWithTaxonomies<TTaxonomy>, new()
         where TEntityDetail : BaseEntityDetail, new()
         where TTaxonomy : BaseEntityTaxonomy, new()
         where TFormDetailViewModel : BaseEntityViewModel, new()
@@ -127,6 +127,13 @@ namespace CoreIn.App
                 result > 0 ?
                 new BaseAjaxResult(JsonResultState.Success, "Update successuly") :
                 new BaseAjaxResult(JsonResultState.Failed, "Update failed"));
+        }
+
+        public override JsonResult GetTableData(DataRequest dataRequest)
+        {
+            var filterResult = _entityController.GetEntities(dataRequest);
+            var result = _entityController.ToViewModels(filterResult.ToList());
+            return Json(result);
         }
     }
 }

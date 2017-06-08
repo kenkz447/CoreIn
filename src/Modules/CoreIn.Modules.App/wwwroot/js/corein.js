@@ -873,7 +873,7 @@ const {Card, CardBlock, CardHeader, Input, InputGroup, InputGroupAddon, FormFeed
 const renderFieldType = require('./render-field-type');
 
 module.exports = (props) => {
-    const { fields, childFields, fieldValidate, display: { title }, fileManagerModalToggle, executeFormAction, meta: {error, warning } } = props;
+    const { fields, childFields, fieldValidate, display: { title, prompt}, fileManagerModalToggle, executeFormAction, meta: {error, warning } } = props;
 
     var validationState = fieldValidate ? (error ? 'danger' : (warning && 'warning')) : null;
 
@@ -1711,7 +1711,7 @@ function fieldValidate(fields, values) {
 
         var fieldName = fieldObj.name;
         var isArray = fieldObj.display && fieldObj.display.renderType != 'Image' && fieldObj.childFields;
-        if (isArray && values[fieldName].length) {
+        if (isArray && values[fieldName] && values[fieldName].length) {
             for (var index in values[fieldName]) {
                 var validateResult = fieldValidate(fieldObj.childFields, values[fieldName][index]);
                 if (validateResult) {
@@ -1964,6 +1964,7 @@ module.exports = {
 
 },{"classnames":"4z/pR8","jquery":"XpFelZ","reactstrap":"jldOQ7"}],34:[function(require,module,exports){
 const $ = require('jquery');
+const _ = require('underscore');
 const { connect } = require('react-redux');
 const { bindActionCreators } = require('redux');
 const ReactTable = require('react-table').default;
@@ -1976,7 +1977,8 @@ const keys = {
     loading: "LOADING",
     selectRow: "SELECT_ROW",
     deleteSelectedRows: "DETETE_SELECTED_ROWS",
-    deleteRows: "DELETE_ROWS"
+    deleteRows: "DELETE_ROWS",
+    setTaxonomyTypes: "SET_TAXONOMYTYPE"
 };
 
 // Actions
@@ -2004,6 +2006,11 @@ const actions = {
     deleteRows: (indexs) => ({
         type: keys.deleteRows,
         indexs
+    }),
+
+    setTaxonomyTypes: (taxonomyTypes) => ({
+        type: keys.setTaxonomyTypes,
+        taxonomyTypes
     })
 }
 
@@ -2014,7 +2021,8 @@ const initialState = {
     loading: false,
     defaultPageSize: 25,
     showFilters: true,
-    selectedRows: []
+    selectedRows: [],
+    taxonomyTypes: []
 }
 
 const reducer = (state = initialState, action) => {
@@ -2050,23 +2058,25 @@ const reducer = (state = initialState, action) => {
             newState.data = newState.data.filter(filter);
             newState.selectedRows = newState.selectedRows.filter(filter);
             break;
+        case keys.setTaxonomyTypes:
+            newState.taxonomyTypes = action.taxonomyTypes;
+            break;
         default:
             return state;
     }
     return newState;
 };
 
-function defaultFilterMethod (filter, row, column)
-{
+function defaultFilterMethod(filter, row, column) {
     var id = filter.pivotId || filter.id;
     return void 0 === row[id] || String(row[id]).startsWith(filter.value)
 }
 
-const requestData = (url, pageSize, page, sorted, filtering, callback) => {
+const requestData = (url, pageSize, page, sorted, filtering, taxonomies, callback) => {
     $.ajax({
         url,
         method: "POST",
-        data: { pageSize, page, sorted, filtering },
+        data: { pageSize, page, sorted, filtering, taxonomies },
         success: callback
     });
 }
@@ -2074,31 +2084,60 @@ const requestData = (url, pageSize, page, sorted, filtering, callback) => {
 // Component
 class Table extends React.Component {
     constructor(props) {
-        super();
-        this.getFirstColumn = this.getFirstColumn.bind(this);
+        super(props);
+
+        let url = new URL(window.location.href);
+        let searchParams = new URLSearchParams(url.search);
+        let entityTypeId = +searchParams.get('entityTypeId');
+
+        this.state = {
+            entityTypeId,
+            taxonomyTypesProviderUrl: '/TaxonomyUI/GetTaxonomyTypesForEntityType',
+        };
+
+        this.taxonomyFiltering = {};
+        this.ReactTableState = null;
+        this.ReactTableInstance = null;
+
         this.deleteRows = this.deleteRows.bind(this);
+        this.getFirstColumn = this.getFirstColumn.bind(this);
+        this.getTaxonomyColumn = this.getTaxonomyColumn.bind(this);
     }
 
-    fetchData(state, instance) {
+    fetchData(state = this.ReactTableState, instance = this.ReactTableInstance) {
         const { dataUrl, dataLoad } = this.props;
 
-        requestData(dataUrl, state.pageSize, state.page, state.sorted, state.filtering, dataLoad);
+        var taxonomyFiltering = {};
+        state.filtered.filter(filter => {
+            return filter.id.startsWith('taxonomyTypes');
+        }).map(filter => {
+            var typeId = filter.id.split('.')[1];
+            taxonomyFiltering[typeId] = +filter.value;
+        });
+
+        var filtered = state.filtered.filter(filter => {
+            return !filter.id.startsWith('taxonomyTypes');
+        });
+
+        requestData(dataUrl, state.pageSize, state.page, state.sorted, filtered, taxonomyFiltering, dataLoad);
+        this.ReactTableState = state;
+        this.ReactTableInstance = instance;
     }
 
     getFirstColumn() {
         const { selectRow } = this.props;
         return (
             {
-                header: "",
+                Header: "",
                 accessor: 'id',
-                render: row => {
+                Cell: props => {
                     const { selectedRows } = this.props;
-                    const checked = selectedRows.indexOf(row.index) >= 0;
-                    return  (
+                    const checked = selectedRows.indexOf(props.index) >= 0;
+                    return (
                         React.createElement("div", {className: "checkbox"}, 
                             React.createElement("input", {type: "checkbox", 
                                 onClick: () => {
-                                    selectRow(row.index);
+                                    selectRow(props.index);
                                 }, checked: checked}), 
                             React.createElement("span", null)
                         )
@@ -2113,10 +2152,9 @@ class Table extends React.Component {
 
     getActionsColumn() {
         return {
-            header: "Actions",
+            Header: "Actions",
             accessor: 'id',
-            render: row => {
-
+            Cell: props => {
                 return (
                     React.createElement("div", {className: "table-row-actions"}, 
                         React.createElement(ButtonGroup, null, 
@@ -2124,9 +2162,9 @@ class Table extends React.Component {
                                 onClick: () => {
                                     const { deleteRows, deleteProps: { url, success } } = this.props;
 
-                                    this.deleteRows(url, [row.value], (response) => {
+                                    this.deleteRows(url, [props.value], (response) => {
                                         success(response);
-                                        deleteRows([row.index]);
+                                        deleteRows([props.index]);
                                     });
                                 }}, 
                                 React.createElement("i", {className: "fa fa-trash-o", "aria-hidden": "true"})
@@ -2154,7 +2192,7 @@ class Table extends React.Component {
     }
 
     onDelete() {
-        const {data, selectedRows, deleteSelectedRows, deleteProps: { url, success }} = this.props;
+        const { data, selectedRows, deleteSelectedRows, deleteProps: { url, success } } = this.props;
 
         const ids = data.filter((row, index) => {
             return selectedRows.indexOf(index) >= 0;
@@ -2167,22 +2205,69 @@ class Table extends React.Component {
             });
     }
 
+    
+
+    getTaxonomyColumn(taxonomyType) {
+        return {
+            Header: taxonomyType.title,
+            accessor: `taxonomyTypes.${taxonomyType.id}`,
+            Cell: props => {
+                return (
+                    React.createElement("ul", null, 
+                        
+                            props.value && props.value.map(taxonomy => {
+                                return React.createElement("li", null, taxonomy.title)
+                            })
+                        
+                    )
+                )
+            },
+            width: 200,
+            sortable: false,
+            filterable: true,
+            Filter: (props) => {
+                const { filter, onChange } = props;
+                return (
+                    React.createElement("select", {
+                        onChange: event => onChange(event.target.value), 
+                        style: { width: '100%'}, 
+                        value: filter ? filter.value : 'all'
+                    }, 
+                        React.createElement("option", {value: ""}, taxonomyType.title), 
+                        
+                            taxonomyType.taxonomies && taxonomyType.taxonomies.map(taxonomy => {
+                                return React.createElement("option", {key: taxonomy.id, value: taxonomy.id}, taxonomy.title)
+                            })
+                        
+                    )
+                )
+                    }
+        }
+    }
     render() {
-        const { columns, data, pages, loading, defaultPageSize, showFilters, selectedRows } = this.props;
+        const { columns, data, pages, loading, defaultPageSize, showFilters, selectedRows, taxonomyTypes, setTaxonomyTypes } = this.props;
 
         if (!columns)
             return;
 
+        if (this.state.entityTypeId && !taxonomyTypes.length) {
+            $.get(this.state.taxonomyTypesProviderUrl, { entityTypeId: this.state.entityTypeId }, setTaxonomyTypes);
+            return null;
+        }
+
         if (!(columns[0].accessor === "id")) {
             columns.unshift(this.getFirstColumn());
-            columns.push(this.getActionsColumn());   
+            for (var taxonomyType in taxonomyTypes) {
+                columns.push(this.getTaxonomyColumn(taxonomyTypes[taxonomyType]));
+            }
+            columns.push(this.getActionsColumn());
         }
 
         return (
             React.createElement("div", {className: "react-table"}, 
-                React.createElement("div", {className: "mb-1"}, 
-                    React.createElement("div", {className: "clearfix"}, 
-                        React.createElement(Button, {className: "ml-h pull-right", outline: true, disabled: !selectedRows.length, onClick: this.onDelete.bind(this)}, 
+                React.createElement("div", {className: "mb-1 clearfix"}, 
+                    React.createElement("div", {className: "pull-right clearfix"}, 
+                        React.createElement(Button, {className: "ml-q pull-right", outline: true, disabled: !selectedRows.length, onClick: this.onDelete.bind(this)}, 
                             "Ok"
                         ), 
                         React.createElement("div", {className: "pull-right"}, 
@@ -2195,14 +2280,13 @@ class Table extends React.Component {
                 React.createElement("div", {className: "table-wrap"}, 
                     React.createElement(ReactTable, {
                         className: "-striped -highlight", 
-                        manual: true, 
-                        defaultPageSize: defaultPageSize, 
-                        showFilters: showFilters, 
-                        data: data, 
-                        pages: pages, 
-                        loading: loading, 
                         columns: columns, 
-                        onChange: this.fetchData.bind(this)}
+                        data: data, 
+                        defaultPageSize: defaultPageSize, 
+                        loading: loading, 
+                        manual: true, 
+                        onFetchData: this.fetchData.bind(this), 
+                        pages: pages}
                     )
                 )
             )
@@ -2225,7 +2309,45 @@ module.exports = {
 }
 
 
-},{"jquery":"XpFelZ","react-redux":"MzQWgz","react-table":"OYum5A","reactstrap":"jldOQ7","redux":"czVV+t"}],35:[function(require,module,exports){
+//renderTaxonomyFilter() {
+//    const { taxonomyTypes, setTaxonomyTypes } = this.props;
+
+//    if (!taxonomyTypes.length) {
+//        $.get(this.state.taxonomyTypesProviderUrl, { entityTypeId: this.state.entityTypeId }, setTaxonomyTypes);
+//        return null;
+//    }
+
+//    return (
+//        <div className="pull-right clearfix mr-1">
+//            {
+//                taxonomyTypes && taxonomyTypes.map((taxonomyType) => {
+
+//                    return (
+//                        <Input key={taxonomyType.id} type="select" className="mr-q" onChange={(e) => {
+//                            var value = e.target.value;
+
+//                            if (!value)
+//                                delete this.taxonomyFiltering[taxonomyType.id];
+//                            else
+//                                this.taxonomyFiltering[taxonomyType.id] = +e.target.value;
+
+//                            this.fetchData();
+//                        }}>
+//                            <option value="">{taxonomyType.title}</option>
+//                            {
+//                                taxonomyType.taxonomies && taxonomyType.taxonomies.map(taxonomy => {
+//                                    return <option key={taxonomy.id} value={taxonomy.id}>{taxonomy.title}</option>
+//                                })
+//                            }
+//                        </Input>
+//                    );
+//                })
+//            }
+//        </div>
+//    );
+//}
+
+},{"jquery":"XpFelZ","react-redux":"MzQWgz","react-table":"OYum5A","reactstrap":"jldOQ7","redux":"czVV+t","underscore":"vBgcj5"}],35:[function(require,module,exports){
 module.exports = {
     index: require('./page-templates/index'),
     create: require('./page-templates/create'),

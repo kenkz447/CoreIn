@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CoreIn.Modules.Homeclick.Models
 {
-    public class OptionGroup : BaseEntity
+    public class OptionGroup : BaseEntity, IEntityWithDetails<OptionGroupDetail>
     {
         public OptionGroup()
         {

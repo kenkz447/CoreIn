@@ -6,7 +6,6 @@ using CoreIn.Models.Authentication;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.EntityFrameworkCore;
 using CoreIn.Resources.ConstantKeys;
 using CoreIn.Models.Infrastructure;
 using Microsoft.Extensions.DependencyInjection;

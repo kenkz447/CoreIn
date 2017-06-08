@@ -1,4 +1,5 @@
 ﻿const $ = require('jquery');
+const _ = require('underscore');
 const { connect } = require('react-redux');
 const { bindActionCreators } = require('redux');
 const ReactTable = require('react-table').default;
@@ -11,7 +12,8 @@ const keys = {
     loading: "LOADING",
     selectRow: "SELECT_ROW",
     deleteSelectedRows: "DETETE_SELECTED_ROWS",
-    deleteRows: "DELETE_ROWS"
+    deleteRows: "DELETE_ROWS",
+    setTaxonomyTypes: "SET_TAXONOMYTYPE"
 };
 
 // Actions
@@ -39,6 +41,11 @@ const actions = {
     deleteRows: (indexs) => ({
         type: keys.deleteRows,
         indexs
+    }),
+
+    setTaxonomyTypes: (taxonomyTypes) => ({
+        type: keys.setTaxonomyTypes,
+        taxonomyTypes
     })
 }
 
@@ -49,7 +56,8 @@ const initialState = {
     loading: false,
     defaultPageSize: 25,
     showFilters: true,
-    selectedRows: []
+    selectedRows: [],
+    taxonomyTypes: []
 }
 
 const reducer = (state = initialState, action) => {
@@ -85,23 +93,25 @@ const reducer = (state = initialState, action) => {
             newState.data = newState.data.filter(filter);
             newState.selectedRows = newState.selectedRows.filter(filter);
             break;
+        case keys.setTaxonomyTypes:
+            newState.taxonomyTypes = action.taxonomyTypes;
+            break;
         default:
             return state;
     }
     return newState;
 };
 
-function defaultFilterMethod (filter, row, column)
-{
+function defaultFilterMethod(filter, row, column) {
     var id = filter.pivotId || filter.id;
     return void 0 === row[id] || String(row[id]).startsWith(filter.value)
 }
 
-const requestData = (url, pageSize, page, sorted, filtering, callback) => {
+const requestData = (url, pageSize, page, sorted, filtering, taxonomies, callback) => {
     $.ajax({
         url,
         method: "POST",
-        data: { pageSize, page, sorted, filtering },
+        data: { pageSize, page, sorted, filtering, taxonomies },
         success: callback
     });
 }
@@ -109,31 +119,60 @@ const requestData = (url, pageSize, page, sorted, filtering, callback) => {
 // Component
 class Table extends React.Component {
     constructor(props) {
-        super();
-        this.getFirstColumn = this.getFirstColumn.bind(this);
+        super(props);
+
+        let url = new URL(window.location.href);
+        let searchParams = new URLSearchParams(url.search);
+        let entityTypeId = +searchParams.get('entityTypeId');
+
+        this.state = {
+            entityTypeId,
+            taxonomyTypesProviderUrl: '/TaxonomyUI/GetTaxonomyTypesForEntityType',
+        };
+
+        this.taxonomyFiltering = {};
+        this.ReactTableState = null;
+        this.ReactTableInstance = null;
+
         this.deleteRows = this.deleteRows.bind(this);
+        this.getFirstColumn = this.getFirstColumn.bind(this);
+        this.getTaxonomyColumn = this.getTaxonomyColumn.bind(this);
     }
 
-    fetchData(state, instance) {
+    fetchData(state = this.ReactTableState, instance = this.ReactTableInstance) {
         const { dataUrl, dataLoad } = this.props;
 
-        requestData(dataUrl, state.pageSize, state.page, state.sorted, state.filtering, dataLoad);
+        var taxonomyFiltering = {};
+        state.filtered.filter(filter => {
+            return filter.id.startsWith('taxonomyTypes');
+        }).map(filter => {
+            var typeId = filter.id.split('.')[1];
+            taxonomyFiltering[typeId] = +filter.value;
+        });
+
+        var filtered = state.filtered.filter(filter => {
+            return !filter.id.startsWith('taxonomyTypes');
+        });
+
+        requestData(dataUrl, state.pageSize, state.page, state.sorted, filtered, taxonomyFiltering, dataLoad);
+        this.ReactTableState = state;
+        this.ReactTableInstance = instance;
     }
 
     getFirstColumn() {
         const { selectRow } = this.props;
         return (
             {
-                header: "",
+                Header: "",
                 accessor: 'id',
-                render: row => {
+                Cell: props => {
                     const { selectedRows } = this.props;
-                    const checked = selectedRows.indexOf(row.index) >= 0;
-                    return  (
+                    const checked = selectedRows.indexOf(props.index) >= 0;
+                    return (
                         <div className="checkbox">
                             <input type="checkbox"
                                 onClick={() => {
-                                    selectRow(row.index);
+                                    selectRow(props.index);
                                 }} checked={checked} />
                             <span />
                         </div>
@@ -148,20 +187,19 @@ class Table extends React.Component {
 
     getActionsColumn() {
         return {
-            header: "Actions",
+            Header: "Actions",
             accessor: 'id',
-            render: row => {
-
+            Cell: props => {
                 return (
-                    <div className="table-row-actions">       
+                    <div className="table-row-actions">
                         <ButtonGroup>
                             <button className="btn btn-icon text-danger"
                                 onClick={() => {
                                     const { deleteRows, deleteProps: { url, success } } = this.props;
 
-                                    this.deleteRows(url, [row.value], (response) => {
+                                    this.deleteRows(url, [props.value], (response) => {
                                         success(response);
-                                        deleteRows([row.index]);
+                                        deleteRows([props.index]);
                                     });
                                 }}>
                                 <i className="fa fa-trash-o" aria-hidden="true"></i>
@@ -189,7 +227,7 @@ class Table extends React.Component {
     }
 
     onDelete() {
-        const {data, selectedRows, deleteSelectedRows, deleteProps: { url, success }} = this.props;
+        const { data, selectedRows, deleteSelectedRows, deleteProps: { url, success } } = this.props;
 
         const ids = data.filter((row, index) => {
             return selectedRows.indexOf(index) >= 0;
@@ -202,22 +240,69 @@ class Table extends React.Component {
             });
     }
 
+    
+
+    getTaxonomyColumn(taxonomyType) {
+        return {
+            Header: taxonomyType.title,
+            accessor: `taxonomyTypes.${taxonomyType.id}`,
+            Cell: props => {
+                return (
+                    <ul>
+                        {
+                            props.value && props.value.map(taxonomy => {
+                                return <li>{taxonomy.title}</li>
+                            })
+                        }
+                    </ul>
+                )
+            },
+            width: 200,
+            sortable: false,
+            filterable: true,
+            Filter: (props) => {
+                const { filter, onChange } = props;
+                return (
+                    <select
+                        onChange={event => onChange(event.target.value)}
+                        style={{ width: '100%' }}
+                        value={filter ? filter.value : 'all'}
+                    >
+                        <option value="">{taxonomyType.title}</option>
+                        {
+                            taxonomyType.taxonomies && taxonomyType.taxonomies.map(taxonomy => {
+                                return <option key={taxonomy.id} value={taxonomy.id}>{taxonomy.title}</option>
+                            })
+                        }
+                    </select>
+                )
+                    }
+        }
+    }
     render() {
-        const { columns, data, pages, loading, defaultPageSize, showFilters, selectedRows } = this.props;
+        const { columns, data, pages, loading, defaultPageSize, showFilters, selectedRows, taxonomyTypes, setTaxonomyTypes } = this.props;
 
         if (!columns)
             return;
 
+        if (this.state.entityTypeId && !taxonomyTypes.length) {
+            $.get(this.state.taxonomyTypesProviderUrl, { entityTypeId: this.state.entityTypeId }, setTaxonomyTypes);
+            return null;
+        }
+
         if (!(columns[0].accessor === "id")) {
             columns.unshift(this.getFirstColumn());
-            columns.push(this.getActionsColumn());   
+            for (var taxonomyType in taxonomyTypes) {
+                columns.push(this.getTaxonomyColumn(taxonomyTypes[taxonomyType]));
+            }
+            columns.push(this.getActionsColumn());
         }
 
         return (
             <div className="react-table">
-                <div className="mb-1">
-                    <div className="clearfix">
-                        <Button className="ml-h pull-right" outline disabled={!selectedRows.length} onClick={this.onDelete.bind(this)}>
+                <div className="mb-1 clearfix">
+                    <div className="pull-right clearfix">
+                        <Button className="ml-q pull-right" outline disabled={!selectedRows.length} onClick={this.onDelete.bind(this)}>
                             Ok
                         </Button>
                         <div className="pull-right">
@@ -230,14 +315,13 @@ class Table extends React.Component {
                 <div className="table-wrap">
                     <ReactTable
                         className='-striped -highlight'
-                        manual
-                        defaultPageSize={defaultPageSize}
-                        showFilters={showFilters}
-                        data={data}
-                        pages={pages}
-                        loading={loading}
                         columns={columns}
-                        onChange={this.fetchData.bind(this)}
+                        data={data}
+                        defaultPageSize={defaultPageSize}
+                        loading={loading}
+                        manual
+                        onFetchData={this.fetchData.bind(this)}
+                        pages={pages}
                     />
                 </div>
             </div>
@@ -258,3 +342,42 @@ module.exports = {
     reducer,
     actions
 }
+
+
+//renderTaxonomyFilter() {
+//    const { taxonomyTypes, setTaxonomyTypes } = this.props;
+
+//    if (!taxonomyTypes.length) {
+//        $.get(this.state.taxonomyTypesProviderUrl, { entityTypeId: this.state.entityTypeId }, setTaxonomyTypes);
+//        return null;
+//    }
+
+//    return (
+//        <div className="pull-right clearfix mr-1">
+//            {
+//                taxonomyTypes && taxonomyTypes.map((taxonomyType) => {
+
+//                    return (
+//                        <Input key={taxonomyType.id} type="select" className="mr-q" onChange={(e) => {
+//                            var value = e.target.value;
+
+//                            if (!value)
+//                                delete this.taxonomyFiltering[taxonomyType.id];
+//                            else
+//                                this.taxonomyFiltering[taxonomyType.id] = +e.target.value;
+
+//                            this.fetchData();
+//                        }}>
+//                            <option value="">{taxonomyType.title}</option>
+//                            {
+//                                taxonomyType.taxonomies && taxonomyType.taxonomies.map(taxonomy => {
+//                                    return <option key={taxonomy.id} value={taxonomy.id}>{taxonomy.title}</option>
+//                                })
+//                            }
+//                        </Input>
+//                    );
+//                })
+//            }
+//        </div>
+//    );
+//}

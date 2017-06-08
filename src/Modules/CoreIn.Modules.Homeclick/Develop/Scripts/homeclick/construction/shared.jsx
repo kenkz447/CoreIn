@@ -7,16 +7,17 @@ module.exports = {
         dataUrl: `/${mvcController}/GetTableData`,
         deleteUrl: `/${mvcController}/delete`,
         tableColumns: [{
-            header: "Thumbnail",
+            Header: "Thumbnail",
             accessor: 'thumbnailUrl',
-            render: row => (<div className="image-fill table-thumbnail" style={{ backgroundImage: `url(${row.value})`}}></div>),
+            Cell: props => (<div className="image-fill table-thumbnail" style={{ backgroundImage: `url(${props.value})`}}></div>),
             width: 85,
             sortable: false,
-            hideFilter: true
+            filterable: false
         }, {
-            header: "Title",
+            Header: "Title",
             accessor: 'title',
-            render: row => (<div><a href={`/${mvcController}/update/${row.rowValues.id}`}>{row.value}</a></div>),
+            Cell: props => (<div><a href={`/${mvcController}/update/${props.row.id}`}>{props.value}</a></div>),
+            filterable: true,
         }]
     },
     create: {

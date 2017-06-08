@@ -32,16 +32,31 @@ jQuery.grayLightest = '#f8f9fa';
 * MAIN NAVIGATION
 */
 jQuery(document).ready(function ($) {
+
+    jQuery.navigation.find('li[data-base-url]').each(function () {
+        var $li = jQuery(this);
+        var baseUrl = $li.data('base-url');
+        if (String(window.location).includes(baseUrl)) {
+            $li.addClass('open current');
+        }
+    });
+
     // Add class .active to current link
     jQuery.navigation.find('a').each(function () {
+        var aUrl = jQuery(jQuery(this))[0].href;
 
         var cUrl = String(window.location).split('?')[0];
+        aUrl = String(aUrl).split('?')[0];
 
         if (cUrl.substr(cUrl.length - 1) === '#') {
             cUrl = cUrl.slice(0, -1);
         }
 
-        if (jQuery(jQuery(this))[0].href === cUrl) {
+        if (aUrl.substr(cUrl.length - 1) === '#') {
+            aUrl = aUrl.slice(0, -1);
+        }
+
+        if (aUrl === cUrl) {
             jQuery(this).addClass('active');
 
             jQuery(this).parents('ul').add(this).each(function () {
@@ -95,29 +110,6 @@ jQuery(document).ready(function ($) {
     });
     jQuery('[data-toggle="tooltip"]').tooltip();
 });
-
-/****
-* CARDS ACTIONS
-*/
-
-//jQuery(document).on('click', '.card-actions a', function (e) {
-//    e.preventDefault();
-
-//    if (jQuery(this).hasClass('btn-close')) {
-//        jQuery(this).parent().parent().parent().fadeOut();
-//    } else if (jQuery(this).hasClass('btn-minimize')) {
-//        var $target = jQuery(this).parent().parent().next('.card-block');
-//        if (!jQuery(this).hasClass('collapsed')) {
-//            jQuery('i', jQuery(this)).removeClass(jQuery.panelIconOpened).addClass(jQuery.panelIconClosed);
-//        } else {
-//            jQuery('i', jQuery(this)).removeClass(jQuery.panelIconClosed).addClass(jQuery.panelIconOpened);
-//        }
-
-//    } else if (jQuery(this).hasClass('btn-setting')) {
-//        jQuery('#myModal').modal('show');
-//    }
-
-//});
 
 function capitalizeFirstLetter(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);

@@ -65,8 +65,14 @@ namespace CoreIn.Modules.TaxonomyUI.Controllers
 
         public JsonResult GetTaxonomies(long taxonomyTypeId)
         {
-            var taxonomies = _taxonomyHelper.GetTaxonomies(taxonomyTypeId);
+            var taxonomies = _taxonomyHelper.GetTaxonomies(taxonomyTypeId, true);
             var result = _taxonomyHelper.TaxonomiesToViewModels(taxonomies);
+            return Json(result);
+        }
+
+        public JsonResult GetTaxonomyTypesForEntityType(long entityTypeId)
+        {
+            var result = _taxonomyHelper.GetTaxonomiesTypeViewModels(entityTypeId, true);
             return Json(result);
         }
 

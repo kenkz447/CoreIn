@@ -338,6 +338,7 @@
 	<ProjectReference Include="..\Modules\Corein.Modules.Post\Corein.Modules.Post.csproj" />
     <ProjectReference Include="..\Modules\CoreIn.Modules.Register\CoreIn.Modules.Register.csproj" />
     <ProjectReference Include="..\Modules\CoreIn.Modules.TaxonomyUI\CoreIn.Modules.TaxonomyUI.csproj" />
+    <ProjectReference Include="..\Modules\CoreIn.Themes.DbGroupVn\CoreIn.Themes.DbGroupVn.csproj" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Update="Localization\AppKey.resx">

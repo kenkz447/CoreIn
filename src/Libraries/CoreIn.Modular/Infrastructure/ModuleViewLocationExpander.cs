@@ -6,30 +6,45 @@ namespace CoreIn.Modular.Infrastructure
 {
     public class ModuleViewLocationExpander : IViewLocationExpander
     {
-        private const string ModuleKey = "module";
-        private const string ComponentKey = "component";
+        private const string MODULE = "module";
+        private const string COMPONENT = "component";
 
         public IEnumerable<string> ExpandViewLocations(ViewLocationExpanderContext context, IEnumerable<string> viewLocations)
         {
-            if (context.Values.ContainsKey(ModuleKey))
+            if (context.Values.ContainsKey(MODULE))
             {
-                var module = context.Values[ModuleKey];
+                var module = context.Values[MODULE];
                 var moduleViewLocations = new List<string>();
 
                 if (context.Values.ContainsKey("component"))
                 {
-                    var component = context.Values[ComponentKey];
+                    var component = context.Values[COMPONENT];
                     moduleViewLocations.Add($"/Modules/{module}/Views/Shared/Components/{component}/default.cshtml");
                     moduleViewLocations.Add($"/Views/Shared/Components/{component}/default.cshtml");
                 }
+                // !!! Parent path "../" NOT working.
                 else if (!string.IsNullOrWhiteSpace(module))
                 {
-                    moduleViewLocations.AddRange(new string[] {
-                       $"../Modules/{module}/Views/{1}/{0}.cshtml",
-                       $"../Modules/{ module}/Views/Shared/{0}.cshtml",
-                       "/Views/{1}/{0}.cshtml",
-                       "/Views/Shared/{0}.cshtml"
+                    moduleViewLocations.Add("../{0}.cshtml");
+                    if (module.Contains("Themes"))
+                        moduleViewLocations.AddRange(new string[] {
+                       $"../Themes/{module}" + "/Views/{1}/{0}.cshtml",
+                       $"../Themes/{module}" + "/Views/Shared/{0}.cshtml",
                     });
+                    else
+                    {
+                        if (module.Contains("Modules"))
+                            moduleViewLocations.AddRange(new string[] {
+                           $"../Modules/{module}" + "/Views/{1}/{0}.cshtml",
+                           $"../Modules/{ module}" + "/Views/Shared/{0}.cshtml",
+                        });
+
+                        moduleViewLocations.AddRange(new string[] {
+                           "/Views/{1}/{0}.cshtml",
+                           "/Views/Shared/{0}.cshtml"
+                        });
+                    }
+
                 }
 
                 viewLocations = moduleViewLocations.Concat(viewLocations);
@@ -53,8 +68,8 @@ namespace CoreIn.Modular.Infrastructure
                 var componentName = nameCollection[2];
                 moduleName = nameCollection[1].Replace('_','.');
 
-                context.Values[ModuleKey] = moduleName;
-                context.Values[ComponentKey] = componentName;
+                context.Values[MODULE] = moduleName;
+                context.Values[COMPONENT] = componentName;
                 return;
             }
 
@@ -69,7 +84,7 @@ namespace CoreIn.Modular.Infrastructure
                 moduleName += str;
             }
 
-            context.Values[ModuleKey] = moduleName;
+            context.Values[MODULE] = moduleName;
         }
     }
 }

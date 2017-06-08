@@ -4,7 +4,7 @@ const {Card, CardBlock, CardHeader, Input, InputGroup, InputGroupAddon, FormFeed
 const renderFieldType = require('./render-field-type');
 
 module.exports = (props) => {
-    const { fields, childFields, fieldValidate, display: { title }, fileManagerModalToggle, executeFormAction, meta: {error, warning } } = props;
+    const { fields, childFields, fieldValidate, display: { title, prompt}, fileManagerModalToggle, executeFormAction, meta: {error, warning } } = props;
 
     var validationState = fieldValidate ? (error ? 'danger' : (warning && 'warning')) : null;
 

@@ -78,6 +78,10 @@ $mobile-sidebar-width:              220px;
 
 // Sidebar Navigation
 
+$sidebar-nav-dropdown-color: #fff;
+$sidebar-nav-dropdown-bg: rgba(0,0,0,.2);
+$sidebar-nav-dropdown-borders: 0;
+
 $sidebar-nav-color:                 #fff;
 $sidebar-nav-title-padding-y:       .75rem;
 $sidebar-nav-title-padding-x:       1rem;
@@ -95,14 +99,11 @@ $sidebar-nav-link-hover-icon-color: #fff !important;
 
 $sidebar-nav-link-hover-borders:    0;
 $sidebar-nav-link-active-color:     #fff;
-$sidebar-nav-link-active-bg:        lighten($sidebar-bg, 5%);
+$sidebar-nav-link-active-bg:        $sidebar-nav-dropdown-bg;
 $sidebar-nav-link-active-icon-color: $brand-primary;
 
 $sidebar-nav-link-active-borders:   0;
 
-$sidebar-nav-dropdown-color:        #fff;
-$sidebar-nav-dropdown-bg:           rgba(0,0,0,.2);
-$sidebar-nav-dropdown-borders:      0;
 
 // Top Navigation
 

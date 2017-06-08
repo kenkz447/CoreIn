@@ -13,10 +13,14 @@
 
         var itemClass = (!hasLink ? "nav-title" : "nav-item") + (hasChildren && hasLink ? " nav-dropdown" : "") + (item.IsCurrent ? " current-item" : (item.HasCurrentChild ? "current" : ""));
         var linkClass = "nav-link" + (hasChildren ? " nav-dropdown-toggle" : "");
-        <li class="@itemClass">
+
+        var baseUrl = @item.Details.GetValue("baseUrl");
+        <li class="@itemClass" @Html.Raw(baseUrl != null ? $"data-base-url={baseUrl}" : string.Empty)>
             @if (hasLink)
             {
-                <a class="@linkClass" href="@item.Details.GetValue("url")">
+                var url = @item.Details.GetValue("url");
+
+                <a class="@linkClass" @Html.Raw(url != "#" ? $"href={url}" : string.Empty) >
                     @Html.Raw(item.Details.GetValue("icon"))
                     <span>@item.Details.GetValue("title")</span>
                 </a>

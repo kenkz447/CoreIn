@@ -1,0 +1,33 @@
+﻿
+@import "dbgroupvn/font";
+
+@import "bootstrap/bootstrap";
+
+.language-select {
+    border-right: 2px solid #8A8A8A;
+    color: #8A8A8A;
+}
+
+.btn-search {
+    color: #5D5E5E;
+    outline: none;
+
+    &:focus {
+        box-shadow: none;
+    }
+}
+
+.menu-container {
+    height: calc(100% - 35px);
+
+    .menu {
+        .menu-item {
+            font-size: 18px;
+            margin-right: 1.9rem;
+
+            a {
+                color: #5D5E5E;
+            }
+        }
+    }
+}

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CoreIn.Modules.Homeclick.Models
 {
-    public class Project : BaseEntity
+    public class Project : BaseEntity, IEntityWithDetails<ProjectDetail>
     {
         public Project()
         {

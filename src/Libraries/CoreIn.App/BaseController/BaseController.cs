@@ -12,7 +12,7 @@ using System.Linq;
 namespace CoreIn.App
 {
     public abstract class BaseController<TEntity, TEntityDetail, TLocalizer, TFormDetailViewModel> : Controller
-        where TEntity : BaseEntity, IBaseEntityWithDetails<TEntityDetail>, new()
+        where TEntity : BaseEntity, IEntityWithDetails<TEntityDetail>, new()
         where TEntityDetail : BaseEntityDetail, new()
         where TFormDetailViewModel : BaseEntityViewModel, new()
     {
@@ -88,31 +88,9 @@ namespace CoreIn.App
             => Json(_entityController.GetForm(id, lang));
 
         [HttpPost]
-        public JsonResult GetTableData(Datatable table)
+        public virtual JsonResult GetTableData(DataRequest dataRequest)
         {
-            var entities = _entityController.Gets();
-
-            var filterResult = entities;
-
-            if (table.Filtering != null)
-                foreach (var filtering in table.Filtering)
-                {
-                    filterResult = filterResult.Where(o => o.Details.FirstOrDefault(e => e.Field == filtering.Id && e.Value.Contains(filtering.Value)) != null);
-                }
-
-            if (table.Sorted != null)
-            {
-                foreach (var sorting in table.Sorted)
-                {
-                    if (sorting.DESC)
-                        filterResult = sorting.DESC ? filterResult.OrderByDescending(o => o.Details.FirstOrDefault(d => d.Field == sorting.Id).Value)
-                            : filterResult.OrderBy(o => o.Details.FirstOrDefault(d => d.Field == sorting.Id).Value);
-                }
-            }
-
-            filterResult = filterResult.Skip(table.Page * table.PageSize);
-            filterResult.Take(table.PageSize);
-
+            var filterResult = _entityController.GetEntities(dataRequest);
             var results = _entityController.ToViewModels(filterResult.ToList());
             return Json(results);
         }

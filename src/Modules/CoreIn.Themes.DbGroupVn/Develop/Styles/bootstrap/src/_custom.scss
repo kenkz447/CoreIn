@@ -1,0 +1,10 @@
+// Bootstrap overrides
+//
+// Copy variables from `_variables.scss` to this file to override default values
+// without modifying source files.
+
+$font-family-base: "UTM Avo";
+
+html {
+    font-size: 15px;
+}

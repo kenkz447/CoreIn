@@ -1,12 +1,11 @@
 ﻿using CoreIn.Models.Infrastructure;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace CoreIn.Modules.Homeclick.Models
 {
-    public class Construction : BaseEntity, IBaseEntityWithDetails<ConstructionDetail>
+    public class Construction : BaseEntity, 
+        IEntityWithDetails<ConstructionDetail>, 
+        IEntityWithTaxonomies<ConstructionTaxonomy>
     {
         public Construction()
         {
@@ -14,5 +13,6 @@ namespace CoreIn.Modules.Homeclick.Models
         }
 
         public virtual ICollection<ConstructionDetail> Details { get; set; }
+        public virtual ICollection<ConstructionTaxonomy> Taxonomies { get; set; }
     }
 }

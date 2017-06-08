@@ -1,4 +1,7 @@
-﻿using Newtonsoft.Json;
+﻿using CoreIn.Models;
+using Newtonsoft.Json;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace CoreIn.Commons.ViewModels
 {
@@ -13,8 +16,14 @@ namespace CoreIn.Commons.ViewModels
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public virtual string Title { get; set; }
 
+        [JsonProperty]
+        private Dictionary<long, IEnumerable<TaxonomyViewModel>> TaxonomyTypes { get; set; }
+
         public void SetId(long id) => Id = id;
+        public long? GetId() => Id;
+
         public void SetThumbnail(string thumbnailUrl) => ThumbnailUrl = thumbnailUrl;
 
+        public void SetTaxonomyTypes(Dictionary<long, IEnumerable<TaxonomyViewModel>> taxonomyTypes) => TaxonomyTypes = taxonomyTypes;
     }
 }

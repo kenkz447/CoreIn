@@ -68,6 +68,6 @@ namespace CoreIn.Commons.Form
         }
 
         public Dictionary<long, long[]> GetTaxonomuTypeIdTaxonomyId()
-        => TaxonomyTypes?.ToDictionary(o => o.Key, o => o.Value.Keys.ToArray());
+        => TaxonomyTypes?.ToDictionary(o => o.Key, o => o.Value.Where(d => d.Value == true).Select(e => e.Key).ToArray());
     }
 }

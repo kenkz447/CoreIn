@@ -20,7 +20,7 @@ function fieldValidate(fields, values) {
 
         var fieldName = fieldObj.name;
         var isArray = fieldObj.display && fieldObj.display.renderType != 'Image' && fieldObj.childFields;
-        if (isArray && values[fieldName].length) {
+        if (isArray && values[fieldName] && values[fieldName].length) {
             for (var index in values[fieldName]) {
                 var validateResult = fieldValidate(fieldObj.childFields, values[fieldName][index]);
                 if (validateResult) {

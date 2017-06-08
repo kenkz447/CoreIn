@@ -15,7 +15,7 @@ using System.Linq;
 namespace CoreIn.App
 {
     public class EntityController<TEntity, TEntityDetail, TLocalizer, TFormDetailViewModel>
-        where TEntity: BaseEntity
+        where TEntity: BaseEntity, IEntityWithDetails<TEntityDetail>
         where TEntityDetail: BaseEntityDetail, new()
         where TFormDetailViewModel: class, new()
     {
@@ -98,8 +98,33 @@ namespace CoreIn.App
             return form;
         }
 
-        public IQueryable<TEntity> Gets()
-         => EntityHelper.Entities();
+        public virtual IEnumerable<TEntity> GetEntities(DataRequest dataRequest)
+        {
+            var entities = EntityHelper.Entities();
+
+            var filterResult = entities;
+
+            if (dataRequest.Filtering != null)
+                foreach (var filtering in dataRequest.Filtering)
+                {
+                    filterResult = filterResult.Where(o => o.Details.FirstOrDefault(e => e.Field == filtering.Id && e.Value.Contains(filtering.Value)) != null);
+                }
+
+            if (dataRequest.Sorted != null)
+            {
+                foreach (var sorting in dataRequest.Sorted)
+                {
+                    if (sorting.DESC)
+                        filterResult = sorting.DESC ? filterResult.OrderByDescending(o => o.Details.FirstOrDefault(d => d.Field == sorting.Id).Value)
+                            : filterResult.OrderBy(o => o.Details.FirstOrDefault(d => d.Field == sorting.Id).Value);
+                }
+            }
+
+            filterResult = filterResult.Skip(dataRequest.Page * dataRequest.PageSize);
+            filterResult.Take(dataRequest.PageSize);
+
+            return filterResult;
+        }
 
         public TEntity Create(TEntity newEntity, IEnumerable<TEntityDetail> details, User user = null)
         {
@@ -135,7 +160,7 @@ namespace CoreIn.App
             return Save();
         }
 
-        public IEnumerable<BaseEntityViewModel> ToViewModels(IEnumerable<TEntity> entities)
+        public virtual IEnumerable<BaseEntityViewModel> ToViewModels(IEnumerable<TEntity> entities)
         {
             foreach (var entity in entities)
             {

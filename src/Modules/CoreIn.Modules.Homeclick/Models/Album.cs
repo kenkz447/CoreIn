@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CoreIn.Modules.Homeclick.Models
 {
-    public class Album : BaseEntity
+    public class Album : BaseEntity, IEntityWithDetails<AlbumDetail>
     {
         public Album()
         {

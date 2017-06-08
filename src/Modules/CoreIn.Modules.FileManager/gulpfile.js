@@ -7,7 +7,7 @@ var reactify = require('reactify');
 var rename = require('gulp-rename');
 var uglify = require('gulp-uglify');
 var browsersync = require('browser-sync').create();
-var exorcist = require('exorcist');
+//var exorcist = require('exorcist');
 var sourcemaps = require('gulp-sourcemaps');
 
 var pkg = require('./package.json');
@@ -15,6 +15,8 @@ var pkg = require('./package.json');
 var libs = [
     'react',
     'react-dom',
+    'react-addons-css-transition-group',
+    'react-addons-transition-group',
     'redux',
     'react-redux',
     'redux-form',
@@ -26,7 +28,14 @@ var libs = [
     'sift',
     'classnames',
     'react-checkbox-tree',
-    'corein'
+    'underscore',
+    'react-ui-tree',
+    'list-to-tree',
+    'react-table',
+    'react-draft-wysiwyg',
+    'draft-js',
+    'draftjs-to-html',
+    'html-to-draftjs'
 ];
 
 var production = (process.env.NODE_ENV === 'production');

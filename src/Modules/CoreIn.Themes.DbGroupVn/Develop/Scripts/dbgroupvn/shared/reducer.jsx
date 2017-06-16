@@ -1,10 +1,21 @@
-﻿module.exports = (state = 0, action) => {
-    switch (action.type) {
-        case 'INCREMENT':
-            return state + 1
-        case 'DECREMENT':
-            return state - 1
-        default:
-            return state
-    }
-}
+﻿const { combineReducers } = require('redux');
+const { routerReducer } = require('react-router-redux');
+
+//reducers
+const localization = require('./reducers/localization').reducer;
+const menu = require('./_layout/header/menu').reducer;
+const layout = require('./_layout').reducer;
+const connectedBasePage = require('./_layout/main/connected-base-page').reducer;
+
+import { reducer as appRouter } from '../routes'
+
+const reducer = combineReducers({
+    layout,
+    localization,
+    menu,
+    connectedBasePage,
+    router: routerReducer,
+    appRouter
+})
+
+module.exports = reducer;

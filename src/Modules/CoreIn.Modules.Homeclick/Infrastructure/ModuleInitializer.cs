@@ -39,7 +39,7 @@ namespace CoreIn.Modules.Homeclick
                                             new MenuDetail { Field = "title", Value = "Tất cả dự Án", Language="vi-VN"},
                                             new MenuDetail { Field = "controller", Value = "project"},
                                             new MenuDetail { Field = "action", Value = "index"},
-                                            new MenuDetail { Field = "url", Value = "/project"},
+                                            new MenuDetail { Field = "url", Value = $"/project?entityTypeId={entityTypeManager.Project.Id}"},
                                         },
                                         supperUser, false
                                     ),
@@ -54,7 +54,7 @@ namespace CoreIn.Modules.Homeclick
                                             new MenuDetail { Field = "title", Value = "Thêm dự án mới", Language="vi-VN"},
                                             new MenuDetail { Field = "controller", Value = "project"},
                                             new MenuDetail { Field = "action", Value = "create"},
-                                            new MenuDetail { Field = "url", Value = "/project/create"},
+                                            new MenuDetail { Field = "url", Value = $"/project/create?entityTypeId={entityTypeManager.Project.Id}"},
                                         },
                                         supperUser, false
                                     )
@@ -87,7 +87,7 @@ namespace CoreIn.Modules.Homeclick
                                             new MenuDetail { Field = "title", Value = "Tất cả bộ sưu tập", Language="vi-VN"},
                                             new MenuDetail { Field = "controller", Value = "collection"},
                                             new MenuDetail { Field = "action", Value = "index"},
-                                            new MenuDetail { Field = "url", Value = "/collection"},
+                                            new MenuDetail { Field = "url", Value = $"/collection?entityTypeId={entityTypeManager.Project.Id}"},
                                         },
                                         supperUser, false
                                     ),
@@ -102,7 +102,7 @@ namespace CoreIn.Modules.Homeclick
                                             new MenuDetail { Field = "title", Value = "Tạo bộ sưu tập", Language="vi-VN"},
                                             new MenuDetail { Field = "controller", Value = "collection"},
                                             new MenuDetail { Field = "action", Value = "create"},
-                                            new MenuDetail { Field = "url", Value = "/collection/create"},
+                                            new MenuDetail { Field = "url", Value =  $"/collection/create?entityTypeId={entityTypeManager.Collection.Id}"},
                                         },
                                         supperUser, false
                                     )

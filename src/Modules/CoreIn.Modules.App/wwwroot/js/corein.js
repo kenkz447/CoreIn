@@ -962,7 +962,7 @@ module.exports = class BaseForm extends React.Component {
     executeFormAction(command, fieldData) {
         const { commands, formValues } = this.props;
 
-        commands[command](formValues, fieldData);
+        commands[command](formValues, fieldData, this.props);
     }
 
     renderFormHeader() {
@@ -1394,7 +1394,7 @@ class Form extends BaseForm {
     }
 
     render() {
-        const { handleSubmit } = this.props;
+        const { handleSubmit, formData: { taxonomyTypes } } = this.props;
 
         return (
             React.createElement("form", {onSubmit: handleSubmit}, 
@@ -1404,11 +1404,14 @@ class Form extends BaseForm {
                         this.renderDetailFields()
                     ), 
                     React.createElement(Col, {md: "3"}, 
-                        React.createElement(Card, null, 
-                            React.createElement(CardBlock, null, 
-                                this.renderTaxonomies()
-                            )
-                        ), 
+                         taxonomyTypes &&
+                            React.createElement(Card, null, 
+                                React.createElement(CardBlock, null, 
+                                    this.renderTaxonomies()
+                                )
+                            ), 
+                        
+
                         React.createElement(Card, {id: "FormActions"}, 
                             React.createElement(CardBlock, null, 
                                 this.renderMetaFields(), 
@@ -2072,7 +2075,7 @@ function defaultFilterMethod(filter, row, column) {
     return void 0 === row[id] || String(row[id]).startsWith(filter.value)
 }
 
-const requestData = (url, pageSize, page, sorted, filtering, taxonomies, callback) => {
+const dataRequest = (url, pageSize, page, sorted, filtering, taxonomies, callback) => {
     $.ajax({
         url,
         method: "POST",
@@ -2119,7 +2122,7 @@ class Table extends React.Component {
             return !filter.id.startsWith('taxonomyTypes');
         });
 
-        requestData(dataUrl, state.pageSize, state.page, state.sorted, filtered, taxonomyFiltering, dataLoad);
+        dataRequest(dataUrl, state.pageSize, state.page, state.sorted, filtered, taxonomyFiltering, dataLoad);
         this.ReactTableState = state;
         this.ReactTableInstance = instance;
     }
@@ -2305,7 +2308,8 @@ const reducerToProps = (reducer) => (
 module.exports = {
     default: connect(stateToProps, reducerToProps)(Table),
     reducer,
-    actions
+    actions,
+    dataRequest
 }
 
 
@@ -2351,10 +2355,11 @@ module.exports = {
 module.exports = {
     index: require('./page-templates/index'),
     create: require('./page-templates/create'),
-    update: require('./page-templates/update')
+    update: require('./page-templates/update'),
+    form: require('./page-templates/shared/components/form')
 };
 
-},{"./page-templates/create":36,"./page-templates/index":37,"./page-templates/update":43}],36:[function(require,module,exports){
+},{"./page-templates/create":36,"./page-templates/index":37,"./page-templates/shared/components/form":40,"./page-templates/update":43}],36:[function(require,module,exports){
 const $ = require('jquery');
 const { combineReducers, createStore, bindActionCreators } = require('redux');
 const { connect, Provider } = require('react-redux');
@@ -2365,7 +2370,7 @@ const store = createStore(require('./shared/redux/reducer'));
 const { PageTitle } = require('../components/page');
 
 var PageContent = (props) => {
-    const { parameters, title, description, formUrl, formSubmitData, indexUrl, Form, urls} = props;
+    const { parameters, title, description, formUrl, formSubmitData, formCommands, indexUrl, urls} = props;
 
     return (
         React.createElement("div", null, 
@@ -2376,7 +2381,7 @@ var PageContent = (props) => {
                 )
             ), 
             
-                Form ? Form : React.createElement(SharedForm, {formName: "create", formUrlData: parameters, formUrl: formUrl, formSubmitData: formSubmitData})
+                React.createElement(SharedForm, {formName: "create", commands: formCommands, formUrlData: parameters, formUrl: formUrl, formSubmitData: formSubmitData})
             
         )
     );
@@ -2570,13 +2575,7 @@ const reducer = (state = initialState, action) => {
 class Form extends React.Component {
     constructor(props) {
         super(props);
-        this.getCommands = this.getCommands.bind(this);
         this.getForm = this.getForm.bind(this);
-    }
-
-    getCommands() {
-        return {
-        };
     }
 
     getForm() {
@@ -2601,7 +2600,7 @@ class Form extends React.Component {
         const reduxFormProps = {
             form: 'create',
             formData,
-            commands: this.getCommands(),
+            commands,
             onSubmit: submit(sumbitProps),
             _initialValues: formData.initialValues,
         };
@@ -2677,7 +2676,7 @@ const { PageTitle } = require('../components/page');
 const store = createStore(require('./shared/redux/reducer'));
 
 var PageContent = (props) => {
-    const { parameters, title, description, createNewUrl, formUrl, formSubmitData, indexUrl, Form, urls } = props;
+    const { parameters, title, description, createNewUrl, formUrl, formSubmitData, formCommands, indexUrl, urls } = props;
 
     return (
         React.createElement("div", null, 
@@ -2691,7 +2690,7 @@ var PageContent = (props) => {
                 )
             ), 
             
-                Form ? Form : React.createElement(SharedForm, {formName: "create", formUrl: formUrl, formUrlData: parameters, formSubmitData: formSubmitData})
+                React.createElement(SharedForm, {formName: "create", commands: formCommands, formUrl: formUrl, formUrlData: parameters, formSubmitData: formSubmitData})
             
         )
     );

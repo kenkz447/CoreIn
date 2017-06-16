@@ -8,16 +8,17 @@ module.exports = {
         dataUrl: `/${mvcController}/GetTableData`,
         deleteUrl: `/${mvcController}/delete`,
         tableColumns: [{
-            header: "Thumbnail",
-            accessor: 'thumbnail',
-            render: row => (<div><img className="table-thumbnail" src={row.value} /></div>),
-            width: 160,
+            Header: "Thumbnail",
+            accessor: 'thumbnailUrl',
+            Cell: props => (<div className="image-fill table-thumbnail" style={{ backgroundImage: `url(${props.value})` }}></div>),
+            width: 85,
             sortable: false,
-            hideFilter: true
+            filterable: false
         }, {
-            header: "Title",
+            Header: "Title",
             accessor: 'title',
-            render: row => (<div><a href={`/${mvcController}/update/${row.rowValues.id}`} target="blank">{row.value}</a></div>),
+            Cell: props => (<div><a href={`/${mvcController}/update/${props.row.id}`}>{props.value}</a></div>),
+            filterable: true,
         }]
     },
     create: {
@@ -42,6 +43,19 @@ module.exports = {
                 alertPush("success", response.message);
                 $("html, body").stop().animate({ scrollTop: 0 }, 500, 'swing');
             },
+        }
+    },
+
+    formCommands: {
+        SET_LAYOUT: (formValues, fieldData, props) => {
+            const { openLayoutModal } = props;
+            var roomName = fieldData.input.name.split('.')[1];
+
+            const roomArrayIndex = /\[([^]+)\]/.exec(roomName)[1];
+            const room = formValues.details['rooms'][roomArrayIndex];
+            const layoutImage = room.layoutimage;
+            if (layoutImage)
+                openLayoutModal(layoutImage, fieldData.input.value, fieldData.input.onChange, fieldData.fileManagerModalToggle);
         }
     }
 }

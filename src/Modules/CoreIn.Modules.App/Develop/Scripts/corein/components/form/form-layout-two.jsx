@@ -9,7 +9,7 @@ class Form extends BaseForm {
     }
 
     render() {
-        const { handleSubmit } = this.props;
+        const { handleSubmit, formData: { taxonomyTypes } } = this.props;
 
         return (
             <form onSubmit={handleSubmit}>
@@ -19,11 +19,14 @@ class Form extends BaseForm {
                         {this.renderDetailFields()}
                     </Col>
                     <Col md="3">
-                        <Card>
-                            <CardBlock>
-                                {this.renderTaxonomies()}
-                            </CardBlock>
-                        </Card>
+                        { taxonomyTypes &&
+                            <Card>
+                                <CardBlock>
+                                    {this.renderTaxonomies()}
+                                </CardBlock>
+                            </Card>
+                        }
+
                         <Card id="FormActions">
                             <CardBlock>
                                 {this.renderMetaFields()}

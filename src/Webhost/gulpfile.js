@@ -37,7 +37,10 @@ var libs = [
     'underscore',
     'react-router-dom',
     'react-router-redux',
-    'history'
+    'history',
+    'react-owl-carousel2',
+    'react-localization',
+    'react-touch'
 ];
 
 var production = (process.env.NODE_ENV === 'production');
@@ -50,7 +53,7 @@ gulp.task('vendor', function () {
 
     var b = browserify({
         debug: false,
-        transform: ['reactify']
+        transform: [["babelify", { "presets": ["es2015"] }]]
     });
 
     var stream = gulp.src('develop/scripts/noop.js', { read: false })

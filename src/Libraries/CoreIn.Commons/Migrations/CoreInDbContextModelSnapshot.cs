@@ -548,6 +548,24 @@ namespace CoreIn.Commons.Migrations
                     b.ToTable("CoreIn_CollectionDetail");
                 });
 
+            modelBuilder.Entity("CoreIn.Modules.Homeclick.Models.CollectionTaxonomy", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<long>("EntityId");
+
+                    b.Property<long>("TaxonomyId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EntityId");
+
+                    b.HasIndex("TaxonomyId");
+
+                    b.ToTable("CoreIn_CollectionTaxonomy");
+                });
+
             modelBuilder.Entity("CoreIn.Modules.Homeclick.Models.Construction", b =>
                 {
                     b.Property<long>("Id")
@@ -877,6 +895,24 @@ namespace CoreIn.Commons.Migrations
                     b.HasIndex("ModifiedById");
 
                     b.ToTable("CoreIn_ProjectDetail");
+                });
+
+            modelBuilder.Entity("CoreIn.Modules.Homeclick.Models.ProjectTaxonomy", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<long>("EntityId");
+
+                    b.Property<long>("TaxonomyId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EntityId");
+
+                    b.HasIndex("TaxonomyId");
+
+                    b.ToTable("CoreIn_ProjectTaxonomy");
                 });
 
             modelBuilder.Entity("CoreIn.Modules.Post.Models.PostEntity", b =>
@@ -1243,6 +1279,19 @@ namespace CoreIn.Commons.Migrations
                         .HasForeignKey("ModifiedById");
                 });
 
+            modelBuilder.Entity("CoreIn.Modules.Homeclick.Models.CollectionTaxonomy", b =>
+                {
+                    b.HasOne("CoreIn.Modules.Homeclick.Models.Collection", "Entity")
+                        .WithMany("Taxonomies")
+                        .HasForeignKey("EntityId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("CoreIn.Models.Taxonomy", "Taxonomy")
+                        .WithMany()
+                        .HasForeignKey("TaxonomyId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
             modelBuilder.Entity("CoreIn.Modules.Homeclick.Models.Construction", b =>
                 {
                     b.HasOne("CoreIn.Models.EntityType", "EntityType")
@@ -1269,7 +1318,7 @@ namespace CoreIn.Commons.Migrations
             modelBuilder.Entity("CoreIn.Modules.Homeclick.Models.ConstructionTaxonomy", b =>
                 {
                     b.HasOne("CoreIn.Modules.Homeclick.Models.Construction", "Entity")
-                        .WithMany()
+                        .WithMany("Taxonomies")
                         .HasForeignKey("EntityId")
                         .OnDelete(DeleteBehavior.Cascade);
 
@@ -1382,6 +1431,19 @@ namespace CoreIn.Commons.Migrations
                     b.HasOne("CoreIn.Models.Authentication.User", "ModifiedBy")
                         .WithMany()
                         .HasForeignKey("ModifiedById");
+                });
+
+            modelBuilder.Entity("CoreIn.Modules.Homeclick.Models.ProjectTaxonomy", b =>
+                {
+                    b.HasOne("CoreIn.Modules.Homeclick.Models.Project", "Entity")
+                        .WithMany("Taxonomies")
+                        .HasForeignKey("EntityId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("CoreIn.Models.Taxonomy", "Taxonomy")
+                        .WithMany()
+                        .HasForeignKey("TaxonomyId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("CoreIn.Modules.Post.Models.PostEntity", b =>

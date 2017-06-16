@@ -1,13 +1,9 @@
-﻿using CoreIn.Commons;
-using CoreIn.EntityCore;
+﻿using CoreIn.EntityCore;
 using CoreIn.Models;
 using CoreIn.Models.Authentication;
 using CoreIn.Resources.ConstantKeys;
 using Microsoft.AspNetCore.Identity;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace CoreIn.Modules.Homeclick
 {
@@ -15,6 +11,7 @@ namespace CoreIn.Modules.Homeclick
     {
         public TaxonomyType PostCategory { get; private set; }
         public TaxonomyType ConstructionCategory { get; set; }
+        public TaxonomyType CollectionCategory { get; set; }
 
         public TaxonomyTypeManager(EntityTypeManager entityTypeManager, ITaxonomyHelper taxonomyManager, UserManager<User> userManager)
         {
@@ -32,6 +29,24 @@ namespace CoreIn.Modules.Homeclick
             ConstructionCategory = taxonomyManager.RegisterTaxonomyType(
                 entityTypeManager.Construction,
                 "construction-category",
+                new Dictionary<string, string>
+                {
+                    {"title", "Category" },
+                }, supperUser
+                );
+
+            ConstructionCategory = taxonomyManager.RegisterTaxonomyType(
+                entityTypeManager.Project,
+                "project-category",
+                new Dictionary<string, string>
+                {
+                    {"title", "Category" },
+                }, supperUser
+                );
+
+            ConstructionCategory = taxonomyManager.RegisterTaxonomyType(
+                entityTypeManager.Collection,
+                "collection-category",
                 new Dictionary<string, string>
                 {
                     {"title", "Category" },

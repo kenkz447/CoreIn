@@ -9,9 +9,11 @@ using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace CoreIn.Modules.Homeclick.Controllers
 {
-    public class ProjectController : BaseController<Project, ProjectDetail, Strings, ProjectViewModel>
+    public class ProjectController : BaseControllerWithTaxonomy<Project, ProjectDetail, ProjectTaxonomy, Strings, ProjectViewModel>
     {
-        public ProjectController(UserManager<User> userManager, EntityController<Project, ProjectDetail, Strings, ProjectViewModel> entityController) : base(userManager, entityController)
+        public ProjectController(UserManager<User> userManager,
+            EntityControllerWithTaxonomy<Project, ProjectDetail, ProjectTaxonomy, Strings, ProjectViewModel> entityController)
+            : base(userManager, entityController)
         {
 
         }

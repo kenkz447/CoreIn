@@ -38,20 +38,23 @@ module.exports = (props) => {
 };
 
 },{"./shared":5,"jquery":"XpFelZ"}],4:[function(require,module,exports){
-const Index = Corein.pageTemplates.index;
-const { create, index: { dataUrl, deleteUrl, tableColumns } } = require('./shared');
-
-const Create = require('./create');
+const $ = require('jquery');
+const Page = Corein.pageTemplates.index;
+const { index: { dataUrl, deleteUrl, tableColumns } } = require('./shared');
 
 module.exports = (props) => {
-    const { title } = props;
+    const pageProps = $.extend(true, {
+        dataUrl,
+        deleteUrl,
+        tableColumns
+    }, props);
 
     return (
-        React.createElement(Index, {title: title, createNewUrl: create.url, dataUrl: dataUrl, deleteUrl: deleteUrl, tableColumns: tableColumns})            
+        React.createElement(Page, React.__spread({},  pageProps))
     );
 };
 
-},{"./create":3,"./shared":5}],5:[function(require,module,exports){
+},{"./shared":5,"jquery":"XpFelZ"}],5:[function(require,module,exports){
 const $ = require('jquery');
 
 const mvcController = 'album';
@@ -62,9 +65,10 @@ module.exports = {
         dataUrl: `/${mvcController}/GetTableData`,
         deleteUrl: `/${mvcController}/delete`,
         tableColumns: [{
-            header: "Title",
+            Header: "Title",
             accessor: 'title',
-            render: row => (React.createElement("div", null, React.createElement("a", {href: `/${mvcController}/update/${row.rowValues.id}`, target: "blank"}, row.value))),
+            Cell: props => (React.createElement("div", null, React.createElement("a", {href: `/${mvcController}/update/${props.row.id}`}, props.value))),
+            filterable: true,
         }]
     },
     create: {
@@ -249,8 +253,6 @@ const $ = require('jquery');
 const Page = Corein.pageTemplates.index;
 const { index: { dataUrl, deleteUrl, tableColumns } } = require('./shared');
 
-const Create = require('./create');
-
 module.exports = (props) => {
     const pageProps = $.extend(true, {
         dataUrl,
@@ -263,7 +265,7 @@ module.exports = (props) => {
     );
 };
 
-},{"./create":13,"./shared":15,"jquery":"XpFelZ"}],15:[function(require,module,exports){
+},{"./shared":15,"jquery":"XpFelZ"}],15:[function(require,module,exports){
 const $ = require('jquery');
 
 const mvcController = 'construction';
@@ -654,31 +656,27 @@ const $ = require('jquery');
 const { combineReducers, createStore, bindActionCreators } = require('redux');
 const {connect, Provider} = require('react-redux');
 const { Button, Card, CardHeader, CardBlock } = require('reactstrap');
-const Form = require('./shared/components/form').default;
+
+const SharedForm = Corein.pageTemplates.form.default;
 
 const store = createStore(require('./shared/redux/reducer'));
 
-const {index, create: {formUrl, formSubmitData}} = require('./shared');
+const {index, create: {formUrl, formSubmitData}, formCommands} = require('./shared');
+const { PageTitle } = Corein.components.pageComponents;
 
 var PageContent = (props) => {
 
-    const {title, description} = props;
+    const { parameters, title, description, indexUrl, urls} = props;
 
     return (
         React.createElement("div", null, 
             React.createElement("div", {className: "clearfix mb-1"}, 
                 React.createElement("div", {className: "pull-left"}, 
-                    React.createElement("h3", null, React.createElement("a", {href: index.url}, title))
+                    React.createElement(PageTitle, null, React.createElement("a", {href: indexUrl || urls.index}, title)), 
+                    description
                 )
             ), 
-            React.createElement(Card, null, 
-                React.createElement(CardBlock, null, 
-                    React.createElement(Form, {formName: "create", 
-                        formUrl: formUrl, 
-                        formSubmitData: formSubmitData}
-                    )
-                )
-            )
+            React.createElement(SharedForm, {formName: "create", commands: formCommands, formUrlData: parameters, formUrl: formUrl, formSubmitData: formSubmitData})
         )
     );
 };
@@ -702,19 +700,24 @@ module.exports = (props) => {
     );
 };
 
-},{"./shared":35,"./shared/components/form":36,"./shared/redux/reducer":39,"jquery":"XpFelZ","react-redux":"MzQWgz","reactstrap":"jldOQ7","redux":"czVV+t"}],34:[function(require,module,exports){
-const Index = Corein.pageTemplates.index;
-const { create, index: { dataUrl, deleteUrl, tableColumns } } = require('./shared');
+},{"./shared":35,"./shared/redux/reducer":39,"jquery":"XpFelZ","react-redux":"MzQWgz","reactstrap":"jldOQ7","redux":"czVV+t"}],34:[function(require,module,exports){
+const $ = require('jquery');
+const Page = Corein.pageTemplates.index;
+const { index: { dataUrl, deleteUrl, tableColumns } } = require('./shared');
 
 module.exports = (props) => {
-    const { title } = props;
+    const pageProps = $.extend(true, {
+        dataUrl,
+        deleteUrl,
+        tableColumns
+    }, props);
 
     return (
-        React.createElement(Index, {title: title, createNewUrl: create.url, dataUrl: dataUrl, deleteUrl: deleteUrl, tableColumns: tableColumns})
+        React.createElement(Page, React.__spread({},  pageProps))            
     );
 };
 
-},{"./shared":35}],35:[function(require,module,exports){
+},{"./shared":35,"jquery":"XpFelZ"}],35:[function(require,module,exports){
 const $ = require('jquery');
 
 const mvcController = 'project';
@@ -725,16 +728,17 @@ module.exports = {
         dataUrl: `/${mvcController}/GetTableData`,
         deleteUrl: `/${mvcController}/delete`,
         tableColumns: [{
-            header: "Thumbnail",
-            accessor: 'thumbnail',
-            render: row => (React.createElement("div", null, React.createElement("img", {className: "table-thumbnail", src: row.value}))),
-            width: 160,
+            Header: "Thumbnail",
+            accessor: 'thumbnailUrl',
+            Cell: props => (React.createElement("div", {className: "image-fill table-thumbnail", style: { backgroundImage: `url(${props.value})`}})),
+            width: 85,
             sortable: false,
-            hideFilter: true
+            filterable: false
         }, {
-            header: "Title",
+            Header: "Title",
             accessor: 'title',
-            render: row => (React.createElement("div", null, React.createElement("a", {href: `/${mvcController}/update/${row.rowValues.id}`, target: "blank"}, row.value))),
+            Cell: props => (React.createElement("div", null, React.createElement("a", {href: `/${mvcController}/update/${props.row.id}`}, props.value))),
+            filterable: true,
         }]
     },
     create: {
@@ -759,6 +763,19 @@ module.exports = {
                 alertPush("success", response.message);
                 $("html, body").stop().animate({ scrollTop: 0 }, 500, 'swing');
             },
+        }
+    },
+
+    formCommands: {
+        SET_LAYOUT: (formValues, fieldData, props) => {
+            const { openLayoutModal } = props;
+            var roomName = fieldData.input.name.split('.')[1];
+
+            const roomArrayIndex = /\[([^]+)\]/.exec(roomName)[1];
+            const room = formValues.details['rooms'][roomArrayIndex];
+            const layoutImage = room.layoutimage;
+            if (layoutImage)
+                openLayoutModal(layoutImage, fieldData.input.value, fieldData.input.onChange, fieldData.fileManagerModalToggle);
         }
     }
 }
@@ -810,10 +827,9 @@ class ProjectForm extends React.Component {
     }
 
     getCommands() {
-        const { openLayoutModal } = this.props;
-
         return {
             SET_LAYOUT: (formValues, fieldData) => {
+                const { openLayoutModal } = this.props;
                 var roomName = fieldData.input.name.split('.')[1];
 
                 const roomArrayIndex = /\[([^]+)\]/.exec(roomName)[1];
@@ -1138,14 +1154,14 @@ const pageReducer = (state = {}, action) => {
 module.exports = combineReducers({
     pageAlerts: pageAlerts.reducer,
     page: pageReducer,
-    mainForm: require('../components/form').reducer,
+    mainForm: Corein.pageTemplates.form.reducer,
     form: formReducer,
     fm: fmReducer,
     fmTabControl: tabControlReducer,
     layoutModal: require('../components/layout-modal').reducer
 });
 
-},{"../components/form":36,"../components/layout-modal":37,"./keys":38,"jquery":"XpFelZ","redux":"czVV+t","redux-form":"LVfYvK"}],40:[function(require,module,exports){
+},{"../components/layout-modal":37,"./keys":38,"jquery":"XpFelZ","redux":"czVV+t","redux-form":"LVfYvK"}],40:[function(require,module,exports){
 const $ = require('jquery');
 const { combineReducers, createStore, bindActionCreators } = require('redux');
 const { connect, Provider } = require('react-redux');
@@ -1154,47 +1170,25 @@ const { Row, Col, Input, Button, Card, CardHeader, CardBlock } = require('reacts
 const {index, create, update: {formUrl, formSubmitData}} = require('./shared');
 
 const PageAlerts = Corein.components.pageAlerts.default;
+const { PageTitle } = Corein.components.pageComponents;
 
 const Form = require('./shared/components/form').default;
 
-const store = createStore(require('./shared/redux/reducer'));
-
 var PageContent = (props) => {
-    const { parameters, title, description } = props;
+    const { parameters, title, description, createNewUrl, indexUrl, urls } = props;
 
     return (
         React.createElement("div", null, 
             React.createElement(PageAlerts, null), 
             React.createElement("div", {className: "clearfix mb-1"}, 
                 React.createElement("div", {className: "pull-left"}, 
-                    React.createElement("h3", null, React.createElement("a", {href: index.url}, title))
+                    React.createElement(PageTitle, null, React.createElement("a", {href: indexUrl || urls.index}, title))
                 ), 
                 React.createElement("div", {className: "pull-left ml-1"}, 
-                    React.createElement("a", {className: "btn btn-outline-secondary", href: create.url}, "Create new")
+                    React.createElement("a", {className: "btn btn-outline-primary", href: createNewUrl || urls.create}, "Create new")
                 )
             ), 
             React.createElement(Card, null, 
-                React.createElement(CardHeader, null, 
-                    React.createElement(Row, null, 
-                        React.createElement(Col, {md: "8", className: "card-text"}, 
-                            React.createElement("div", null, 
-                                description && ` ${description}`
-                            )
-                        ), 
-                        React.createElement(Col, {md: "4"}, 
-                            React.createElement("div", {className: "form-language"}, 
-                                React.createElement("div", {className: "pull-right ml-q"}, 
-                                    React.createElement(Button, {className: "btn btn-secondary"}, "OK")
-                                ), 
-                                React.createElement("div", {className: "pull-right"}, 
-                                    React.createElement(Input, {type: "select"}, 
-                                        React.createElement("option", {value: "vi-VN"}, "Tiếng Việt")
-                                    )
-                                )
-                            )
-                        )
-                    )
-                ), 
                 React.createElement(CardBlock, null, 
                     React.createElement(Form, {formName: "update", 
                         formUrl: formUrl, 
@@ -1216,6 +1210,7 @@ const reducerToProps = (reducer) => (
     bindActionCreators({ }, reducer)
 );
 
+const store = createStore(require('./shared/redux/reducer'));
 PageContent = connect(stateToProps, reducerToProps)(PageContent);
 
 module.exports = (props) => {

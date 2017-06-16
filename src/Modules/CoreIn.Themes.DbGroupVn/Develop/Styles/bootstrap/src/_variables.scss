@@ -145,7 +145,8 @@ $spacers: (
   2: ($spacer * .5),
   3: $spacer,
   4: ($spacer * 1.5),
-  5: ($spacer * 3)
+  5: ($spacer * 3),
+  6: ($spacer * 5)
 ) !default;
 
 // This variable affects the `.h-*` and `.w-*` classes.
@@ -257,7 +258,7 @@ $font-weight-normal: normal !default;
 $font-weight-bold: bold !default;
 
 $font-weight-base: $font-weight-normal !default;
-$line-height-base: 1.5 !default;
+$line-height-base: 2 !default;
 
 $font-size-h1: 2.5rem !default;
 $font-size-h2: 2rem !default;

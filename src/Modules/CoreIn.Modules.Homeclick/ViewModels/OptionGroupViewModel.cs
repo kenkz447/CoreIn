@@ -14,7 +14,8 @@ namespace CoreIn.Modules.Homeclick.ViewModels
         public string Name { get; set; }
 
         [Required(ErrorMessage = "This field cann't be empty")]
-        [FormFieldDisplay(Title: "Option value")]
+        [FormFieldDisplay(Title: "Option value", Type: "textarea")]
+        [FormFieldLocalization]
         public string Value { get; set; }
     }
 

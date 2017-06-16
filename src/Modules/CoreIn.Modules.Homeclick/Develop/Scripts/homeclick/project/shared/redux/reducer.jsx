@@ -12,7 +12,7 @@ const pageReducer = (state = {}, action) => {
 module.exports = combineReducers({
     pageAlerts: pageAlerts.reducer,
     page: pageReducer,
-    mainForm: require('../components/form').reducer,
+    mainForm: Corein.pageTemplates.form.reducer,
     form: formReducer,
     fm: fmReducer,
     fmTabControl: tabControlReducer,

@@ -6,47 +6,25 @@ const { Row, Col, Input, Button, Card, CardHeader, CardBlock } = require('reacts
 const {index, create, update: {formUrl, formSubmitData}} = require('./shared');
 
 const PageAlerts = Corein.components.pageAlerts.default;
+const { PageTitle } = Corein.components.pageComponents;
 
 const Form = require('./shared/components/form').default;
 
-const store = createStore(require('./shared/redux/reducer'));
-
 var PageContent = (props) => {
-    const { parameters, title, description } = props;
+    const { parameters, title, description, createNewUrl, indexUrl, urls } = props;
 
     return (
         <div>
             <PageAlerts />
             <div className="clearfix mb-1">
                 <div className="pull-left">
-                    <h3><a href={index.url}>{title}</a></h3>
+                    <PageTitle><a href={indexUrl || urls.index}>{title}</a></PageTitle>
                 </div>
                 <div className="pull-left ml-1">
-                    <a className="btn btn-outline-secondary" href={create.url}>Create new</a>
+                    <a className="btn btn-outline-primary" href={createNewUrl || urls.create}>Create new</a>
                 </div>
             </div>
             <Card>
-                <CardHeader>
-                    <Row>
-                        <Col md="8" className="card-text">
-                            <div>
-                                {description && ` ${description}`}
-                            </div>
-                        </Col>
-                        <Col md="4">
-                            <div className="form-language">
-                                <div className="pull-right ml-q">
-                                    <Button className="btn btn-secondary">OK</Button>
-                                </div>
-                                <div className="pull-right" >
-                                    <Input type="select">
-                                        <option value="vi-VN">Tiếng Việt</option>
-                                    </Input>
-                                </div>
-                            </div>
-                        </Col>
-                    </Row>
-                </CardHeader>
                 <CardBlock>
                     <Form formName="update"
                         formUrl={formUrl}
@@ -68,6 +46,7 @@ const reducerToProps = (reducer) => (
     bindActionCreators({ }, reducer)
 );
 
+const store = createStore(require('./shared/redux/reducer'));
 PageContent = connect(stateToProps, reducerToProps)(PageContent);
 
 module.exports = (props) => {

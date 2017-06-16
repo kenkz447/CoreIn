@@ -15,12 +15,36 @@ namespace CoreIn.Models
         public IEnumerable<MenuViewModel> Items { get; }
         public Dictionary<string, string> Details { get;}
 
+        public string Url
+        {
+            get
+            {
+                return Details["url"];
+            }
+        }
+
+        public string Title
+        {
+            get
+            {
+                return Details["title"];
+            }
+        }
+
+        public int? Order
+        {
+            get
+            {
+                return Details.ContainsKey("Order") ? int.Parse(Details["Order"]) : 0;
+            }
+        }
+
         public MenuViewModel(Menu menu, IEnumerable<MenuViewModel> items)
         {
             Id = menu.Id;
             Name = menu.Name;
             Items = items;
-            Details = menu.Details.ToDictionary(o => o.Field, o => o.Value);           
+            Details = menu.Details.ToDictionary(o => o.Field, o => o.Value);
         }
     }
 }

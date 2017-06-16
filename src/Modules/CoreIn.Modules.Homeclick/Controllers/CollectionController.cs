@@ -9,9 +9,11 @@ using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace CoreIn.Modules.Homeclick.Controllers
 {
-    public class CollectionController : BaseController<Collection, CollectionDetail, Strings, CollectionViewModel>
+    public class CollectionController : BaseControllerWithTaxonomy<Collection, CollectionDetail, CollectionTaxonomy, Strings, CollectionViewModel>
     {
-        public CollectionController(UserManager<User> userManager, EntityController<Collection, CollectionDetail, Strings, CollectionViewModel> entityController) : base(userManager, entityController)
+        public CollectionController(UserManager<User> userManager,
+            EntityControllerWithTaxonomy<Collection, CollectionDetail, CollectionTaxonomy, Strings, CollectionViewModel> entityController)
+            : base(userManager, entityController)
         {
 
         }

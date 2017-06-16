@@ -1,27 +1,24 @@
-﻿const $ = require('jquery');
-
-const mvcController = 'collection';
+﻿const mvcController = 'collection';
 
 module.exports = {
     index: {
-        url: `/${mvcController}`,
         dataUrl: `/${mvcController}/GetTableData`,
         deleteUrl: `/${mvcController}/delete`,
         tableColumns: [{
-            header: "Thumbnail",
-            accessor: 'thumbnail',
-            render: row => (<div><img className="table-thumbnail" src={row.value} /></div>),
-            width: 160,
+            Header: "Thumbnail",
+            accessor: 'thumbnailUrl',
+            Cell: props => (<div className="image-fill table-thumbnail" style={{ backgroundImage: `url(${props.value})`}}></div>),
+            width: 85,
             sortable: false,
-            hideFilter: true
+            filterable: false
         }, {
-            header: "Title",
+            Header: "Title",
             accessor: 'title',
-            render: row => (<div><a href={`/${mvcController}/update/${row.rowValues.id}`} target="blank">{row.value}</a></div>),
+            Cell: props => (<div><a href={`/${mvcController}/update/${props.row.id}`}>{props.value}</a></div>),
+            filterable: true,
         }]
     },
     create: {
-        url: `/${mvcController}/create`,
         formUrl: `/${mvcController}/GetForm`,
         formSubmitData: {
             url: `/${mvcController}/create`,

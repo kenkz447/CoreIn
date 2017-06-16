@@ -1,6 +1,7 @@
 ﻿using CoreIn.Commons.Form;
 using CoreIn.Commons.Form.Attributes;
 using CoreIn.Commons.ViewModels;
+using CoreIn.Media;
 using Newtonsoft.Json;
 using System.ComponentModel.DataAnnotations;
 
@@ -16,5 +17,9 @@ namespace CoreIn.Modules.Homeclick.ViewModels
         [FormFieldLocalization]
         [FormFieldDisplay(RenderType:(int)FieldRenderType.Editor, Placeholder: "Write page content here...")]
         public string Content { get; set; }
+
+        [Required]
+        [FormFieldDisplay(RenderType: (int)FieldRenderType.Image, Title: "Thumbnail")]
+        public ImageViewModel Thumbnail { get; set; }
     }
 }

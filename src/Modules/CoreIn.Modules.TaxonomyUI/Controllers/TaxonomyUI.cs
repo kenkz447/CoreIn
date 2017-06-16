@@ -63,6 +63,7 @@ namespace CoreIn.Modules.TaxonomyUI.Controllers
             return Json(result);
         }
 
+        [AllowAnonymous]
         public JsonResult GetTaxonomies(long taxonomyTypeId)
         {
             var taxonomies = _taxonomyHelper.GetTaxonomies(taxonomyTypeId, true);

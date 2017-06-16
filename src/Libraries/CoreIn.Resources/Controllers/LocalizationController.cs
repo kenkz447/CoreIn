@@ -21,5 +21,22 @@ namespace CoreIn.Resources.Controllers
             var refer = Request.Headers.FirstOrDefault(o => o.Key == "Referer");
             return Redirect(refer.Value[0]);
         }
+
+        /// <summary>
+        /// For ajax post
+        /// </summary>
+        /// <param name="culture">Name of the culture</param>
+        /// <returns></returns>
+        [HttpPost]
+        public string ChangeForClient(string culture)
+        {
+            Response.Cookies.Append(
+                CookieRequestCultureProvider.DefaultCookieName,
+                CookieRequestCultureProvider.MakeCookieValue(new RequestCulture(culture)),
+                new CookieOptions { Expires = DateTimeOffset.UtcNow.AddYears(1) }
+            );
+
+            return culture;
+        }
     }
 }

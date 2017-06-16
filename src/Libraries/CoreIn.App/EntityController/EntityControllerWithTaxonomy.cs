@@ -77,10 +77,8 @@ namespace CoreIn.App
                     }
                 });
             }
-            else
-                filteredEntities = entities;
 
-            return filteredEntities;
+            return filteredEntities.Count != 0 ? filteredEntities : entities;
         }
 
         public override IEnumerable<BaseEntityViewModel> ToViewModels(IEnumerable<TEntity> entities)

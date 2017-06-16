@@ -107,7 +107,7 @@ function defaultFilterMethod(filter, row, column) {
     return void 0 === row[id] || String(row[id]).startsWith(filter.value)
 }
 
-const requestData = (url, pageSize, page, sorted, filtering, taxonomies, callback) => {
+const dataRequest = (url, pageSize, page, sorted, filtering, taxonomies, callback) => {
     $.ajax({
         url,
         method: "POST",
@@ -154,7 +154,7 @@ class Table extends React.Component {
             return !filter.id.startsWith('taxonomyTypes');
         });
 
-        requestData(dataUrl, state.pageSize, state.page, state.sorted, filtered, taxonomyFiltering, dataLoad);
+        dataRequest(dataUrl, state.pageSize, state.page, state.sorted, filtered, taxonomyFiltering, dataLoad);
         this.ReactTableState = state;
         this.ReactTableInstance = instance;
     }
@@ -340,7 +340,8 @@ const reducerToProps = (reducer) => (
 module.exports = {
     default: connect(stateToProps, reducerToProps)(Table),
     reducer,
-    actions
+    actions,
+    dataRequest
 }
 
 

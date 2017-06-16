@@ -31,5 +31,6 @@ namespace CoreIn.Modules.Homeclick.Controllers
             }
             base.OnActionExecuted(context);
         }
+
     }
 }

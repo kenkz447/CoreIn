@@ -48,13 +48,7 @@ const reducer = (state = initialState, action) => {
 class Form extends React.Component {
     constructor(props) {
         super(props);
-        this.getCommands = this.getCommands.bind(this);
         this.getForm = this.getForm.bind(this);
-    }
-
-    getCommands() {
-        return {
-        };
     }
 
     getForm() {
@@ -79,7 +73,7 @@ class Form extends React.Component {
         const reduxFormProps = {
             form: 'create',
             formData,
-            commands: this.getCommands(),
+            commands,
             onSubmit: submit(sumbitProps),
             _initialValues: formData.initialValues,
         };

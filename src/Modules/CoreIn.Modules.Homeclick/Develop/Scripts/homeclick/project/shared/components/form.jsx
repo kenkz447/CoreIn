@@ -44,10 +44,9 @@ class ProjectForm extends React.Component {
     }
 
     getCommands() {
-        const { openLayoutModal } = this.props;
-
         return {
             SET_LAYOUT: (formValues, fieldData) => {
+                const { openLayoutModal } = this.props;
                 var roomName = fieldData.input.name.split('.')[1];
 
                 const roomArrayIndex = /\[([^]+)\]/.exec(roomName)[1];

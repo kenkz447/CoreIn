@@ -45,7 +45,6 @@ namespace CoreIn.App
                     ["update"] = Url.Action("update")
                 };
             }
-            base.OnActionExecuted(context);
         }
 
         public override ActionResult Index()
@@ -134,6 +133,11 @@ namespace CoreIn.App
             var filterResult = _entityController.GetEntities(dataRequest);
             var result = _entityController.ToViewModels(filterResult.ToList());
             return Json(result);
+        }
+
+        public JsonResult GetData()
+        {
+            return Json(null);
         }
     }
 }

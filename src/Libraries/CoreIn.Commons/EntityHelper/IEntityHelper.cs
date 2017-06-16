@@ -56,7 +56,7 @@ namespace CoreIn.Commons.EntityHelper
 
         void Delete(TEntity entity);
 
-        string GenerateEntityName(string name);
+        string GenerateEntityName(string name, long? entityId = null);
 
         TEntity Update(TEntity entity);
 

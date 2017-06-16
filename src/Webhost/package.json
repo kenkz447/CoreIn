@@ -45,6 +45,10 @@
     "prop-types": "15.5.10",
     "react-router-dom": "4.1.1",
     "react-router-redux": "5.0.0-alpha.6",
-    "history": "4.6.1"
+    "history": "4.6.1",
+    "react-owl-carousel2": "0.2.0",
+    "react-localization": "0.0.16",
+    "react-delay-render": "0.1.0",
+    "react-touch": "0.4.2"
   }
 }

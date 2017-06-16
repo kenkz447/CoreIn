@@ -39,7 +39,7 @@ namespace CoreIn.Commons.Form
         public Dictionary<string, string> Languages { get; set; }
 
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
-        public string DefaultLanguage { get; set; }
+        public string RequestLanguage { get; set; }
 
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public List<FormField> Meta { get; set; } = new List<FormField>();

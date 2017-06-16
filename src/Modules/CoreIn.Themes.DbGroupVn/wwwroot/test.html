@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title>JS Bin</title>
+</head>
+
+<body>
+    <script>
+        var routes = [{
+            name: 'about',
+        }, {
+            name: 'construction',
+            childRoutes: [{
+                name: 'construction-category',
+                childRoutes: [{
+                    name: 'construction-category-child-1',
+                }, {
+                    name: 'construction-category-child-2',
+                    childRoutes: [{
+                        name: 'construction-category-child-2-1',
+                    }, {
+                        name: 'construction-category-child-2-2',
+                        childRoutes: [{
+                            name: 'construction-category-child-2-3',
+                        }]
+                    }]
+                }]
+            }]
+        }, {
+            name: 'collection',
+            childRoutes: [{
+                name: 'collection-category',
+                childRoutes: [{
+                    name: 'collection-category-child-1',
+                }, {
+                    name: 'collection-category-child-2',
+                    childRoutes: [{
+                        name: 'collection-category-child-2-1',
+                    }, {
+                        name: 'collection-category-child-2-2',
+                        childRoutes: [{
+                            name: 'collection-category-chil-2-3',
+                        }]
+                    }]
+                }]
+            }]
+        }]
+
+        const findRoutePath = (routeName, routes = []) => {
+            var resultRoutePath = []
+
+            for (var routeIndex in routes) {
+                var route = routes[routeIndex]
+                if (route.name == routeName) {
+                    resultRoutePath.push(route)
+                    return resultRoutePath;
+                } else if (route.childRoutes) {
+                    resultRoutePath.push(route)
+                    var nextRoute = findRoutePath(routeName, route.childRoutes);
+                    if (nextRoute.length) {
+                        resultRoutePath = resultRoutePath.concat(nextRoute)
+                        return resultRoutePath;
+                    } else
+                        resultRoutePath = []
+                } else {
+                    resultRoutePath = []
+                }
+            }
+
+            return resultRoutePath;
+        }
+        console.log(findRoutePath('construction-category', routes))
+        console.log(findRoutePath('construction-category-child-2-1', routes))
+        console.log(findRoutePath('construction-category-child-2-3', routes))
+        console.log(findRoutePath('collection-category', routes))
+        console.log(findRoutePath('collection-category-child-1', routes))
+        console.log(findRoutePath('collection-category-child-2-2', routes))
+    </script>
+</body>
+
+</html>

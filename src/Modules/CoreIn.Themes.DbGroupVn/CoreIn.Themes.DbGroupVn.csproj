@@ -5,14 +5,35 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Include="wwwroot\font\UTM Avo.eot" />
-    <Content Include="wwwroot\font\UTM Avo.woff2" />
+    <Content Remove="wwwroot/js\dbgroupvn.vendor.min.js" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="wwwroot\font\UTM AvoBold.eot" />
+    <Content Include="wwwroot\font\UTM AvoBold.otf" />
+    <Content Include="wwwroot\font\UTM AvoBold.svg" />
+    <Content Include="wwwroot\font\UTM AvoBold.ttf" />
+    <Content Include="wwwroot\font\UTMAvoBold.otf" />
+    <Content Include="wwwroot\font\UTMAvoBold.svg" />
+    <Content Include="wwwroot\font\UTMAvoBold.ttf" />
+    <Content Include="wwwroot\font\UTMAvoBold.woff" />
+    <Content Include="wwwroot\font\UTMAvo.eot" />
+    <Content Include="wwwroot\font\UTMAvo.woff2" />
     <Content Include="wwwroot\font\UTMAvo.svg" />
     <Content Include="wwwroot\font\UTMAvo.ttf" />
     <Content Include="wwwroot\font\UTMAvo.woff" />
+    <Content Include="wwwroot\font\UTMAvoBold.eot" />
+    <Content Include="wwwroot\img\can-ho-cover.jpg" />
+    <Content Include="wwwroot\img\can-ho-covwr.jpg" />
+    <Content Include="wwwroot\img\can-ho.jpg" />
+    <Content Include="wwwroot\img\can-ho.png" />
+    <Content Include="wwwroot\img\khach-san-cover.jpg" />
+    <Content Include="wwwroot\img\khach-san.png" />
     <Content Include="wwwroot\img\logo.png" />
+    <Content Include="wwwroot\img\nha-o-cover.jpg" />
     <Content Include="wwwroot\js\dbgroupvn.js" />
     <Content Include="wwwroot\js\dbgroupvn.js.map" />
+    <Content Include="wwwroot\js\dbgroupvn.vendor.js" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore" Version="1.1.1" />
@@ -21,11 +42,25 @@
     <ProjectReference Include="..\..\Libraries\CoreIn.App\CoreIn.App.csproj" />
     <ProjectReference Include="..\..\Libraries\CoreIn.Commons\CoreIn.Commons.csproj" />
     <ProjectReference Include="..\..\Libraries\CoreIn.DataProvider\CoreIn.DataProvider.csproj" />
+    <ProjectReference Include="..\..\Libraries\CoreIn.EntityCore\CoreIn.EntityCore.csproj" />
     <ProjectReference Include="..\..\Libraries\CoreIn.Media\CoreIn.Media.csproj" />
     <ProjectReference Include="..\..\Libraries\CoreIn.Models\CoreIn.Models.csproj" />
     <ProjectReference Include="..\..\Libraries\CoreIn.Package\CoreIn.Package.csproj" />
     <ProjectReference Include="..\..\Libraries\CoreIn.Resources\CoreIn.Resources.csproj" />
     <ProjectReference Include="..\CoreIn.Modules.Homeclick\CoreIn.Modules.Homeclick.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Update="Resources\Keys.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Keys.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Update="Resources\Keys.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Keys.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
 
 </Project>

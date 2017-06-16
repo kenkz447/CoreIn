@@ -1,93 +1,99 @@
 ﻿var gulp = require("gulp");
 var sass = require("gulp-sass");
 var watch = require('gulp-watch');
-var browserify = require('gulp-browserify');
+var browserify = require('browserify');
 var source = require('vinyl-source-stream');
-var reactify = require('reactify');
+var buffer = require('vinyl-buffer');
+
 var rename = require('gulp-rename');
 var uglify = require('gulp-uglify');
 var browsersync = require('browser-sync').create();
-var exorcist = require('exorcist');
 var sourcemaps = require('gulp-sourcemaps');
+var babelify = require('babelify');
 
 var pkg = require('./package.json');
 
 var libs = [
     'bootstrap',
     'classnames',
-    'draft-js',
-    'draftjs-to-html',
-    'html-to-draftjs',
+    'history',
     'jquery',
-    'jquery.filer',
-    'list-to-tree',
     'prop-types',
-    'rc-slider',
     'react',
     'react-addons-css-transition-group',
     'react-addons-transition-group',
-    'react-checkbox-tree',
     'react-dom',
-    'react-draft-wysiwyg',
+    'react-localization',
+    'react-owl-carousel2',
     'react-redux',
     'react-router',
-    'reactstrap',
-    'react-table',
-    'react-ui-tree',
-    'redux',
-    'redux-form',
-    'sift',
-    'tether',
-    'underscore',
     'react-router-dom',
     'react-router-redux',
-    'history'
+    'reactstrap',
+    'react-touch',
+    'redux',
+    'tether',
+    'react-breadcrumbs',
+    'list-to-tree'
 ];
 
-var production = (process.env.NODE_ENV === 'production');
-
-gulp.task('default', ['watch']);
-
-gulp.task('watch', function () {
-    browsersync.init({
-        proxy: 'http://localhost:51579/'
-    });
-
-    gulp.watch('develop/styles/**/*.scss', ['sass']);
-    gulp.watch('develop/scripts/**/*.jsx', ['jsx-watch']);
-});
-
-gulp.task('jsx-watch', ['jsx'], function (done) {
-    browsersync.reload();
-    done();
-});
-
-gulp.task('jsx', function () {
-    var stream = gulp.src(['develop/scripts/*.jsx'], { read: false })
-        .pipe(browserify({
-            debug: !production,
-            transform: ['reactify'],
-            extensions: ['.jsx']
-        }))
-        .on('prebundle', function (bundle) {
-            libs.forEach(function (lib) {
-                bundle.external(lib);
-            });
-        }).pipe(sourcemaps.init({ loadMaps: true }));
-
-    if (production)
-        stream.pipe(uglify());
-
-    stream.pipe(rename(pkg.name + (production ? '.min' : '') + '.js'))
-        .pipe(sourcemaps.write('./'))
-        .pipe(gulp.dest('wwwroot/js'));
-
-    return stream;
-});
-
-gulp.task('sass', function () {
+gulp.task('sass', function() {
     return gulp.src('develop/styles/*.scss')
         .pipe(sass())
         .pipe(gulp.dest('wwwroot/css'))
         .pipe(browsersync.stream());
 });
+
+gulp.task('default', ['watch']);
+
+gulp.task('watch', function() {
+    browsersync.init({
+        proxy: 'http://localhost:51579/',
+        files: ["wwwroot/js/*.js"]
+    });
+
+    gulp.watch('develop/styles/**/*.scss', ['sass'])
+    gulp.watch('develop/scripts/**/*.jsx', ['jsx'])
+});
+
+gulp.task('jsx', function() {
+    browserify({
+            entries: './develop/scripts/dbgroupvn.jsx',
+            extensions: ['.jsx'],
+            debug: true
+        })
+        .transform(babelify, {
+            'presets': ['es2015', 'react']
+        })
+        .external(libs)
+        .bundle()
+        .on('error', onError)
+        .pipe(source(`${pkg.name}.js`))
+        .pipe(buffer())
+        .pipe(sourcemaps.init({ loadMaps: true }))
+        .pipe(sourcemaps.write('./'))
+        .pipe(gulp.dest('wwwroot/js'))
+})
+
+gulp.task('vendor', function() {
+    browserify({
+            entries: 'develop/scripts/dbgroupvn.vendor.js',
+        })
+        .require(libs)
+        .bundle()
+        .pipe(source(`${pkg.name}.vendor.js`))
+        .pipe(buffer())
+        .pipe(gulp.dest('wwwroot/js'))
+});
+
+gulp.task('vendor-min', function() {
+    var stream = gulp.src('wwwroot/js/dbgroupvn.vendor.js')
+        .pipe(uglify()).pipe(rename('dbgroupvn.vendor.min.js'))
+        .pipe(gulp.dest('wwwroot/js'));
+    return stream;
+});
+
+function onError(err) {
+    console.log(err);
+    this.emit('end');
+}

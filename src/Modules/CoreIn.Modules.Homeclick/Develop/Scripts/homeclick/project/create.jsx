@@ -2,31 +2,27 @@
 const { combineReducers, createStore, bindActionCreators } = require('redux');
 const {connect, Provider} = require('react-redux');
 const { Button, Card, CardHeader, CardBlock } = require('reactstrap');
-const Form = require('./shared/components/form').default;
+
+const SharedForm = Corein.pageTemplates.form.default;
 
 const store = createStore(require('./shared/redux/reducer'));
 
-const {index, create: {formUrl, formSubmitData}} = require('./shared');
+const {index, create: {formUrl, formSubmitData}, formCommands} = require('./shared');
+const { PageTitle } = Corein.components.pageComponents;
 
 var PageContent = (props) => {
 
-    const {title, description} = props;
+    const { parameters, title, description, indexUrl, urls} = props;
 
     return (
         <div>
             <div className="clearfix mb-1">
                 <div className="pull-left">
-                    <h3><a href={index.url}>{title}</a></h3>
+                    <PageTitle><a href={indexUrl || urls.index}>{title}</a></PageTitle>
+                    {description}
                 </div>
             </div>
-            <Card>
-                <CardBlock>
-                    <Form formName="create"
-                        formUrl={formUrl}
-                        formSubmitData={formSubmitData}
-                    />
-                </CardBlock>
-            </Card>
+            <SharedForm formName="create" commands={formCommands} formUrlData={parameters} formUrl={formUrl} formSubmitData={formSubmitData} />
         </div>
     );
 };

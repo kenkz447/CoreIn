@@ -1,12 +1,11 @@
 ﻿using CoreIn.Models.Infrastructure;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace CoreIn.Modules.Homeclick.Models
 {
-    public class Collection : BaseEntity, IEntityWithDetails<CollectionDetail>
+    public class Collection : BaseEntity, 
+        IEntityWithDetails<CollectionDetail>,
+        IEntityWithTaxonomies<CollectionTaxonomy>
     {
         public Collection()
         {
@@ -14,5 +13,6 @@ namespace CoreIn.Modules.Homeclick.Models
         }
 
         public virtual ICollection<CollectionDetail> Details { get; set; }
+        public ICollection<CollectionTaxonomy> Taxonomies { get; set; }
     }
 }

@@ -22,19 +22,41 @@ namespace CoreIn.Commons.EntityHelper
             _detailRepository = detailRepository;
         }
 
-        private bool CheckEntityNameExits(string name)
-            => _entityRepository.GetBy(o => o.Name == name) != null;
-
-        private string TryGenerateEntityName(string oldName, int tryTimes = 1)
+        /// <summary>
+        /// Kiểm tra xem trong table đã có entity nào với 'name' như vậy hay chưa
+        /// </summary>
+        /// <param name="name">Name cần kiểm tra</param>
+        /// <param name="entityId">Id của entity, tham số được truyền vào tức là đang kiểm tra tên cho 1 entity cụ thể</param>
+        /// <returns>
+        /// Trả về false khi tìm thấy entity trùng hoặc không tìm thấy entity nào
+        /// Trả về true khi tìm thấy bất kỳ entity nào khác với entity hiện tại
+        /// </returns>
+        private bool CheckEntityNameExits(string name, long? entityId = null)
         {
-            var newName = $"{oldName}-{tryTimes}";
+            var entityWasFound = _entityRepository.GetBy(o => o.Name == name);
+
+            if (entityWasFound != null)
+            {
+                if (entityWasFound.Id != entityId)
+                    return false;
+                else
+                    return true;
+            }
+
+            return false;
+        }
+            
+
+        private string TryGenerateEntityName(string preName, int tryTimes = 1)
+        {
+            var newName = $"{preName}-{tryTimes}";
             if (CheckEntityNameExits(newName))
-                return TryGenerateEntityName(oldName, tryTimes + 1);
+                return TryGenerateEntityName(preName, tryTimes + 1);
 
             return newName;
         }
 
-        public string GenerateEntityName(string name)
+        public string GenerateEntityName(string name, long? entityId = null)
         {
             var entityName = StringUtility.UnidecodeEntityNaname(name);
             if (CheckEntityNameExits(entityName))

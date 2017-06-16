@@ -8,7 +8,7 @@ const store = createStore(require('./shared/redux/reducer'));
 const { PageTitle } = require('../components/page');
 
 var PageContent = (props) => {
-    const { parameters, title, description, formUrl, formSubmitData, indexUrl, Form, urls} = props;
+    const { parameters, title, description, formUrl, formSubmitData, formCommands, indexUrl, urls} = props;
 
     return (
         <div>
@@ -19,7 +19,7 @@ var PageContent = (props) => {
                 </div>
             </div>
             {
-                Form ? Form : <SharedForm formName="create" formUrlData={parameters} formUrl={formUrl} formSubmitData={formSubmitData} />
+                <SharedForm formName="create" commands={formCommands} formUrlData={parameters} formUrl={formUrl} formSubmitData={formSubmitData} />
             }
         </div>
     );

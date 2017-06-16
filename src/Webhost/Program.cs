@@ -17,6 +17,7 @@ namespace Webhost
                 .UseIISIntegration()
                 .UseStartup<Startup>()
                 //.UseApplicationInsights()
+				.UseUrls("http://localhost:51579/")
                 .Build();
 
             host.Run();

@@ -106,10 +106,6 @@ namespace CoreIn.Modular
         {
             app.UseMvc(routes =>
             {
-                routes.MapRoute(
-                    name: "theme",
-                    template: "{*url}",
-                    defaults: new { controller = "TrangChu", action = "Index"});
 
                 routes.MapRoute(
                     name: "default",
@@ -119,6 +115,11 @@ namespace CoreIn.Modular
                     name: "admin",
                     template: "{area:exists}/{controller=Home}/{action=Index}/{id?}"
                     );
+
+                routes.MapRoute(
+                    name: "theme",
+                    template: "{*url}",
+                    defaults: new { controller = "TrangChu", action = "Index" });
 
             });
 

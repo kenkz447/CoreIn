@@ -30,7 +30,7 @@ module.exports = class BaseForm extends React.Component {
     executeFormAction(command, fieldData) {
         const { commands, formValues } = this.props;
 
-        commands[command](formValues, fieldData);
+        commands[command](formValues, fieldData, this.props);
     }
 
     renderFormHeader() {

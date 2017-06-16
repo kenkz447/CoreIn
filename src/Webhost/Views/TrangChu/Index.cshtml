@@ -9,13 +9,22 @@
     <meta name="viewport" content="width=device-width" />
     <title>DbGroup</title>
     <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
-    <link rel="stylesheet" type="text/css" href="@Url.Content("~/css/dbgroupvn.css")" />
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.1.1/aos.css" />
+
+    <link rel="stylesheet" type="text/css" href="~/css/dbgroupvn.css" />
 </head>
-<body>
+<body >
     <div id="root">
     </div>
 
-    <script src="~/js/vendor.js"></script>
-    <script src="@Url.Content("~/js/dbgroupvn.js")"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.1.1/aos.js"></script>
+    <environment names="Development">
+        <script src="~/js/dbgroupvn.vendor.js"></script>
+        <script src="~/js/dbgroupvn.js"></script>
+    </environment>
+    <environment names="Production">
+        <script src="~/js/dbgroupvn.vendor.min.js"></script>
+        <script src="~/js/dbgroupvn.min.js"></script>
+    </environment>
 </body>
 </html>

@@ -4,8 +4,10 @@ using CoreIn.Commons.Form;
 using CoreIn.Commons.ViewModels;
 using CoreIn.Models.Authentication;
 using CoreIn.Models.Infrastructure;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -23,6 +25,25 @@ namespace CoreIn.App
         {
             _userManager = userManager;
             _entityController = entityController;
+        }
+
+        public string GetCurrentLanguage()
+            => Request.Cookies[".AspNetCore.Culture"].Split('|')[0].Split('=')[1];
+
+        public override void OnActionExecuted(ActionExecutedContext context)
+        {
+            var actionResult = context.Result as ViewResult;
+            if (actionResult != null && actionResult.Model is ActionViewModel)
+            {
+                var actionViewModel = actionResult.Model as ActionViewModel;
+                actionViewModel.Urls = new Dictionary<string, string>()
+                {
+                    ["index"] = Url.Action("index"),
+                    ["create"] = Url.Action("create"),
+                    ["update"] = Url.Action("update")
+                };
+            }
+            base.OnActionExecuted(context);
         }
 
         public virtual ActionResult Index()
@@ -88,11 +109,19 @@ namespace CoreIn.App
             => Json(_entityController.GetForm(id, lang));
 
         [HttpPost]
+        [AllowAnonymous]
         public virtual JsonResult GetTableData(DataRequest dataRequest)
         {
             var filterResult = _entityController.GetEntities(dataRequest);
             var results = _entityController.ToViewModels(filterResult.ToList());
             return Json(results);
+        }
+
+        [AllowAnonymous]
+        public JsonResult GetSingle(string entityName)
+        {
+            var result = _entityController.GetEntityValues(entityName, GetCurrentLanguage());
+            return Json(result);
         }
     }
 }

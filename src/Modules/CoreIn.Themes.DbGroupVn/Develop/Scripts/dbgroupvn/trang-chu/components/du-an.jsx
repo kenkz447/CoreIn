@@ -1,37 +1,37 @@
-const { Row, Col } = require( 'reactstrap' );
-const { Link } = require( 'react-router-dom' );
+const { Row, Col } = require('reactstrap');
+const { Link } = require('react-router-dom');
 
-const SectionTitle = require( '../../shared/components/section-title' );
+const SectionTitle = require('../../shared/components/section-title');
 
-const DuAnItem = require( '../../shared/components/du-an/du-an' );
+const DuAnItem = require('../../shared/components/du-an/du-an');
 
-const { dataRequest } = require( '../../shared/ultilities' );
+const { dataRequest } = require('../../shared/ultilities');
 
 class DuAn extends React.Component {
-    constructor( props ) {
-        super( props );
+    constructor(props) {
+        super(props);
         this.state = {
             projects: []
         }
 
-        dataRequest( "/project/GetTableData", 7, 1, null, null, null, ( response ) => {
-            this.setState( { projects: response } );
-        } );
+        dataRequest("/project/GetTableData", 7, 1, null, null, null, null, (response) => {
+            this.setState({ projects: response });
+        });
     }
     render() {
         return (
             <section className={ this.props.className }>
-                <SectionTitle>{ localizationString.getString( 'Dự án' ) }</SectionTitle>
+                <SectionTitle>{ localizationString.getString('Dự án') }</SectionTitle>
                 <Row className="pt-3">
                     {
                         this.state.projects.length &&
-                        this.state.projects.map(( project, index ) => {
+                        this.state.projects.map((project, index) => {
                             return (
                                 <Col key={ project.id } xs="6" md="4" lg="3" className="page-item">
                                     <DuAnItem data={ project } />
                                 </Col>
                             );
-                        } )
+                        })
                     }
                     <Col xs="6" md="4" lg="3" className="page-item">
                         <div className="h-100" data-aos="zoom-in-up">

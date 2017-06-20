@@ -1,22 +1,31 @@
-import { Route, Switch } from 'react-router'
-import { ConnectedRouter } from 'react-router-redux'
+import { Route, Switch, Redirect } from 'react-router'
+import { ConnectedRouter, } from 'react-router-redux'
 import { connect } from 'react-redux'
-const TrangChu = require('../../../trang-chu/index')
 
-const renderRoute = ({ path, exact, component, childRoutes }, index) => {
-    const routeComponent = <Route exact={ exact } key={ path } path={ path } component={ component } />
+const DuAn = require('../../../du-an/index')
 
-    if(childRoutes != null) {
-        const routeComponents = childRoutes.map(renderRoute)
-        routeComponents.push(routeComponent);
+const renderRoute = (route) => {
+    const { name, childRoutes, redirectToChild, path, component } = route
+
+    if (redirectToChild != null || redirectToChild != undefined)
         return (
-            <Switch>
-                { routeComponents }
+            <Switch key={name}>
+                {
+                    childRoutes.map((child, index) => {
+                        
+                        if(String(child.path).startsWith('/:'))
+                            child.path = path + child.path
+                            
+                        if(!child.component)
+                            child.component = component
+                        return renderRoute(child)
+                    })
+                }
+                <Redirect from={ path } to={ path + childRoutes[ redirectToChild ].defaultLocation } />
             </Switch>
         )
-    }
-    else
-        return routeComponent
+
+    return <Route key={name} {...route}/>
 }
 
 const renderRoutes = ({ path, exact, component, childRoutes }) => {

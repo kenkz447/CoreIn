@@ -9,22 +9,13 @@ namespace CoreIn.Modules.Homeclick
 {
     public class TaxonomyTypeManager
     {
-        public TaxonomyType PostCategory { get; private set; }
         public TaxonomyType ConstructionCategory { get; set; }
         public TaxonomyType CollectionCategory { get; set; }
+        public TaxonomyType ProjectCategory { get; set; }
 
         public TaxonomyTypeManager(EntityTypeManager entityTypeManager, ITaxonomyHelper taxonomyManager, UserManager<User> userManager)
         {
             var supperUser = userManager.FindByNameAsync(AppKey.SupperAdminUserName).Result;
-
-            PostCategory = taxonomyManager.RegisterTaxonomyType(
-                entityTypeManager.Post,
-                "post-category",
-                new Dictionary<string, string>
-                {
-                    {"title", "Category" },
-                }, supperUser
-                );
 
             ConstructionCategory = taxonomyManager.RegisterTaxonomyType(
                 entityTypeManager.Construction,
@@ -35,7 +26,7 @@ namespace CoreIn.Modules.Homeclick
                 }, supperUser
                 );
 
-            ConstructionCategory = taxonomyManager.RegisterTaxonomyType(
+            ProjectCategory = taxonomyManager.RegisterTaxonomyType(
                 entityTypeManager.Project,
                 "project-category",
                 new Dictionary<string, string>
@@ -44,7 +35,7 @@ namespace CoreIn.Modules.Homeclick
                 }, supperUser
                 );
 
-            ConstructionCategory = taxonomyManager.RegisterTaxonomyType(
+            CollectionCategory = taxonomyManager.RegisterTaxonomyType(
                 entityTypeManager.Collection,
                 "collection-category",
                 new Dictionary<string, string>

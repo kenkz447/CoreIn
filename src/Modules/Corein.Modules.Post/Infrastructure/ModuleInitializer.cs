@@ -12,7 +12,7 @@ namespace CoreIn.Modules.Post
 {
     public class ModularInitializer : IModuleInitializer
     {
-        private void InitDatabase(UserManager<User> userManager, IMenuHelper menuHelper)
+        private void InitDatabase(UserManager<User> userManager, IMenuHelper menuHelper, EntityTypeManager entityTypeManager)
         {
             var supperUser = userManager.FindByNameAsync(AppKey.SupperAdminUserName).Result;
             var appMenu = menuHelper.Menu(AppKey.AppMenuName);
@@ -25,21 +25,21 @@ namespace CoreIn.Modules.Post
                     {            
                         menuHelper.CreateMenuEntity(
                             new Menu {
-                                Name = "design-templates",
+                                Name = "liblary",
                                 Children = new List<Menu>
                                 {
                                      menuHelper.CreateMenuEntity(
                                         new Menu
                                         {
-                                            Name = "design-templates-index",
+                                            Name = "liblary-index",
                                         },
                                         new MenuDetail[]
                                         {
-                                            new MenuDetail { Field = "title", Value = "All post", Language="en-US"},
+                                            new MenuDetail { Field = "title", Value = "All blog", Language="en-US"},
                                             new MenuDetail { Field = "title", Value = "Tất cả bài viết", Language="vi-VN"},
                                             new MenuDetail { Field = "controller", Value = "post"},
                                             new MenuDetail { Field = "action", Value = "index"},
-                                            new MenuDetail { Field = "url", Value = "/post"},
+                                            new MenuDetail { Field = "url", Value = $"/post?entityTypeId={entityTypeManager.Liblary.Id}"},
                                             new MenuDetail { Field = "icon", Value = "<i class=\"fa fa-bars\" aria-hidden=\"true\"></i>"},
                                         },
                                         supperUser, false
@@ -47,7 +47,7 @@ namespace CoreIn.Modules.Post
                                     menuHelper.CreateMenuEntity(
                                         new Menu
                                         {
-                                            Name = "design-templates-new",
+                                            Name = "liblary-new",
                                         },
                                         new MenuDetail[]
                                         {
@@ -55,7 +55,7 @@ namespace CoreIn.Modules.Post
                                             new MenuDetail { Field = "title", Value = "Bài viết mới", Language="vi-VN"},
                                             new MenuDetail { Field = "controller", Value = "post"},
                                             new MenuDetail { Field = "action", Value = "create"},
-                                            new MenuDetail { Field = "url", Value = "/post/create"},
+                                            new MenuDetail { Field = "url", Value = $"/post/create?entityTypeId={entityTypeManager.Liblary.Id}"},
                                             new MenuDetail { Field = "icon", Value = "<i class=\"fa fa-plus\" aria-hidden=\"true\"></i>"},
                                         },
                                         supperUser, false
@@ -64,8 +64,8 @@ namespace CoreIn.Modules.Post
                             },
                             new MenuDetail[]
                             {
-                                new MenuDetail { Field = "title", Value = "Post", Language="en-US"},
-                                new MenuDetail { Field = "title", Value = "Bài viết", Language="vi-VN"},
+                                new MenuDetail { Field = "title", Value = "Liblay", Language="en-US"},
+                                new MenuDetail { Field = "title", Value = "Thư viện", Language="vi-VN"},
                                 new MenuDetail { Field = "url", Value = "#"},
                                 new MenuDetail { Field = "icon", Value = "<i class=\"fa fa-sticky-note\" aria-hidden=\"true\"></i>"},
                             },
@@ -75,7 +75,7 @@ namespace CoreIn.Modules.Post
                 },
                 new MenuDetail[]
                 {
-                    new MenuDetail { Field = "title", Value = "Post"}
+                    new MenuDetail { Field = "title", Value = "Posts"}
                 }, supperUser
             );
         }
@@ -86,10 +86,15 @@ namespace CoreIn.Modules.Post
 
             var userManager = serviceProvider.GetService<UserManager<User>>();
             var menuHelper = serviceProvider.GetService<IMenuHelper>();
+            var taxonomyHelper = serviceProvider.GetService<ITaxonomyHelper>();
 
-            services.AddSingleton(new EntityTypeManager(serviceProvider.GetService<IEntityTypeManager>(), userManager));
+            var entityTypeManager = new EntityTypeManager(serviceProvider.GetService<IEntityTypeManager>(), userManager);
+            var taxonomyTypeManager = new TaxonomyTypeManager(entityTypeManager, taxonomyHelper, userManager);
 
-            InitDatabase(userManager, menuHelper);
+            services.AddSingleton(entityTypeManager);
+            services.AddSingleton(taxonomyTypeManager);
+
+            InitDatabase(userManager, menuHelper, entityTypeManager);
         }
     }
 }

@@ -60,30 +60,30 @@ namespace CoreIn.App
         public override IEnumerable<TEntity> GetEntities(DataRequest dataRequest)
         {
             var entities = base.GetEntities(dataRequest).ToList();
+            if (dataRequest.Taxonomies == null)
+                return entities;
+
             var filteredEntities = new List<TEntity>();
 
-            if (dataRequest.Taxonomies != null)
+            entities.ForEach(entity =>
             {
-                entities.ForEach(entity =>
+                foreach (var kv in dataRequest.Taxonomies)
                 {
-                    foreach (var kv in dataRequest.Taxonomies)
+                    var taxonomies = TaxonomyHelper.GetTaxonomiesForEntity<TEntityTaxonomy>(entity.Id, kv.Key).Select(o => o.TaxonomyId);
+                    if (taxonomies.Contains(kv.Value))
                     {
-                        var taxonomies = TaxonomyHelper.GetTaxonomiesForEntity<TEntityTaxonomy>(entity.Id, kv.Key).Select(o => o.TaxonomyId);
-                        if (taxonomies.Contains(kv.Value))
-                        {
-                            filteredEntities.Add(entity);
-                            break;
-                        }
+                        filteredEntities.Add(entity);
+                        break;
                     }
-                });
-            }
+                }
+            });
 
-            return filteredEntities.Count != 0 ? filteredEntities : entities;
+            return filteredEntities;
         }
 
-        public override IEnumerable<BaseEntityViewModel> ToViewModels(IEnumerable<TEntity> entities)
+        public override IEnumerable<BaseEntityViewModel> ToViewModels(IEnumerable<TEntity> entities, string[] moreFields = null)
         {
-            var viewModels = base.ToViewModels(entities);
+            var viewModels = base.ToViewModels(entities, moreFields);
 
             foreach (var entity in entities)
             {

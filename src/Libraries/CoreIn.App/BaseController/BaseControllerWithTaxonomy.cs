@@ -131,7 +131,7 @@ namespace CoreIn.App
         public override JsonResult GetTableData(DataRequest dataRequest)
         {
             var filterResult = _entityController.GetEntities(dataRequest);
-            var result = _entityController.ToViewModels(filterResult.ToList());
+            var result = _entityController.ToViewModels(filterResult.ToList(), dataRequest.AdditionalFields);
             return Json(result);
         }
 

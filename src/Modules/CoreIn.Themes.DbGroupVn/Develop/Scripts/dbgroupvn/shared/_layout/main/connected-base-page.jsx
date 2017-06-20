@@ -107,7 +107,7 @@ class BasePage extends React.Component {
     const { createNewPage, component,
       pages,
       page, //page name of component
-      routes, match: { params }, showBreadcrumbs } = this.props;
+      routes, match, showBreadcrumbs, location } = this.props;
 
     const pageData = pages[ page ];
     if (!pageData)
@@ -119,9 +119,9 @@ class BasePage extends React.Component {
           <div className="swipeable" />
         </Swipeable>
         {
-          showBreadcrumbs && <ConnectedBreacrumbs routes={routes} params={params} />
+          showBreadcrumbs && <ConnectedBreacrumbs routes={routes} params={match.params} />
         }
-        <this.ElementWithDelayRender {...pageData} onDataFetch={ this.onDataFetch } />
+        <this.ElementWithDelayRender {...pageData} location={location} match={match} onDataFetch={ this.onDataFetch } />
       </div>
     );
   }

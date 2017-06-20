@@ -59,11 +59,17 @@ namespace CoreIn.Modules.Homeclick.ViewModels
         [FormFieldDisplay(Title: "City")]
         public string City { get; set; }
 
-        [FormFieldDisplay(Title: "County")]
-        public string County { get; set; }
-
         [FormFieldDisplay(Title: "Address")]
         public string Address { get; set; }
+
+        [FormFieldDisplay(Title: "Map longitude", Prompt: "Cho vị trí trên google map")]
+        public string MapLongitude { get; set; }
+
+        [FormFieldDisplay(Title: "Map latitude", Prompt: "Cho vị trí trên google map")]
+        public string MapLatitude { get; set; }
+
+        [FormFieldDisplay(Title: "Diện tích")]
+        public string Area { get; set; }
 
         [Required]
         [FormFieldDisplay(RenderType: (int)FieldRenderType.Image, Title: "Thumbnail")]

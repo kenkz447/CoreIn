@@ -9,6 +9,7 @@ using CoreIn.Resources.ConstantKeys;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Options;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -123,6 +124,12 @@ namespace CoreIn.App
             return form;
         }
 
+        public IEnumerable<TEntity> GetRandomEntities(int count)
+        {
+            var entities = EntityHelper.Entities().OrderBy(o => Guid.NewGuid()).Take(count);
+            return entities;
+        }
+
         public virtual IEnumerable<TEntity> GetEntities(DataRequest dataRequest)
         {
             var entities = EntityHelper.Entities();
@@ -132,7 +139,35 @@ namespace CoreIn.App
             if (dataRequest.Filtering != null)
                 foreach (var filtering in dataRequest.Filtering)
                 {
-                    filterResult = filterResult.Where(o => o.Details.FirstOrDefault(e => e.Field == filtering.Id && e.Value.Contains(filtering.Value)) != null);
+                    if (filtering.Operator != null)
+                    {
+                        if (filtering.Operator == "==")
+                            filterResult = filterResult.Where(o => o.Details.FirstOrDefault(e => e.Field == filtering.Id && e.Value == filtering.Value) != null);
+                        else
+                        {
+                            var intValue = int.Parse(filtering.Value);
+
+                            switch (filtering.Operator)
+                            {
+                                case "<":
+                                    filterResult = filterResult.Where(o => o.Details.FirstOrDefault(e => e.Field == filtering.Id && e.Value != null && int.Parse(e.Value) < intValue) != null);
+                                    break;
+                                case "<=":
+                                    filterResult = filterResult.Where(o => o.Details.FirstOrDefault(e => e.Field == filtering.Id && e.Value != null && int.Parse(e.Value) <= intValue) != null);
+                                    break;
+                                case ">=":
+                                    filterResult = filterResult.Where(o => o.Details.FirstOrDefault(e => e.Field == filtering.Id && e.Value != null && int.Parse(e.Value) >= intValue) != null);
+                                    break;
+                                case ">":
+                                    filterResult = filterResult.Where(o => o.Details.FirstOrDefault(e => e.Field == filtering.Id && e.Value != null && int.Parse(e.Value) > intValue) != null);
+                                    break;
+                                default:
+                                    continue;
+                            }
+                        }
+                    }
+                    else
+                        filterResult = filterResult.Where(o => o.Details.FirstOrDefault(e => e.Field == filtering.Id && e.Value.Contains(filtering.Value)) != null);
                 }
 
             if (dataRequest.Sorted != null)
@@ -144,9 +179,11 @@ namespace CoreIn.App
                             : filterResult.OrderBy(o => o.Details.FirstOrDefault(d => d.Field == sorting.Id).Value);
                 }
             }
+            if (dataRequest.Page == 0)
+                dataRequest.Page = 1;
 
             filterResult = filterResult.Skip((dataRequest.Page - 1) * dataRequest.PageSize);
-            filterResult.Take(dataRequest.PageSize);
+            filterResult = filterResult.Take(dataRequest.PageSize);
 
             return filterResult;
         }
@@ -185,7 +222,7 @@ namespace CoreIn.App
             return Save();
         }
 
-        public virtual IEnumerable<BaseEntityViewModel> ToViewModels(IEnumerable<TEntity> entities)
+        public virtual IEnumerable<BaseEntityViewModel> ToViewModels(IEnumerable<TEntity> entities, string[] moreFields = null)
         {
             foreach (var entity in entities)
             {
@@ -195,7 +232,16 @@ namespace CoreIn.App
                     Title = details.FirstOrDefault(o => o.Field == "title")?.Value,
                 };
                 viewModel.SetId(entity.Id);
+                viewModel.SetName(entity.Name);
                 viewModel.SetThumbnail(details.FirstOrDefault(o => o.Field == "thumbnail" && o.Suffix == AppKey.FileUrlPropertyName)?.Value);
+                if(moreFields != null)
+                    foreach (var field in moreFields)
+                    {
+                        var objectDetailValue = details.FirstOrDefault(o => o.Field == field)?.Value;
+                        if(objectDetailValue != null)
+                            viewModel.SetMoreDetail(field, details.FirstOrDefault(o => o.Field == field).Value);
+                    }
+
                 yield return viewModel;
             }
         }

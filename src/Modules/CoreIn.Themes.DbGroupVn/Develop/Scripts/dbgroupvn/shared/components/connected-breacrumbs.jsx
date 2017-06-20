@@ -1,6 +1,5 @@
 import { Container } from 'reactstrap'
 import { Link } from 'react-router-dom'
-import { default as Breadcrumbs } from './breacrumbs'
 import { connect } from 'react-redux';
 
 const ConnectedBreadcrumbs = (props) => {
@@ -8,11 +7,30 @@ const ConnectedBreadcrumbs = (props) => {
     if (routes)
         return (
             <Container className="d-none d-lg-block mb-lg-4">
-                <Breadcrumbs Link={ Link } routes={ routes } params={ params } setDocumentTitle={ true } />
+                <div className="breadcrumbs">
+                    {
+                        routes.map((route, index) => {
+                            const isLast = (route.path === routes[ routes.length -1 ].path)
+
+                            return (
+                                <span key={index} className="">
+                                    {
+                                        !isLast ? <Link to={ route.path }>{route.label}</Link>
+                                            : <a>{route.label}</a>
+                                    }
+                                </span>
+                            )
+                        })
+                    }
+                </div>
             </Container>
         )
     else
         return null
+}
+
+ConnectedBreadcrumbs.defaultProps = {
+    routes: []
 }
 
 const stateToProps = (state) => ({

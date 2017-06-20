@@ -69,86 +69,11 @@ onElementHeightChange(document.body, function () {
     AOS.refresh();
 });
 
+global.__DEV__ = true;
+
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"./dbgroupvn/root.jsx":8,"./dbgroupvn/routes":9,"./dbgroupvn/shared/_layout":10,"./dbgroupvn/shared/_layout/header/menu":19,"./dbgroupvn/shared/_localization":25,"./dbgroupvn/shared/reducer":38,"./dbgroupvn/shared/reducers/localization":39,"react-dom":"react-dom","react-router-redux":"react-router-redux","redux":"redux"}],2:[function(require,module,exports){
-"use strict";
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var _require = require('react-router-dom'),
-    Link = _require.Link;
-
-var PageItem = function (_React$Component) {
-    _inherits(PageItem, _React$Component);
-
-    function PageItem(props) {
-        _classCallCheck(this, PageItem);
-
-        var _this = _possibleConstructorReturn(this, (PageItem.__proto__ || Object.getPrototypeOf(PageItem)).call(this, props));
-
-        _this.renderLink = _this.renderLink.bind(_this);
-        return _this;
-    }
-
-    _createClass(PageItem, [{
-        key: "renderLink",
-        value: function renderLink(title) {
-            return React.createElement(
-                Link,
-                { to: "/bo-suu-tap" },
-                React.createElement(
-                    "span",
-                    null,
-                    title
-                )
-            );
-        }
-    }, {
-        key: "render",
-        value: function render() {
-            var _props$data = this.props.data,
-                thumbnailUrl = _props$data.thumbnailUrl,
-                title = _props$data.title,
-                acreage = _props$data.acreage;
-
-
-            return React.createElement(
-                "div",
-                null,
-                React.createElement(
-                    "div",
-                    { className: "page-item-thumbnail" },
-                    React.createElement("img", { className: "w-100", src: "/" + thumbnailUrl }),
-                    React.createElement("div", { className: "overlay" }),
-                    this.renderLink(localizationString.getString("Chi tiết"))
-                ),
-                React.createElement(
-                    "div",
-                    { className: "page-item-title" },
-                    this.renderLink(title),
-                    React.createElement(
-                        "span",
-                        { className: "extra" },
-                        acreage
-                    )
-                )
-            );
-        }
-    }]);
-
-    return PageItem;
-}(React.Component);
-
-module.exports = PageItem;
-
-},{"react-router-dom":"react-router-dom"}],3:[function(require,module,exports){
+},{"./dbgroupvn/root.jsx":16,"./dbgroupvn/routes":17,"./dbgroupvn/shared/_layout":18,"./dbgroupvn/shared/_layout/header/menu":27,"./dbgroupvn/shared/_localization":33,"./dbgroupvn/shared/reducer":60,"./dbgroupvn/shared/reducers/localization":62,"react-dom":"react-dom","react-router-redux":"react-router-redux","redux":"redux"}],2:[function(require,module,exports){
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -163,11 +88,9 @@ var _routes = require('../routes');
 
 var _components = require('../shared/components');
 
+var _components2 = _interopRequireDefault(_components);
+
 var _ultilities = require('../shared/ultilities');
-
-var _pageItem = require('./components/page-item');
-
-var _pageItem2 = _interopRequireDefault(_pageItem);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -226,7 +149,7 @@ var PageComponent = function (_React$Component) {
             var onDataFetch = this.props.onDataFetch;
 
 
-            (0, _ultilities.dataRequest)('/collection/gettabledata', 9, 1, null, null, currentCategory && { 30003: currentCategory.id }, function (response) {
+            (0, _ultilities.dataRequest)('/collection/gettabledata', 9, 1, null, null, currentCategory && { 30003: currentCategory.id }, null, function (response) {
                 onDataFetch({ items: response }, 0);
             });
         }
@@ -306,7 +229,7 @@ var PageComponent = function (_React$Component) {
                                 return React.createElement(
                                     _reactstrap.Col,
                                     { key: item.id, xs: '6', lg: '4', className: 'page-item' },
-                                    React.createElement(_pageItem2.default, { data: item })
+                                    React.createElement(_components2.default, { data: item, extraText: item.area, basePath: './bo-suu-tap' })
                                 );
                             })
                         )
@@ -331,7 +254,7 @@ var ConnectedPageComponent = connect(stateToProps, dispathToProps)(PageComponent
 
 module.exports = (0, _basePage2.default)({ page: 'bo-suu-tap', showBreadcrumbs: true })(ConnectedPageComponent);
 
-},{"../routes":9,"../shared/_layout/main/base-page":21,"../shared/components":27,"../shared/ultilities":40,"./components/page-item":2,"react-redux":"react-redux","reactstrap":"reactstrap","redux":"redux"}],4:[function(require,module,exports){
+},{"../routes":17,"../shared/_layout/main/base-page":29,"../shared/components":35,"../shared/ultilities":63,"react-redux":"react-redux","reactstrap":"reactstrap","redux":"redux"}],3:[function(require,module,exports){
 "use strict";
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -408,7 +331,7 @@ var PageItem = function (_React$Component) {
 
 module.exports = PageItem;
 
-},{"react-router-dom":"react-router-dom"}],5:[function(require,module,exports){
+},{"react-router-dom":"react-router-dom"}],4:[function(require,module,exports){
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -486,7 +409,7 @@ var PageComponent = function (_React$Component) {
             var onDataFetch = this.props.onDataFetch;
 
 
-            (0, _ultilities.dataRequest)('/construction/gettabledata', 9, 1, null, null, currentCategory && { 10003: currentCategory.id }, function (response) {
+            (0, _ultilities.dataRequest)('/construction/gettabledata', 9, 1, null, null, currentCategory && { 10003: currentCategory.id }, null, function (response) {
                 onDataFetch({ items: response }, 0);
             });
         }
@@ -591,7 +514,989 @@ var ConnectedPageComponent = connect(stateToProps, dispathToProps)(PageComponent
 
 module.exports = (0, _basePage2.default)({ page: 'cong-trinh', showBreadcrumbs: true })(ConnectedPageComponent);
 
-},{"../routes":9,"../shared/_layout/main/base-page":21,"../shared/components":27,"../shared/ultilities":40,"./components/page-item":4,"react-redux":"react-redux","reactstrap":"reactstrap","redux":"redux"}],6:[function(require,module,exports){
+},{"../routes":17,"../shared/_layout/main/base-page":29,"../shared/components":35,"../shared/ultilities":63,"./components/page-item":3,"react-redux":"react-redux","reactstrap":"reactstrap","redux":"redux"}],5:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactRedux = require('react-redux');
+
+var _components = require('../../shared/components');
+
+var _reactstrap = require('reactstrap');
+
+var _classnames = require('classnames');
+
+var _classnames2 = _interopRequireDefault(_classnames);
+
+var _renderItems = require('../helper/render-items');
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var pageConfigures = require('../page-configure.js');
+
+var getCurrentCategory = require('../helper/get-current-category.js');
+
+var BigMap = function (_Component) {
+    _inherits(BigMap, _Component);
+
+    function BigMap(props) {
+        _classCallCheck(this, BigMap);
+
+        var _this = _possibleConstructorReturn(this, (BigMap.__proto__ || Object.getPrototypeOf(BigMap)).call(this, props));
+
+        _this.state = {};
+        return _this;
+    }
+
+    _createClass(BigMap, [{
+        key: 'componentWillMount',
+        value: function componentWillMount() {
+            var _props = this.props,
+                searchArea = _props.searchArea,
+                searchCity = _props.searchCity,
+                fecthData = _props.fecthData,
+                categories = _props.categories,
+                match = _props.match;
+
+            var currentCategory = getCurrentCategory(match, categories);
+            fecthData(currentCategory, searchArea, searchCity);
+        }
+    }, {
+        key: 'componentWillReceiveProps',
+        value: function componentWillReceiveProps(nextProps) {
+            if (JSON.stringify(this.props) != JSON.stringify(nextProps)) {
+                var match = nextProps.match,
+                    categories = nextProps.categories,
+                    searchArea = nextProps.searchArea,
+                    searchCity = nextProps.searchCity,
+                    fecthData = nextProps.fecthData;
+
+                var currentCategory = getCurrentCategory(match, categories);
+                fecthData(currentCategory, searchArea, searchCity);
+            }
+        }
+    }, {
+        key: 'renderMarkerContent',
+        value: function renderMarkerContent(marker) {
+            return _react2.default.createElement(
+                'div',
+                { className: 'marker-tooltip' },
+                _react2.default.createElement(
+                    'div',
+                    { className: 'marker-thumbnail mb-3' },
+                    _react2.default.createElement('img', { className: 'w-100 h-100', src: marker.thumbnailUrl })
+                ),
+                _react2.default.createElement(
+                    'div',
+                    { className: 'marker-info mb-2' },
+                    _react2.default.createElement(
+                        'label',
+                        { className: 'marker-label' },
+                        marker.title || 'Missing Title'
+                    ),
+                    _react2.default.createElement('br', null),
+                    _react2.default.createElement(
+                        'a',
+                        { className: (0, _classnames2.default)('map-marker-hint__ap-link') },
+                        localizationString.getString("Click to view more info")
+                    )
+                )
+            );
+        }
+    }, {
+        key: 'componentDidMount',
+        value: function componentDidMount() {
+            var $bigMap = $('#big-map');
+            var $parentBigMap = $bigMap.parent();
+            var bigMapHeight = $parentBigMap.innerHeight();
+            $bigMap.find('.g-map').css('height', bigMapHeight + 'px');
+        }
+    }, {
+        key: 'setStateRandomProject',
+        value: function setStateRandomProject(randomItems) {
+            var getItemsWithPath = this.props.getItemsWithPath;
+
+            var itemWithPath = getItemsWithPath(randomItems);
+            this.setState({ randomItems: itemWithPath });
+        }
+
+        //request 9 dự án ngẫu nhiên
+
+    }, {
+        key: 'componentWillMount',
+        value: function componentWillMount() {
+            $.ajax({
+                url: '/project/getrandomEntity',
+                data: { count: 9 },
+                success: this.setStateRandomProject.bind(this)
+            });
+        }
+    }, {
+        key: 'render',
+        value: function render() {
+            var _props2 = this.props,
+                match = _props2.match,
+                pageCoverImage = _props2.pageCoverImage,
+                currentCategory = _props2.currentCategory,
+                onItemHover = _props2.onItemHover,
+                items = _props2.items;
+
+            return _react2.default.createElement(
+                'div',
+                { id: 'big-map', className: 'big-map-container' },
+                _react2.default.createElement(
+                    'div',
+                    { className: 'g-map big-g-map' },
+                    _react2.default.createElement(_components.GoogleMap, _extends({}, this.props.map, { renderMarkerContent: this.renderMarkerContent }))
+                ),
+                _react2.default.createElement(
+                    'div',
+                    { className: 'page-titles mt-4 mb-3' },
+                    _react2.default.createElement(
+                        'span',
+                        { className: 'page-title' },
+                        localizationString.getString("Dự án")
+                    ),
+                    _react2.default.createElement(
+                        'span',
+                        null,
+                        '|'
+                    ),
+                    _react2.default.createElement(
+                        'span',
+                        { className: 'page-title' },
+                        localizationString.getString("Công trình khác")
+                    )
+                ),
+                _react2.default.createElement(_components.Pagination, { items: this.state.randomItems, itemWrapperClassName: 'page-item', itemPerPage: 3, renderItem: _renderItems.renderItem })
+            );
+        }
+    }]);
+
+    return BigMap;
+}(_react.Component);
+
+var bigMapId = pageConfigures.bigMapId;
+
+var mapStateToProps = function mapStateToProps(state, ownProps) {
+    return {
+        map: state.googleMap[bigMapId]
+    };
+};
+
+exports.default = (0, _reactRedux.connect)(mapStateToProps)(BigMap);
+
+},{"../../shared/components":35,"../helper/get-current-category.js":10,"../helper/render-items":11,"../page-configure.js":13,"classnames":"classnames","react":"react","react-redux":"react-redux","reactstrap":"reactstrap"}],6:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactstrap = require('reactstrap');
+
+var _components = require('../../shared/components');
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var DuAnCategory = function (_Component) {
+    _inherits(DuAnCategory, _Component);
+
+    function DuAnCategory(props) {
+        _classCallCheck(this, DuAnCategory);
+
+        var _this = _possibleConstructorReturn(this, (DuAnCategory.__proto__ || Object.getPrototypeOf(DuAnCategory)).call(this, props));
+
+        _this.getCurrentCategory = _this.getCurrentCategory.bind(_this);
+        return _this;
+    }
+
+    _createClass(DuAnCategory, [{
+        key: 'getCurrentCategory',
+        value: function getCurrentCategory(match) {
+            match = match || this.props.match;
+            var categories = this.props.categories;
+
+
+            var currentCategory = categories.filter(function (categoryItem) {
+                return categoryItem.name === match.params.category;
+            })[0];
+            return currentCategory;
+        }
+    }, {
+        key: 'componentWillMount',
+        value: function componentWillMount() {
+            var _props = this.props,
+                searchArea = _props.searchArea,
+                searchCity = _props.searchCity,
+                fecthData = _props.fecthData;
+
+            var category = this.getCurrentCategory();
+            fecthData(category, searchArea, searchCity);
+        }
+    }, {
+        key: 'componentWillReceiveProps',
+        value: function componentWillReceiveProps(nextProps) {
+            if (JSON.stringify(this.props) != JSON.stringify(nextProps)) this.props.fecthData(this.getCurrentCategory(nextProps.match), nextProps.searchArea, nextProps.searchCity);
+        }
+    }, {
+        key: 'render',
+        value: function render() {
+            var _props2 = this.props,
+                match = _props2.match,
+                pageCoverImage = _props2.pageCoverImage,
+                currentCategory = _props2.currentCategory,
+                basePath = _props2.basePath,
+                onItemHover = _props2.onItemHover,
+                items = _props2.items;
+
+            return _react2.default.createElement(
+                _reactstrap.Container,
+                null,
+                _react2.default.createElement(_components.Image, pageCoverImage),
+                _react2.default.createElement(
+                    'div',
+                    { className: 'page-titles mt-4 mb-3' },
+                    _react2.default.createElement(
+                        'span',
+                        { className: 'page-title' },
+                        localizationString.getString("Bộ sưu tập")
+                    ),
+                    _react2.default.createElement(
+                        'span',
+                        null,
+                        '|'
+                    ),
+                    _react2.default.createElement(
+                        'span',
+                        { className: 'page-title' },
+                        currentCategory ? currentCategory.title : localizationString.getString("Tất cả")
+                    )
+                ),
+                _react2.default.createElement(
+                    _reactstrap.Row,
+                    null,
+                    items.map(function (item, index) {
+                        return _react2.default.createElement(
+                            _reactstrap.Col,
+                            { key: item.id, xs: '6', lg: '4', className: 'page-item',
+                                onMouseEnter: function onMouseEnter() {
+                                    onItemHover(true, item);
+                                },
+                                onMouseLeave: function onMouseLeave() {
+                                    onItemHover(false, item);
+                                }
+                            },
+                            _react2.default.createElement(_components.PageItem, { data: item, extraText: item.area, path: '/' + basePath + '/' + items.name })
+                        );
+                    })
+                )
+            );
+        }
+    }]);
+
+    return DuAnCategory;
+}(_react.Component);
+
+exports.default = DuAnCategory;
+
+},{"../../shared/components":35,"react":"react","reactstrap":"reactstrap"}],7:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactstrap = require('reactstrap');
+
+var _components = require('../../shared/components');
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var AreaSearch = function (_Component) {
+    _inherits(AreaSearch, _Component);
+
+    function AreaSearch(props) {
+        _classCallCheck(this, AreaSearch);
+
+        var _this = _possibleConstructorReturn(this, (AreaSearch.__proto__ || Object.getPrototypeOf(AreaSearch)).call(this, props));
+
+        _this.ranges = [{ form: 1, to: 3 }, { form: 4, to: 6 }, { form: 7, to: 9 }];
+        return _this;
+    }
+
+    _createClass(AreaSearch, [{
+        key: 'render',
+        value: function render() {
+            var onSearch = this.props.onSearch;
+
+            return _react2.default.createElement(
+                _components.SidebarWidget,
+                { className: 'custom-controls-stacked', title: localizationString.getString("Diện tích") },
+                _react2.default.createElement(
+                    'label',
+                    { className: 'custom-control custom-radio' },
+                    _react2.default.createElement('input', { id: 'radioStacked1', name: 'radio-stacked', type: 'radio', className: 'custom-control-input', onChange: function onChange() {
+                            onSearch(-1, -1);
+                        } }),
+                    _react2.default.createElement('span', { className: 'custom-control-indicator' }),
+                    _react2.default.createElement(
+                        'span',
+                        { className: 'custom-control-description' },
+                        '' + localizationString.getString('Mọi diện tích')
+                    )
+                ),
+                this.ranges.map(function (_ref, index) {
+                    var form = _ref.form,
+                        to = _ref.to;
+                    return _react2.default.createElement(
+                        'label',
+                        { key: index, className: 'custom-control custom-radio' },
+                        _react2.default.createElement('input', { id: 'radioStacked1', name: 'radio-stacked', type: 'radio', className: 'custom-control-input', 'data-from': form, 'data-to': to, onChange: function onChange() {
+                                onSearch(form, to);
+                            } }),
+                        _react2.default.createElement('span', { className: 'custom-control-indicator' }),
+                        _react2.default.createElement(
+                            'span',
+                            { className: 'custom-control-description' },
+                            localizationString.getString('từ') + ' ' + form + ' ' + localizationString.getString('đến') + ' ' + to
+                        )
+                    );
+                })
+            );
+        }
+    }]);
+
+    return AreaSearch;
+}(_react.Component);
+
+exports.default = AreaSearch;
+
+},{"../../shared/components":35,"react":"react","reactstrap":"reactstrap"}],8:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactRouterDom = require('react-router-dom');
+
+var _reactRedux = require('react-redux');
+
+var _reactstrap = require('reactstrap');
+
+var _components = require('../../shared/components');
+
+var _classnames = require('classnames');
+
+var _classnames2 = _interopRequireDefault(_classnames);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var pageConfigures = require('../page-configure.js');
+
+var SearchCity = function (_Component) {
+    _inherits(SearchCity, _Component);
+
+    function SearchCity() {
+        _classCallCheck(this, SearchCity);
+
+        return _possibleConstructorReturn(this, (SearchCity.__proto__ || Object.getPrototypeOf(SearchCity)).apply(this, arguments));
+    }
+
+    _createClass(SearchCity, [{
+        key: 'renderMarkerContent',
+        value: function renderMarkerContent(marker) {
+            return _react2.default.createElement(
+                'div',
+                { className: 'marker-info' },
+                _react2.default.createElement(
+                    'label',
+                    { className: 'label' },
+                    marker.title || 'Missing Title'
+                ),
+                _react2.default.createElement('br', null),
+                _react2.default.createElement(
+                    'a',
+                    { className: (0, _classnames2.default)('map-marker-hint__ap-link') },
+                    localizationString.getString("Click to view more info")
+                )
+            );
+        }
+    }, {
+        key: 'render',
+        value: function render() {
+
+            return _react2.default.createElement(
+                _components.SidebarWidget,
+                { noBorder: true, noCollapse: true, title: localizationString.getString('Bản đồ') },
+                _react2.default.createElement(
+                    'div',
+                    { className: 'no-left-space' },
+                    _react2.default.createElement(
+                        'div',
+                        { className: 'g-map' },
+                        _react2.default.createElement(_components.GoogleMap, _extends({}, this.props.map, { dispath: this.props.dispath, renderMarkerContent: this.renderMarkerContent }))
+                    ),
+                    _react2.default.createElement(
+                        'div',
+                        { className: (0, _classnames2.default)('mt-3', { 'd-none': this.props.hiddenBigMapLink }) },
+                        _react2.default.createElement(
+                            _reactRouterDom.Link,
+                            { className: 'btn btn-secondary', to: this.props.linkToBigMap },
+                            localizationString.getString("Xem bản đồ")
+                        )
+                    )
+                )
+            );
+        }
+    }]);
+
+    return SearchCity;
+}(_react.Component);
+
+var mapStateToProps = function mapStateToProps(state, ownProps) {
+    return {
+        map: state.googleMap[pageConfigures.smallMapId]
+    };
+};
+
+exports.default = (0, _reactRedux.connect)(mapStateToProps)(SearchCity);
+
+},{"../../shared/components":35,"../page-configure.js":13,"classnames":"classnames","react":"react","react-redux":"react-redux","react-router-dom":"react-router-dom","reactstrap":"reactstrap"}],9:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactstrap = require('reactstrap');
+
+var _components = require('../../shared/components');
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var cities = {
+    'Hà Nội': {
+        center: [21.0227431, 105.8194541],
+        zoom: 11
+    },
+    'Đà nẵng': {
+        center: [16.0646499, 108.2296327],
+        zoom: 11
+    },
+    'Hồ Chí Minh': {
+        center: [10.6917996, 106.6503763],
+        zoom: 9
+    }
+};
+
+var SearchCity = function (_Component) {
+    _inherits(SearchCity, _Component);
+
+    function SearchCity() {
+        _classCallCheck(this, SearchCity);
+
+        return _possibleConstructorReturn(this, (SearchCity.__proto__ || Object.getPrototypeOf(SearchCity)).apply(this, arguments));
+    }
+
+    _createClass(SearchCity, [{
+        key: 'onCityChange',
+        value: function onCityChange(e) {
+            var value = e.target.value;
+            this.props.onCityChange(value != "0" && value, cities[value]);
+        }
+    }, {
+        key: 'render',
+        value: function render() {
+            var onCityChange = this.props.onCityChange;
+
+            return _react2.default.createElement(
+                _components.SidebarWidget,
+                { noBorder: true, noCollapse: true, title: localizationString.getString('Vị trí') },
+                _react2.default.createElement(
+                    'div',
+                    { className: 'no-left-space' },
+                    _react2.default.createElement(
+                        _reactstrap.Input,
+                        { type: 'select', onChange: this.onCityChange.bind(this) },
+                        _react2.default.createElement(
+                            'option',
+                            { value: 0 },
+                            localizationString.getString('Chọn thành phố')
+                        ),
+                        $.map(cities, function (city, index) {
+                            return _react2.default.createElement(
+                                'option',
+                                { key: index, value: index },
+                                index
+                            );
+                        })
+                    )
+                )
+            );
+        }
+    }]);
+
+    return SearchCity;
+}(_react.Component);
+
+exports.default = SearchCity;
+
+},{"../../shared/components":35,"react":"react","reactstrap":"reactstrap"}],10:[function(require,module,exports){
+"use strict";
+
+module.exports = function getCurrentCategory(match, categories) {
+    var currentCategory = categories.filter(function (categoryItem) {
+        return categoryItem.name === match.params.category;
+    })[0];
+    return currentCategory;
+};
+
+},{}],11:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.renderItem = undefined;
+
+var _components = require('../../shared/components');
+
+function renderItem(item) {
+    return React.createElement(_components.PageItem, { data: item, extraText: item.area, path: item.path });
+}
+
+exports.renderItem = renderItem;
+
+},{"../../shared/components":35}],12:[function(require,module,exports){
+'use strict';
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _class, _temp;
+
+var _underscore = require('underscore');
+
+var _underscore2 = _interopRequireDefault(_underscore);
+
+var _reactRouter = require('react-router');
+
+var _reactstrap = require('reactstrap');
+
+var _basePage = require('../shared/_layout/main/base-page');
+
+var _basePage2 = _interopRequireDefault(_basePage);
+
+var _components = require('../shared/components');
+
+var _routes = require('../routes');
+
+var _bigMap = require('./components/big-map');
+
+var _bigMap2 = _interopRequireDefault(_bigMap);
+
+var _category = require('./components/category');
+
+var _category2 = _interopRequireDefault(_category);
+
+var _searchArea = require('./components/search-area');
+
+var _searchArea2 = _interopRequireDefault(_searchArea);
+
+var _sreachCity = require('./components/sreach-city');
+
+var _sreachCity2 = _interopRequireDefault(_sreachCity);
+
+var _smallMap = require('./components/small-map');
+
+var _smallMap2 = _interopRequireDefault(_smallMap);
+
+var _googleMap = require('../shared/reducers/google-map');
+
+var _ultilities = require('../shared/ultilities');
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var _require = require('redux'),
+    bindActionCreators = _require.bindActionCreators;
+
+var _require2 = require('react-redux'),
+    connect = _require2.connect;
+
+var pageConfigure = {
+    pageName: 'du-an',
+    taxonomyTypeId: 20003,
+    showBreadcrumb: true
+};
+
+var smallMapId = require('./page-configure.js').smallMapId;
+var bigMapId = require('./page-configure.js').bigMapId;
+
+var defaultMap = {
+    center: [15.866913899999986, 104.1218629],
+    zoom: 5
+};
+
+var PageComponent = (_temp = _class = function (_React$Component) {
+    _inherits(PageComponent, _React$Component);
+
+    function PageComponent() {
+        _classCallCheck(this, PageComponent);
+
+        var _this = _possibleConstructorReturn(this, (PageComponent.__proto__ || Object.getPrototypeOf(PageComponent)).call(this));
+
+        _this.renderSidebar = _this.renderSidebar.bind(_this);
+        _this.fecthData = _this.fecthData.bind(_this);
+        _this.getCurrentChildRoute = _this.getCurrentChildRoute.bind(_this);
+        _this.getItemsWithPath = _this.getItemsWithPath.bind(_this);
+        return _this;
+    }
+
+    _createClass(PageComponent, [{
+        key: 'componentWillMount',
+        value: function componentWillMount() {
+            var _props = this.props,
+                onError = _props.onError,
+                onDataFetch = _props.onDataFetch,
+                refreshRoutePath = _props.refreshRoutePath,
+                categories = _props.categories,
+                page = _props.page,
+                items = _props.items;
+
+
+            if (!page) $.get('/page/getsingle?entityName=' + pageConfigure.pageName, function (response) {
+                onDataFetch({ page: response.details }, 50);
+            });
+            if (!categories) $.get('/TaxonomyUI/GetTaxonomies', { taxonomyTypeId: pageConfigure.taxonomyTypeId }, function (response) {
+                onDataFetch({ categories: response }, 50);
+            });
+
+            refreshRoutePath(pageConfigure.pageName);
+        }
+    }, {
+        key: 'onSearchByArea',
+        value: function onSearchByArea(from, to) {
+            var searchArea = { from: from, to: to };
+
+            if (from === -1 || to === -1) searchArea = null;
+
+            this.props.onDataFetch({ searchArea: searchArea }, 0);
+        }
+    }, {
+        key: 'onSearchByCity',
+        value: function onSearchByCity(city, map) {
+            var _props2 = this.props,
+                setMapValue = _props2.setMapValue,
+                searchArea = _props2.searchArea;
+
+
+            this.props.onDataFetch({ searchCity: city }, 0);
+
+            var currentChildRoute = this.getCurrentChildRoute();
+            var mapId = currentChildRoute === "/ban-do" ? bigMapId : smallMapId;
+
+            setMapValue(mapId, map || defaultMap);
+        }
+    }, {
+        key: 'getItemsWithPath',
+        value: function getItemsWithPath(items) {
+            var match = this.props.match;
+
+            var itemsWithPath = items.map(function (item) {
+                var itemWithPath = $.extend(true, {}, item, { path: match.path + '/' + item.name });
+                return itemWithPath;
+            });
+            return itemsWithPath;
+        }
+    }, {
+        key: 'onCategoryFetchComplete',
+        value: function onCategoryFetchComplete(items) {
+            var _props3 = this.props,
+                setMapMarkers = _props3.setMapMarkers,
+                match = _props3.match,
+                onDataFetch = _props3.onDataFetch;
+
+
+            var currentChildRoute = this.getCurrentChildRoute();
+            var mapId = currentChildRoute === "/ban-do" ? bigMapId : smallMapId;
+
+            var markers = items.map(function (_ref) {
+                var id = _ref.id,
+                    name = _ref.name,
+                    thumbnailUrl = _ref.thumbnailUrl,
+                    _ref$moreDetailts = _ref.moreDetailts,
+                    mapLongitude = _ref$moreDetailts.mapLongitude,
+                    mapLatitude = _ref$moreDetailts.mapLatitude,
+                    title = _ref.title;
+
+                return {
+                    id: id,
+                    lat: mapLatitude,
+                    lng: mapLongitude,
+                    title: title,
+                    thumbnailUrl: '/' + thumbnailUrl,
+                    redirect: match.path + '/chi-tiet/' + name,
+                    height: mapId === bigMapId && 280,
+                    path: match.path + '/' + name
+                };
+            });
+
+            var itemsWithPath = this.getItemsWithPath(items);
+
+            onDataFetch({ items: itemsWithPath }, 0);
+
+            setMapMarkers(mapId, markers);
+        }
+    }, {
+        key: 'onItemHover',
+        value: function onItemHover(isHover, item) {
+            var showMarkerBalloon = this.props.showMarkerBalloon;
+
+            var markerId = isHover ? item.id : null;
+
+            var currentChildRoute = this.getCurrentChildRoute();
+            var mapId = currentChildRoute === "/ban-do" ? bigMapId : smallMapId;
+
+            showMarkerBalloon(mapId, markerId);
+        }
+    }, {
+        key: 'fecthData',
+        value: function fecthData(category, searchArea, searchCity) {
+            var filter = [];
+
+            if (searchArea) filter.push({
+                id: 'area',
+                value: searchArea.from,
+                operator: '>='
+            }, {
+                id: 'area',
+                value: searchArea.to,
+                operator: '<='
+            });
+
+            if (searchCity) filter.push({
+                id: 'city',
+                value: searchCity,
+                operator: '=='
+            });
+            var additionalFields = ['mapLongitude', 'mapLatitude'];
+            (0, _ultilities.dataRequest)('/project/gettabledata', 9, 1, null, filter, category && _defineProperty({}, pageConfigure.taxonomyTypeId, category.id), additionalFields, this.onCategoryFetchComplete.bind(this));
+        }
+    }, {
+        key: 'getCurrentChildRoute',
+        value: function getCurrentChildRoute() {
+            var _props4 = this.props,
+                match = _props4.match,
+                location = _props4.location;
+
+            return String(location.pathname).startsWith(match.path + '/ban-do') ? '/ban-do' : '';
+        }
+    }, {
+        key: 'renderSidebar',
+        value: function renderSidebar() {
+            var _props5 = this.props,
+                categories = _props5.categories,
+                currentCategory = _props5.currentCategory,
+                match = _props5.match,
+                location = _props5.location;
+
+
+            var mapPage = this.getCurrentChildRoute();
+            var page = mapPage ? '' : '/1';
+
+            var categoryMenuItems = categories && categories.map(function (category) {
+                return { path: '' + match.path + mapPage + '/' + category.name + page, title: category.title, id: category.id };
+            });
+
+            categoryMenuItems.unshift({ path: '' + match.path + mapPage + '/' + localizationString.getString('tat-ca') + page, title: localizationString.getString("Tất cả") });
+
+            return React.createElement(
+                _components.Sidebar,
+                null,
+                React.createElement(_components.SidebarMenu, { title: localizationString.getString('loại công trình'),
+                    items: categoryMenuItems,
+                    currentUrl: match.url
+                }),
+                React.createElement(_searchArea2.default, { onSearch: this.onSearchByArea.bind(this) }),
+                React.createElement(_sreachCity2.default, { onCityChange: this.onSearchByCity.bind(this) }),
+                React.createElement(_smallMap2.default, { map: this.props.map,
+                    linkToBigMap: match.path + '/ban-do/' + (currentCategory ? currentCategory.name : localizationString.getString('tat-ca')),
+                    hiddenBigMapLink: mapPage != ''
+                })
+            );
+        }
+    }, {
+        key: 'render',
+        value: function render() {
+            var _this2 = this;
+
+            if (this.props.dataFetchProgress != 100) return null;
+            console.log(this.state);
+
+            var _props6 = this.props,
+                match = _props6.match,
+                thumbnail = _props6.page.thumbnail,
+                categories = _props6.categories,
+                currentCategory = _props6.currentCategory,
+                searchArea = _props6.searchArea,
+                searchCity = _props6.searchCity,
+                items = _props6.items;
+
+
+            var commonRouteProps = {
+                items: items,
+                searchArea: searchArea,
+                searchCity: searchCity,
+                categories: categories,
+                basePath: match.path,
+                fecthData: this.fecthData
+            };
+
+            return React.createElement(
+                _reactstrap.Container,
+                { id: pageConfigure.pageName },
+                React.createElement(
+                    _reactstrap.Row,
+                    null,
+                    React.createElement(
+                        _reactstrap.Col,
+                        { lg: '3' },
+                        this.renderSidebar()
+                    ),
+                    React.createElement(
+                        _reactstrap.Col,
+                        { xs: '12', lg: '9' },
+                        React.createElement(
+                            _reactRouter.Switch,
+                            null,
+                            React.createElement(_reactRouter.Route, { exact: false, path: match.url + '/ban-do/:category', render: function render(route) {
+                                    return React.createElement(_bigMap2.default, _extends({}, route, commonRouteProps, {
+                                        getItemsWithPath: _this2.getItemsWithPath
+                                    }));
+                                } }),
+                            React.createElement(_reactRouter.Route, { path: match.url + '/:category/:page', render: function render(route) {
+                                    return React.createElement(_category2.default, _extends({ match: route.match,
+                                        pageCoverImage: thumbnail,
+                                        onItemHover: _this2.onItemHover.bind(_this2)
+                                    }, commonRouteProps));
+                                } })
+                        )
+                    )
+                )
+            );
+        }
+    }]);
+
+    return PageComponent;
+}(React.Component), _class.defaultProps = {
+    map: defaultMap,
+    items: []
+}, _temp);
+
+
+var stateToProps = function stateToProps(state) {
+    return {};
+};
+
+var dispathToProps = function dispathToProps(dispath) {
+    return bindActionCreators({ refreshRoutePath: _routes.refreshRoutePath, setMapValue: _googleMap.setMapValue, setMapMarkers: _googleMap.setMapMarkers, showMarkerBalloon: _googleMap.showMarkerBalloon }, dispath);
+};
+
+var ConnectedPageComponent = connect(stateToProps, dispathToProps)(PageComponent);
+
+module.exports = (0, _basePage2.default)({ page: pageConfigure.pageName, showBreadcrumbs: pageConfigure.showBreadcrumb })(ConnectedPageComponent);
+
+},{"../routes":17,"../shared/_layout/main/base-page":29,"../shared/components":35,"../shared/reducers/google-map":61,"../shared/ultilities":63,"./components/big-map":5,"./components/category":6,"./components/search-area":7,"./components/small-map":8,"./components/sreach-city":9,"./page-configure.js":13,"react-redux":"react-redux","react-router":"react-router","reactstrap":"reactstrap","redux":"redux","underscore":78}],13:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+var smallMapId = "category-small-map";
+var bigMapId = "big-map-id";
+
+exports.smallMapId = smallMapId;
+exports.bigMapId = bigMapId;
+
+},{}],14:[function(require,module,exports){
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -714,7 +1619,7 @@ module.exports = function (_React$Component) {
     return _class;
 }(React.Component);
 
-},{"../../shared/components":27,"reactstrap":"reactstrap"}],7:[function(require,module,exports){
+},{"../../shared/components":35,"reactstrap":"reactstrap"}],15:[function(require,module,exports){
 'use strict';
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
@@ -794,7 +1699,7 @@ var PageComponent = function (_React$Component) {
 
 module.exports = BasePage({ page: 'gioi-thieu' })(PageComponent);
 
-},{"../shared/_layout/main/base-page":21,"../shared/components":27,"./components/quy-trinh":6,"reactstrap":"reactstrap","redux":"redux"}],8:[function(require,module,exports){
+},{"../shared/_layout/main/base-page":29,"../shared/components":35,"./components/quy-trinh":14,"reactstrap":"reactstrap","redux":"redux"}],16:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -886,7 +1791,7 @@ module.exports = {
 
 exports.default = exports;
 
-},{"./cong-trinh/index":5,"./gioi-thieu/index":7,"./shared/_layout":10,"./shared/components/_commons/extended-ConnectedRouter":29,"./trang-chu/index":45,"history":"history","prop-types":"prop-types","react-redux":"react-redux","react-router":"react-router","react-router-redux":"react-router-redux"}],9:[function(require,module,exports){
+},{"./cong-trinh/index":4,"./gioi-thieu/index":15,"./shared/_layout":18,"./shared/components/_commons/extended-ConnectedRouter":37,"./trang-chu/index":74,"history":"history","prop-types":"prop-types","react-redux":"react-redux","react-router":"react-router","react-router-redux":"react-router-redux"}],17:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -910,6 +1815,14 @@ var _index7 = require('./bo-suu-tap/index');
 
 var _index8 = _interopRequireDefault(_index7);
 
+var _index9 = require('./du-an/index');
+
+var _index10 = _interopRequireDefault(_index9);
+
+var _index11 = require('./thu-vien/index');
+
+var _index12 = _interopRequireDefault(_index11);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var getRoutes = function getRoutes() {
@@ -917,26 +1830,58 @@ var getRoutes = function getRoutes() {
         exact: true,
         path: '/',
         name: 'trang-chu',
-        label: localizationString.getString("Trang chủ"),
+        label: localizationString.getString('Trang chủ'),
         component: _index2.default,
         childRoutes: [{
             exact: true,
             path: '/ve-chung-toi',
             name: 've-chung-toi',
-            defaultLabel: localizationString.getString("Về chúng tôi"),
+            defaultLabel: localizationString.getString('Về chúng tôi'),
             component: _index4.default
         }, {
             exact: true,
             path: '/cong-trinh',
             name: 'cong-trinh',
-            defaultLabel: localizationString.getString("Công trình"),
+            defaultLabel: localizationString.getString('Công trình'),
             component: _index6.default
         }, {
             exact: true,
             path: '/bo-suu-tap',
             name: 'bo-suu-tap',
-            defaultLabel: localizationString.getString("Bộ sưu tập"),
+            defaultLabel: localizationString.getString('Bộ sưu tập'),
             component: _index8.default
+        }, {
+            path: '/du-an',
+            name: 'du-an',
+            defaultUrl: '/du-an/' + localizationString.getString('tat-ca') + '/1',
+            defaultLabel: localizationString.getString('Dự án'),
+            component: _index10.default,
+            childRoutes: [{
+                path: '/du-an/:category/:page',
+                name: 'du-an-category',
+                defaultLabel: localizationString.getString('Dự án')
+            }, {
+                path: '/du-an/:du-an',
+                name: 'du-an-chi-tiet',
+                defaultLabel: localizationString.getString('Dự án')
+            }]
+        }, {
+            exact: true,
+            path: '/thu-vien',
+            name: 'thu-vien',
+            redirectToChild: 0,
+            defaultLabel: localizationString.getString('Thư viện'),
+            component: _index12.default,
+            childRoutes: [{
+                path: '/:category/:page',
+                name: 'thu-vien-category',
+                defaultLocation: '/tat-ca/1',
+                defaultLabel: localizationString.getString('Thư viện')
+            }, {
+                path: '/chi-tiet/:blog',
+                name: 'thu-vien-chi-tiet',
+                defaultLabel: localizationString.getString('Thư viện')
+            }]
         }]
     };
 };
@@ -971,8 +1916,8 @@ var getRoutePath = function getRoutePath() {
     return resultRoutePath;
 };
 
-var INIT_ROUTES = "INIT_ROUTES";
-var REFRESH_ROUTE_PATH = "REFRESG_ROUTE_PATH";
+var INIT_ROUTES = 'INIT_ROUTES';
+var REFRESH_ROUTE_PATH = 'REFRESG_ROUTE_PATH';
 
 var refreshRoutePath = function refreshRoutePath(currentRouteName, replaceRouteDefaultLabels) {
     return {
@@ -1002,7 +1947,7 @@ exports.reducer = reducer;
 exports.refreshRoutePath = refreshRoutePath;
 exports.INIT_ROUTES = INIT_ROUTES;
 
-},{"./bo-suu-tap/index":3,"./cong-trinh/index":5,"./gioi-thieu/index":7,"./trang-chu/index":45}],10:[function(require,module,exports){
+},{"./bo-suu-tap/index":2,"./cong-trinh/index":4,"./du-an/index":12,"./gioi-thieu/index":15,"./thu-vien/index":70,"./trang-chu/index":74}],18:[function(require,module,exports){
 'use strict';
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
@@ -1201,7 +2146,7 @@ module.exports = {
     default: Layout
 };
 
-},{"./_layout/footer":11,"./_layout/header":15,"./_layout/main/page-loading":23,"./_layout/mobile/menu":24,"react-redux":"react-redux","redux":"redux"}],11:[function(require,module,exports){
+},{"./_layout/footer":19,"./_layout/header":23,"./_layout/main/page-loading":31,"./_layout/mobile/menu":32,"react-redux":"react-redux","redux":"redux"}],19:[function(require,module,exports){
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -1268,7 +2213,7 @@ module.exports = function (_React$Component) {
     return _class;
 }(React.Component);
 
-},{"./footer/copy-right":12,"./footer/menu":13,"./footer/socials":14,"classnames":"classnames","reactstrap":"reactstrap"}],12:[function(require,module,exports){
+},{"./footer/copy-right":20,"./footer/menu":21,"./footer/socials":22,"classnames":"classnames","reactstrap":"reactstrap"}],20:[function(require,module,exports){
 "use strict";
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -1304,7 +2249,7 @@ module.exports = function (_React$Component) {
     return _class;
 }(React.Component);
 
-},{"classnames":"classnames"}],13:[function(require,module,exports){
+},{"classnames":"classnames"}],21:[function(require,module,exports){
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -1389,7 +2334,7 @@ Menu.propTypes = {
 
 module.exports = connect(stateToProps)(Menu);
 
-},{"classnames":"classnames","jquery":"jquery","prop-types":"prop-types","react-redux":"react-redux","react-router-dom":"react-router-dom","reactstrap":"reactstrap","underscore":48}],14:[function(require,module,exports){
+},{"classnames":"classnames","jquery":"jquery","prop-types":"prop-types","react-redux":"react-redux","react-router-dom":"react-router-dom","reactstrap":"reactstrap","underscore":78}],22:[function(require,module,exports){
 "use strict";
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -1458,7 +2403,7 @@ module.exports = function (_React$Component) {
     return _class;
 }(React.Component);
 
-},{"classnames":"classnames"}],15:[function(require,module,exports){
+},{"classnames":"classnames"}],23:[function(require,module,exports){
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -1552,7 +2497,7 @@ module.exports = function (_React$Component) {
     return _class;
 }(React.Component);
 
-},{"./header/header-mobile":16,"./header/language-select":17,"./header/logo":18,"./header/menu":19,"./header/search":20,"classnames":"classnames","reactstrap":"reactstrap"}],16:[function(require,module,exports){
+},{"./header/header-mobile":24,"./header/language-select":25,"./header/logo":26,"./header/menu":27,"./header/search":28,"classnames":"classnames","reactstrap":"reactstrap"}],24:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -1658,7 +2603,7 @@ module.exports = function (_React$Component) {
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"./language-select":17,"./search":20,"classnames":"classnames"}],17:[function(require,module,exports){
+},{"./language-select":25,"./search":28,"classnames":"classnames"}],25:[function(require,module,exports){
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -1737,7 +2682,7 @@ var dispathToProps = function dispathToProps(dispatch) {
 
 module.exports = connect(stateToProps, dispathToProps)(LanguageSelect);
 
-},{"../../reducers/localization":39,"jquery":"jquery","react-redux":"react-redux","reactstrap":"reactstrap","redux":"redux"}],18:[function(require,module,exports){
+},{"../../reducers/localization":62,"jquery":"jquery","react-redux":"react-redux","reactstrap":"reactstrap","redux":"redux"}],26:[function(require,module,exports){
 "use strict";
 
 module.exports = function (props) {
@@ -1748,7 +2693,7 @@ module.exports = function (props) {
     );
 };
 
-},{}],19:[function(require,module,exports){
+},{}],27:[function(require,module,exports){
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -1859,7 +2804,7 @@ module.exports = {
     default: connect(stateToProps, dispathToProps, null, { pure: false })(Menu)
 };
 
-},{"jquery":"jquery","prop-types":"prop-types","react-redux":"react-redux","react-router-dom":"react-router-dom","redux":"redux"}],20:[function(require,module,exports){
+},{"jquery":"jquery","prop-types":"prop-types","react-redux":"react-redux","react-router-dom":"react-router-dom","redux":"redux"}],28:[function(require,module,exports){
 "use strict";
 
 var _require = require('reactstrap'),
@@ -1878,7 +2823,7 @@ module.exports = function (props) {
     );
 };
 
-},{"reactstrap":"reactstrap"}],21:[function(require,module,exports){
+},{"reactstrap":"reactstrap"}],29:[function(require,module,exports){
 'use strict';
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
@@ -1926,7 +2871,7 @@ module.exports = function () {
     };
 };
 
-},{"./connected-base-page":22,"prop-types":"prop-types"}],22:[function(require,module,exports){
+},{"./connected-base-page":30,"prop-types":"prop-types"}],30:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -2089,8 +3034,9 @@ var BasePage = function (_React$Component) {
           pages = _props5.pages,
           page = _props5.page,
           routes = _props5.routes,
-          params = _props5.match.params,
-          showBreadcrumbs = _props5.showBreadcrumbs;
+          match = _props5.match,
+          showBreadcrumbs = _props5.showBreadcrumbs,
+          location = _props5.location;
 
 
       var pageData = pages[page];
@@ -2104,8 +3050,8 @@ var BasePage = function (_React$Component) {
           { onSwipeRight: this.swipeLeft },
           React.createElement('div', { className: 'swipeable' })
         ),
-        showBreadcrumbs && React.createElement(_components.ConnectedBreacrumbs, { routes: routes, params: params }),
-        React.createElement(this.ElementWithDelayRender, _extends({}, pageData, { onDataFetch: this.onDataFetch }))
+        showBreadcrumbs && React.createElement(_components.ConnectedBreacrumbs, { routes: routes, params: match.params }),
+        React.createElement(this.ElementWithDelayRender, _extends({}, pageData, { location: location, match: match, onDataFetch: this.onDataFetch }))
       );
     }
   }]);
@@ -2141,7 +3087,7 @@ module.exports = {
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"../../_layout":10,"../../components":27,"../../components/_commons/delay-render":28,"react-redux":"react-redux","react-touch":"react-touch","redux":"redux"}],23:[function(require,module,exports){
+},{"../../_layout":18,"../../components":35,"../../components/_commons/delay-render":36,"react-redux":"react-redux","react-touch":"react-touch","redux":"redux"}],31:[function(require,module,exports){
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -2198,7 +3144,7 @@ var stateToProps = function stateToProps(state) {
 
 module.exports = connect(stateToProps)(Loading);
 
-},{"react-redux":"react-redux"}],24:[function(require,module,exports){
+},{"react-redux":"react-redux"}],32:[function(require,module,exports){
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -2262,7 +3208,7 @@ var stateToProps = function stateToProps(state) {
 
 module.exports = connect(stateToProps, null, null, { pure: false })(Menu);
 
-},{"jquery":"jquery","prop-types":"prop-types","react-redux":"react-redux","react-router-dom":"react-router-dom"}],25:[function(require,module,exports){
+},{"jquery":"jquery","prop-types":"prop-types","react-redux":"react-redux","react-router-dom":"react-router-dom"}],33:[function(require,module,exports){
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -2300,7 +3246,7 @@ var localization = function () {
 
 module.exports = new localization();
 
-},{"./_localization/en-us":26}],26:[function(require,module,exports){
+},{"./_localization/en-us":34}],34:[function(require,module,exports){
 'use strict';
 
 module.exports = {
@@ -2312,7 +3258,7 @@ module.exports = {
     'Căn<br/>hộ': "Department"
 };
 
-},{}],27:[function(require,module,exports){
+},{}],35:[function(require,module,exports){
 'use strict';
 
 var _connectedBreacrumbs = require('./components/connected-breacrumbs');
@@ -2327,6 +3273,26 @@ var _categoryMenu = require('./components/category-menu');
 
 var _categoryMenu2 = _interopRequireDefault(_categoryMenu);
 
+var _pageItem = require('./components/page-item');
+
+var _pageItem2 = _interopRequireDefault(_pageItem);
+
+var _sidebarMenu = require('./components/sidebar-menu');
+
+var _sidebarMenu2 = _interopRequireDefault(_sidebarMenu);
+
+var _sidebarWidget = require('./components/sidebar-widget');
+
+var _sidebarWidget2 = _interopRequireDefault(_sidebarWidget);
+
+var _googleMap = require('./components/gmap/google-map');
+
+var _googleMap2 = _interopRequireDefault(_googleMap);
+
+var _pagination = require('./components/pagination');
+
+var _pagination2 = _interopRequireDefault(_pagination);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var Title = require('./components/section-title');
@@ -2335,10 +3301,21 @@ var Image = require('./components/image');
 var RenderDelay = require('./components/_commons/delay-render');
 
 module.exports = {
-    RenderDelay: RenderDelay, Title: Title, PageArticle: PageArticle, Image: Image, ConnectedBreacrumbs: _connectedBreacrumbs2.default, Sidebar: _sidebar2.default, CategoryMenu: _categoryMenu2.default
+    RenderDelay: RenderDelay,
+    Title: Title,
+    PageArticle: PageArticle,
+    Image: Image,
+    ConnectedBreacrumbs: _connectedBreacrumbs2.default,
+    Sidebar: _sidebar2.default,
+    CategoryMenu: _categoryMenu2.default,
+    PageItem: _pageItem2.default,
+    SidebarMenu: _sidebarMenu2.default,
+    SidebarWidget: _sidebarWidget2.default,
+    GoogleMap: _googleMap2.default,
+    Pagination: _pagination2.default
 };
 
-},{"./components/_commons/delay-render":28,"./components/category-menu":31,"./components/connected-breacrumbs":32,"./components/image":34,"./components/page-article":35,"./components/section-title":36,"./components/sidebar":37}],28:[function(require,module,exports){
+},{"./components/_commons/delay-render":36,"./components/category-menu":38,"./components/connected-breacrumbs":39,"./components/gmap/google-map":42,"./components/image":48,"./components/page-article":49,"./components/page-item":50,"./components/pagination":51,"./components/section-title":56,"./components/sidebar":59,"./components/sidebar-menu":57,"./components/sidebar-widget":58}],36:[function(require,module,exports){
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -2409,12 +3386,14 @@ var DelayRender = function DelayRender() {
 
 module.exports = DelayRender;
 
-},{}],29:[function(require,module,exports){
+},{}],37:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 var _reactRouter = require('react-router');
 
@@ -2422,32 +3401,37 @@ var _reactRouterRedux = require('react-router-redux');
 
 var _reactRedux = require('react-redux');
 
-var TrangChu = require('../../../trang-chu/index');
+var DuAn = require('../../../du-an/index');
 
-var renderRoute = function renderRoute(_ref, index) {
+var renderRoute = function renderRoute(route) {
+    var name = route.name,
+        childRoutes = route.childRoutes,
+        redirectToChild = route.redirectToChild,
+        path = route.path,
+        component = route.component;
+
+
+    if (redirectToChild != null || redirectToChild != undefined) return React.createElement(
+        _reactRouter.Switch,
+        { key: name },
+        childRoutes.map(function (child, index) {
+
+            if (String(child.path).startsWith('/:')) child.path = path + child.path;
+
+            if (!child.component) child.component = component;
+            return renderRoute(child);
+        }),
+        React.createElement(_reactRouter.Redirect, { from: path, to: path + childRoutes[redirectToChild].defaultLocation })
+    );
+
+    return React.createElement(_reactRouter.Route, _extends({ key: name }, route));
+};
+
+var renderRoutes = function renderRoutes(_ref) {
     var path = _ref.path,
         exact = _ref.exact,
         component = _ref.component,
         childRoutes = _ref.childRoutes;
-
-    var routeComponent = React.createElement(_reactRouter.Route, { exact: exact, key: path, path: path, component: component });
-
-    if (childRoutes != null) {
-        var routeComponents = childRoutes.map(renderRoute);
-        routeComponents.push(routeComponent);
-        return React.createElement(
-            _reactRouter.Switch,
-            null,
-            routeComponents
-        );
-    } else return routeComponent;
-};
-
-var renderRoutes = function renderRoutes(_ref2) {
-    var path = _ref2.path,
-        exact = _ref2.exact,
-        component = _ref2.component,
-        childRoutes = _ref2.childRoutes;
 
     var routeComponents = childRoutes.map(renderRoute);
 
@@ -2457,10 +3441,10 @@ var renderRoutes = function renderRoutes(_ref2) {
     return routeComponents;
 };
 
-var ExtendedConnectedRouter = function ExtendedConnectedRouter(_ref3) {
-    var routes = _ref3.routes,
-        history = _ref3.history,
-        wrapper = _ref3.wrapper;
+var ExtendedConnectedRouter = function ExtendedConnectedRouter(_ref2) {
+    var routes = _ref2.routes,
+        history = _ref2.history,
+        wrapper = _ref2.wrapper;
 
     var Wrapper = wrapper;
     return React.createElement(
@@ -2482,379 +3466,7 @@ var stateToProps = function stateToProps(state) {
 
 exports.default = (0, _reactRedux.connect)(stateToProps)(ExtendedConnectedRouter);
 
-},{"../../../trang-chu/index":45,"react-redux":"react-redux","react-router":"react-router","react-router-redux":"react-router-redux"}],30:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _react = require('react');
-
-var _react2 = _interopRequireDefault(_react);
-
-var _reactRouter = require('react-router');
-
-var _exenv = require('exenv');
-
-var _exenv2 = _interopRequireDefault(_exenv);
-
-var _propTypes = require('prop-types');
-
-var _propTypes2 = _interopRequireDefault(_propTypes);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } /* global window */
-
-/**
- * @class Breadcrumbs
- * @description New breadcrumbs class based on ES6 structure.
- * @exports Breadcrumbs
- * @version 1.6
- * @extends component
- * @requires react
- * @requires react-router
- *
- */
-
-var Breadcrumbs = function (_React$Component) {
-  _inherits(Breadcrumbs, _React$Component);
-
-  function Breadcrumbs(props) {
-    _classCallCheck(this, Breadcrumbs);
-
-    var _this = _possibleConstructorReturn(this, (Breadcrumbs.__proto__ || Object.getPrototypeOf(Breadcrumbs)).call(this, props));
-
-    _this.displayName = 'Breadcrumbs';
-    return _this;
-  }
-
-  _createClass(Breadcrumbs, [{
-    key: '_getDisplayName',
-    value: function _getDisplayName(route) {
-      var name = null;
-
-      if (typeof route.getDisplayName === 'function') {
-        name = route.getDisplayName.bind(null, this.props.params)();
-      }
-
-      if (route.indexRoute) {
-        name = name || route.indexRoute.displayName || null;
-      } else {
-        name = name || route.displayName || null;
-      }
-
-      // Check to see if a custom name has been applied to the route
-      if (!name && Boolean(route.label)) {
-        name = route.label;
-      }
-
-      // If the name exists and it's in the excludes list exclude this route
-      // If (name && this.props.excludes.some(item => item === name)) return null
-
-      if (!name && this.props.displayMissing) {
-        name = this.props.displayMissingText;
-      }
-
-      return name;
-    }
-  }, {
-    key: '_addKeyToElement',
-    value: function _addKeyToElement(el) {
-      return el && !el.key && el.type ? Object.assign({}, el, { 'key': Math.random() * 100 }) : el;
-    }
-  }, {
-    key: '_addKeyToArrayElements',
-    value: function _addKeyToArrayElements(item) {
-      var _this2 = this;
-
-      return item.map(function (el) {
-        return _this2._addKeyToElement(el);
-      });
-    }
-  }, {
-    key: '_processCustomElements',
-    value: function _processCustomElements(items) {
-      var _this3 = this;
-
-      return items.map(function (el) {
-        if (!el) {
-          return null;
-        }
-        if (Array.isArray(el)) {
-          return _this3._addKeyToArrayElements(el);
-        }
-        return _this3._addKeyToElement(el);
-      });
-    }
-  }, {
-    key: '_appendAndPrependElements',
-    value: function _appendAndPrependElements(originalBreadCrumbs) {
-      var crumbs = [];
-      var appendAndPrepend = this._processCustomElements([originalBreadCrumbs.shift(), originalBreadCrumbs.pop()]);
-      if (appendAndPrepend[0]) {
-        crumbs.unshift(appendAndPrepend[0]);
-      }
-      crumbs.push(originalBreadCrumbs[0]);
-      if (appendAndPrepend[1]) {
-        crumbs.push(appendAndPrepend[1]);
-      }
-
-      return crumbs.reduce(function (acc, cur) {
-        return acc.concat(cur);
-      }, []).filter(function (e) {
-        return e;
-      });
-    }
-  }, {
-    key: '_resolveRouteName',
-    value: function _resolveRouteName(route) {
-      var name = this._getDisplayName(route);
-      if (!name && route.breadcrumbName) {
-        name = route.breadcrumbName;
-      }
-      if (!name && route.label) {
-        name = route.label;
-      }
-      return name;
-    }
-  }, {
-    key: '_processRoute',
-    value: function _processRoute(route, routesLength, lastCrumb, createElement) {
-      var _this4 = this;
-
-      // If there is no route path defined and we are set to hide these then do so
-      if (!route.path && this.props.hideNoPath) {
-        return null;
-      }
-
-      var separator = '';
-      var name = this._resolveRouteName(route);
-      if (name && 'excludes' in this.props && this.props.excludes.some(function (item) {
-        return item === name;
-      })) {
-        return null;
-      }
-
-      var makeLink = true;
-
-      // Don't make link if route doesn't have a child route
-      if (makeLink) {
-        makeLink = Boolean(route.childRoutes);
-      }
-
-      // Set up separator
-      separator = lastCrumb ? '' : this.props.separator;
-      if (!makeLink) {
-        separator = '';
-      }
-
-      // Don't make link if route has a disabled breadcrumblink prop
-      if (Object.prototype.hasOwnProperty.call(route, 'breadcrumblink')) {
-        makeLink = route.breadcrumblink;
-      }
-
-      // Replace route param with real param (if provided)
-      var currentKey = route.path.split('/')[route.path.split('/').length - 1];
-      var keyValue = void 0;
-      route.path.split('/').forEach(function (link) {
-        // If this is not a param, or we've been given no params to replace with, we need not do anything
-        if (link.substring(0, 1) !== ':' || !_this4.props.params) {
-          return;
-        }
-
-        keyValue = Object.keys(_this4.props.params).map(function (param) {
-          return _this4.props.params[param];
-        });
-        var pathWithParam = route.path.split('/').map(function (link) {
-          if (link.substring(0, 1) === ':') {
-            return keyValue.shift();
-          }
-          return link;
-        });
-        route.path = pathWithParam.reduce(function (start, link) {
-          return start + '/' + link;
-        });
-
-        if (!route.staticName && currentKey.substring(0, 1) === ':') {
-          if (typeof route.getDisplayName === 'function') {
-            name = route.getDisplayName.bind(null, _this4.props.params)();
-          } else {
-            name = pathWithParam.reduce(function (start, link) {
-              return link;
-            });
-          }
-        }
-
-        if (typeof route.prettifyParam === 'function') {
-          name = route.prettifyParam(name, _this4.props.params);
-        }
-      });
-
-      if (!name) {
-        return null;
-      }
-
-      if (this.props.prettify) {
-        // Note: this could be replaced with a more complex prettifier
-        name = name.replace(/-/g, ' ');
-        name = name.replace(/\w\S*/g, function (txt) {
-          return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
-        });
-      }
-
-      var link = name;
-      var itemClass = this.props.itemClass;
-      if (makeLink) {
-        if (createElement) {
-          link = _react2.default.createElement(this.props.Link || _reactRouter.Link, { 'to': route.path }, name);
-        }
-      } else {
-        itemClass += ' ' + this.props.activeItemClass;
-      }
-
-      if (!createElement) {
-        return link;
-      }
-      return _react2.default.createElement(this.props.itemElement, { 'className': itemClass, 'key': Math.random() * 100 }, link, separator);
-    }
-  }, {
-    key: '_buildRoutes',
-    value: function _buildRoutes(routes, createElement, prepend, append) {
-      var _this5 = this;
-
-      var crumbs = [];
-      var parentPath = '/';
-
-      // Iterate over the initial list of routes and remove all that don't apply
-      routes = routes.map(function (_route, index) {
-        var route = Object.assign({}, _route);
-        if (typeof _route.prettifyParam === 'function') {
-          route.prettifyParam = _route.prettifyParam;
-        }
-        if ('props' in route && 'path' in route.props) {
-          route.path = route.props.path;
-          route.children = route.props.children;
-          route.label = route.props.label;
-          route.prettifyParam = route.props.prettifyParam;
-        }
-        if (!route.path) {
-          return null;
-        }
-        if (route.path.charAt(0) === '/') {
-          parentPath = route.path;
-        } else {
-          if (parentPath.charAt(parentPath.length - 1) !== '/') {
-            parentPath += '/';
-          }
-          parentPath += route.path;
-        }
-        if (index > 0 && route.path.charAt(0) !== '/') {
-          route.path = parentPath;
-        }
-        var name = _this5._resolveRouteName(route);
-        if ((_this5.props.displayMissing || name) && !('excludes' in _this5.props && _this5.props.excludes.some(function (item) {
-          return item === name;
-        }))) {
-          return route;
-        }
-        return null;
-      }).filter(function (route) {
-        return Boolean(route);
-      }
-
-      // Iterate over the pruned list of routes and build the crumbs for each
-      );crumbs = routes.map(function (route, idx) {
-        return _this5._processRoute(route, routes.length, routes.length === idx + 1, createElement);
-      }).filter(function (crumb) {
-        return Boolean(crumb);
-      });
-
-      if (_exenv2.default.canUseDOM && window && window.document && 'setDocumentTitle' in this.props && this.props.setDocumentTitle && crumbs[crumbs.length - 1].props.children[0] > 0) {
-        window.document.title = crumbs[crumbs.length - 1].props.children[0].props.children;
-      }
-
-      if (prepend || append) {
-        crumbs = this._appendAndPrependElements([prepend, crumbs, append]);
-      }
-
-      if (!createElement) {
-        return crumbs;
-      }
-
-      return _react2.default.createElement(this.props.wrapperElement, { 'className': this.props.customClass || this.props.wrapperClass }, crumbs);
-    }
-  }, {
-    key: 'render',
-    value: function render() {
-      return this._buildRoutes(this.props.routes, this.props.createElement, this.props.prepend, this.props.append);
-    }
-  }]);
-
-  return Breadcrumbs;
-}(_react2.default.Component);
-
-/**
- * @property PropTypes
- * @description Property types supported by this component
- * @type {{separator: *, createElement: *, displayMissing: *, wrapperElement: *, wrapperClass: *, itemElement: *, itemClass: *, activeItemClass: *,  customClass: *,excludes: *, append: *, prepend: *, params: *, Link: *}}
- */
-
-
-Breadcrumbs.propTypes = {
-  'params': _propTypes2.default.object.isRequired,
-  'prepend': _propTypes2.default.oneOfType([_propTypes2.default.node, _propTypes2.default.bool]),
-  'append': _propTypes2.default.oneOfType([_propTypes2.default.node, _propTypes2.default.bool]),
-  'separator': _propTypes2.default.oneOfType([_propTypes2.default.element, _propTypes2.default.string]),
-  'createElement': _propTypes2.default.bool,
-  'Link': _propTypes2.default.oneOfType([_propTypes2.default.element, _propTypes2.default.string]),
-  'displayMissing': _propTypes2.default.bool,
-  'prettify': _propTypes2.default.bool,
-  'displayMissingText': _propTypes2.default.string,
-  'wrapperElement': _propTypes2.default.oneOfType([_propTypes2.default.element, _propTypes2.default.string]),
-  'wrapperClass': _propTypes2.default.string,
-  'itemElement': _propTypes2.default.oneOfType([_propTypes2.default.element, _propTypes2.default.string]),
-  'itemClass': _propTypes2.default.string,
-  'customClass': _propTypes2.default.string,
-  'activeItemClass': _propTypes2.default.string,
-  'excludes': _propTypes2.default.arrayOf(_propTypes2.default.string),
-  'hideNoPath': _propTypes2.default.bool,
-  'routes': _propTypes2.default.arrayOf(_propTypes2.default.object).isRequired,
-  'setDocumentTitle': _propTypes2.default.bool
-
-  /**
-   * @property defaultProps
-   * @description sets the default values for propTypes if they are not provided
-   * @type {{separator: string, displayMissing: boolean, wrapperElement: string, itemElement: string, wrapperClass: string, customClass: string, prepend: false, append: false}}
-   */
-};Breadcrumbs.defaultProps = {
-  'prepend': false,
-  'append': false,
-  'separator': '',
-  'createElement': true,
-  'displayMissing': true,
-  'displayMissingText': 'Missing name prop from Route',
-  'wrapperElement': 'div',
-  'wrapperClass': 'breadcrumbs',
-  'itemElement': 'span',
-  'itemClass': '',
-  'activeItemClass': '',
-  'excludes': [''],
-  'prettify': false,
-  'hideNoPath': true,
-  'setDocumentTitle': false
-};
-
-exports.default = Breadcrumbs;
-
-},{"exenv":47,"prop-types":"prop-types","react":"react","react-router":"react-router"}],31:[function(require,module,exports){
+},{"../../../du-an/index":12,"react-redux":"react-redux","react-router":"react-router","react-router-redux":"react-router-redux"}],38:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -3005,7 +3617,7 @@ CategoryMenu.defaultProps = {
 
 exports.default = CategoryMenu;
 
-},{"classnames":"classnames","list-to-tree":"list-to-tree","reactstrap":"reactstrap"}],32:[function(require,module,exports){
+},{"classnames":"classnames","list-to-tree":"list-to-tree","reactstrap":"reactstrap"}],39:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -3016,13 +3628,7 @@ var _reactstrap = require('reactstrap');
 
 var _reactRouterDom = require('react-router-dom');
 
-var _breacrumbs = require('./breacrumbs');
-
-var _breacrumbs2 = _interopRequireDefault(_breacrumbs);
-
 var _reactRedux = require('react-redux');
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var ConnectedBreadcrumbs = function ConnectedBreadcrumbs(props) {
     var routes = props.routes,
@@ -3031,8 +3637,32 @@ var ConnectedBreadcrumbs = function ConnectedBreadcrumbs(props) {
     if (routes) return React.createElement(
         _reactstrap.Container,
         { className: 'd-none d-lg-block mb-lg-4' },
-        React.createElement(_breacrumbs2.default, { Link: _reactRouterDom.Link, routes: routes, params: params, setDocumentTitle: true })
+        React.createElement(
+            'div',
+            { className: 'breadcrumbs' },
+            routes.map(function (route, index) {
+                var isLast = route.path === routes[routes.length - 1].path;
+
+                return React.createElement(
+                    'span',
+                    { key: index, className: '' },
+                    !isLast ? React.createElement(
+                        _reactRouterDom.Link,
+                        { to: route.path },
+                        route.label
+                    ) : React.createElement(
+                        'a',
+                        null,
+                        route.label
+                    )
+                );
+            })
+        )
     );else return null;
+};
+
+ConnectedBreadcrumbs.defaultProps = {
+    routes: []
 };
 
 var stateToProps = function stateToProps(state) {
@@ -3043,7 +3673,7 @@ var stateToProps = function stateToProps(state) {
 
 exports.default = (0, _reactRedux.connect)(stateToProps)(ConnectedBreadcrumbs);
 
-},{"./breacrumbs":30,"react-redux":"react-redux","react-router-dom":"react-router-dom","reactstrap":"reactstrap"}],33:[function(require,module,exports){
+},{"react-redux":"react-redux","react-router-dom":"react-router-dom","reactstrap":"reactstrap"}],40:[function(require,module,exports){
 "use strict";
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -3114,7 +3744,702 @@ var DuAn = function (_React$Component) {
 
 module.exports = DuAn;
 
-},{"react-router-dom":"react-router-dom"}],34:[function(require,module,exports){
+},{"react-router-dom":"react-router-dom"}],41:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+/*
+ * marker visual parameters
+ * image param is more prior than imageClass if both defined
+ */
+
+var markerDescriptions = [{
+    size: { width: 33, height: 51 },
+    origin: { x: 15 / 33, y: 1 },
+    withText: true,
+    // image: require('icons/map_icons/map_icon_text_red.svg')
+    imageClass: 'map_icon_text_red'
+}];
+
+exports.default = markerDescriptions;
+
+},{}],42:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _dec, _class, _class2, _temp;
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactRedux = require('react-redux');
+
+var _reactRouterRedux = require('react-router-redux');
+
+var _propTypes = require('prop-types');
+
+var _propTypes2 = _interopRequireDefault(_propTypes);
+
+var _reactControllables = require('react-controllables');
+
+var _reactControllables2 = _interopRequireDefault(_reactControllables);
+
+var _function = require('react-pure-render/function');
+
+var _function2 = _interopRequireDefault(_function);
+
+var _googleMapReact = require('google-map-react');
+
+var _googleMapReact2 = _interopRequireDefault(_googleMapReact);
+
+var _marker = require('./marker.jsx');
+
+var _marker2 = _interopRequireDefault(_marker);
+
+var _calcMarkersVisibility = require('./helpers/calc-markers-visibility.js');
+
+var _markerDescriptions = require('./constants/marker-descriptions.js');
+
+var _markerDescriptions2 = _interopRequireDefault(_markerDescriptions);
+
+var _customDistance = require('./helpers/custom-distance.js');
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var K_MARGIN_TOP = 30;
+var K_MARGIN_RIGHT = 30;
+var K_MARGIN_BOTTOM = 30;
+var K_MARGIN_LEFT = 30;
+
+var K_HOVER_DISTANCE = 30;
+
+var MainMapBlock = (_dec = (0, _reactControllables2.default)(['center', 'zoom', 'markers']), _dec(_class = (_temp = _class2 = function (_Component) {
+    _inherits(MainMapBlock, _Component);
+
+    function MainMapBlock(props) {
+        _classCallCheck(this, MainMapBlock);
+
+        var _this = _possibleConstructorReturn(this, (MainMapBlock.__proto__ || Object.getPrototypeOf(MainMapBlock)).call(this, props));
+
+        _this.shouldComponentUpdate = _function2.default;
+
+        _this._onBoundsChange = function (_ref) {
+            var center = _ref.center,
+                zoom = _ref.zoom,
+                bounds = _ref.bounds,
+                marginBounds = _ref.marginBounds;
+        };
+
+        _this._onChildClick = function (key, childProps) {
+            var markerId = childProps.marker.id;
+            var index = _this.props.markers.findIndex(function (m) {
+                return m.id === markerId;
+            });
+            var currentMarker = _this.props.markers[index];
+            if (currentMarker.redirect) _this.props.dispatch((0, _reactRouterRedux.push)(currentMarker.redirect));else _this.setState({ openBallonIndex: index });
+        };
+
+        _this._onChildMouseEnter = function (key, childProps) {
+            var markerId = childProps.marker.id;
+            var index = _this.props.markers.findIndex(function (m) {
+                return m.id === markerId;
+            });
+            if (_this.props.onMarkerHover) {
+                _this.props.onMarkerHover(index);
+            }
+        };
+
+        _this._onChildMouseLeave = function () /* key, childProps */{
+            if (_this.props.onMarkerHover) {
+                _this.props.onMarkerHover(-1);
+            }
+        };
+
+        _this._onBalloonCloseClick = function () {
+            if (_this.props.onChildClick) {
+                _this.props.onChildClick(-1);
+            }
+        };
+
+        _this._distanceToMouse = _customDistance.customDistanceToMouse;
+
+        _this.state = {};
+        return _this;
+    }
+
+    _createClass(MainMapBlock, [{
+        key: 'componentWillReceiveProps',
+        value: function componentWillReceiveProps(nextProps) {
+            var _props = this.props,
+                center = _props.center,
+                zoom = _props.zoom;
+
+            if (nextProps.center != center || nextProps.zoom != zoom) {
+                this.props.onCenterChange(center);
+                this.props.onZoomChange(zoom);
+            }
+        }
+    }, {
+        key: 'render',
+        value: function render() {
+            var _this2 = this;
+
+            var _getRealFromTo = (0, _calcMarkersVisibility.getRealFromTo)(this.props.visibleRowFirst, this.props.visibleRowLast, this.props.maxVisibleRows, this.props.markers.length),
+                rowFrom = _getRealFromTo.rowFrom,
+                rowTo = _getRealFromTo.rowTo;
+
+            var Markers = this.props.markers &&
+            //this.props.markers.filter((m, index) => index >= rowFrom && index <= rowTo)
+            this.props.markers.map(function (marker, index) {
+                return _react2.default.createElement(_marker2.default
+                // required props
+                , _extends({ key: marker.id,
+                    lat: marker.lat,
+                    lng: marker.lng
+                    // any user props
+                    , showBallon: marker.id === _this2.props.showBalloonForMarker,
+                    onCloseClick: _this2._onBalloonCloseClick,
+                    renderMarkerContent: _this2.props.renderMarkerContent
+                    //hoveredAtTable={ index + rowFrom === this.props.hoveredRowIndex }
+                    , scale: (0, _calcMarkersVisibility.getScale)(index + rowFrom, _this2.props.visibleRowFirst, _this2.props.visibleRowLast, _marker.K_SCALE_NORMAL)
+                }, _markerDescriptions2.default[0], {
+                    marker: marker }));
+            });
+
+            return _react2.default.createElement(
+                _googleMapReact2.default,
+                {
+                    bootstrapURLKeys: { key: "AIzaSyBB5V34f3crBWyutuwFCy73IzRCdIwqUrI" },
+                    center: this.props.center,
+                    zoom: this.props.zoom,
+                    options: this.props.options,
+                    onChange: this._onBoundsChange,
+                    onChildClick: this._onChildClick,
+                    onChildMouseEnter: this._onChildMouseEnter,
+                    onChildMouseLeave: this._onChildMouseLeave,
+                    margin: [K_MARGIN_TOP, K_MARGIN_RIGHT, K_MARGIN_BOTTOM, K_MARGIN_LEFT],
+                    hoverDistance: K_HOVER_DISTANCE,
+                    distanceToMouse: this._distanceToMouse
+                },
+                Markers
+            );
+        }
+    }]);
+
+    return MainMapBlock;
+}(_react.Component), _class2.propTypes = {
+    onCenterChange: _propTypes2.default.func, // @controllable generated fn
+    onZoomChange: _propTypes2.default.func, // @controllable generated fn
+    onBoundsChange: _propTypes2.default.func,
+    onMarkerHover: _propTypes2.default.func,
+    onChildClick: _propTypes2.default.func,
+    center: _propTypes2.default.any,
+    zoom: _propTypes2.default.number,
+    markers: _propTypes2.default.any,
+    visibleRowFirst: _propTypes2.default.number,
+    visibleRowLast: _propTypes2.default.number,
+    maxVisibleRows: _propTypes2.default.number,
+    hoveredRowIndex: _propTypes2.default.number,
+    openBallonIndex: _propTypes2.default.number
+}, _class2.defaultProps = {
+    center: [15.866913899999986, 104.1218629],
+    zoom: 5,
+    options: {
+        styles: [{ "featureType": "administrative", "elementType": "labels.text.fill", "stylers": [{ "color": "#444444" }] }, { "featureType": "landscape", "elementType": "all", "stylers": [{ "color": "#f2f2f2" }] }, { "featureType": "poi", "elementType": "all", "stylers": [{ "visibility": "off" }] }, { "featureType": "road", "elementType": "all", "stylers": [{ "saturation": -100 }, { "lightness": 45 }] }, { "featureType": "road.highway", "elementType": "all", "stylers": [{ "visibility": "simplified" }] }, { "featureType": "road.arterial", "elementType": "labels.icon", "stylers": [{ "visibility": "off" }] }, { "featureType": "transit", "elementType": "all", "stylers": [{ "visibility": "off" }] }, { "featureType": "water", "elementType": "all", "stylers": [{ "color": "#878787" }, { "visibility": "on" }] }, { "featureType": "water", "elementType": "geometry", "stylers": [{ "invert_lightness": true }, { "weight": "3.37" }, { "gamma": "5" }, { "saturation": "0" }, { "lightness": "0" }] }]
+    },
+    visibleRowFirst: -1,
+    visibleRowLast: -1,
+    hoveredRowIndex: -1,
+    maxVisibleRows: 10,
+    markers: []
+}, _temp)) || _class);
+exports.default = (0, _reactRedux.connect)()(MainMapBlock);
+
+},{"./constants/marker-descriptions.js":41,"./helpers/calc-markers-visibility.js":44,"./helpers/custom-distance.js":45,"./marker.jsx":47,"google-map-react":"google-map-react","prop-types":"prop-types","react":"react","react-controllables":"react-controllables","react-pure-render/function":76,"react-redux":"react-redux","react-router-redux":"react-router-redux"}],43:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.getHintBaloonVerticalPosClass = getHintBaloonVerticalPosClass;
+exports.getHintBaloonHorizontalPosStyle = getHintBaloonHorizontalPosStyle;
+exports.getHintBottomOffsetClass = getHintBottomOffsetClass;
+var K_MAX_BALLOON_HEIGHT = 120;
+
+function getHintBaloonVerticalPosClass(y, mapHeight, balloonHeight) {
+    balloonHeight = balloonHeight || K_MAX_BALLOON_HEIGHT;
+
+    return y > balloonHeight ? 'hint--top' : 'hint--bottom';
+}
+
+function getHintBaloonHorizontalPosStyle(x, markerWidth, markerOffset, mapWidth) {
+    var K_BALLOON_WIDTH_BASE = 250;
+    // offset from map side
+    var K_BALLOON_MAP_OFFSET = 10;
+    // balloon with not more than map width
+    var K_BALLOON_WIDTH = Math.min(K_BALLOON_WIDTH_BASE, mapWidth - 2 * K_BALLOON_MAP_OFFSET);
+    // default ballon offset from arrow center i want
+    var K_BALLOON_DEFAULT_OFFSET = K_BALLOON_WIDTH * 0.15;
+    // from corner
+    var offset = -K_BALLOON_DEFAULT_OFFSET + markerWidth * 0.5;
+    // overflow in px (marker assymetric)
+    var leftX = x + offset - markerWidth * markerOffset;
+    var rightX = leftX + K_BALLOON_WIDTH;
+    // recalc if overflow
+    var mapOffset = offset + Math.min(0, mapWidth - K_BALLOON_MAP_OFFSET - rightX) + Math.max(0, K_BALLOON_MAP_OFFSET - leftX);
+
+    var K_BALLOON_WIDTH_STYLE = {
+        width: K_BALLOON_WIDTH + 'px',
+        left: mapOffset + 'px',
+        marginLeft: '0px'
+    };
+    return K_BALLOON_WIDTH_STYLE;
+}
+
+function getHintBottomOffsetClass(markerWidth, markerOffset) {
+    var K_HINT_ARROW_WIDTH = 12;
+    var offset = Math.round(-(markerWidth / 2 + K_HINT_ARROW_WIDTH / 2 - markerOffset * markerWidth));
+    if (__DEV__) {
+        if (offset < -40 || offset > 40) {
+            console.error('HintBottomOffset is out of range, extend range at sass/markers/map_marker.sass'); // eslint-disable-line no-console
+        }
+    }
+    // classes generated at sass/markers/map_marker.sass
+    return 'map-marker--hint-bottom-delta-' + offset;
+}
+
+},{}],44:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.getScale = getScale;
+exports.getRealFromTo = getRealFromTo;
+// import {K_SCALE_NORMAL} from 'components/markers/map_marker.jsx';
+// import invariant from 'fixed-data-table-ice/internal/invariant.js';
+
+// {l: 10, scale: 0.3}, {l: 5, scale: 0.4} - означает
+// 10 элементов размера 0.3, потом 5 размера 0.4, потом те что видны в табличке обычного размера
+// потом снова потом 5 размера 0.4, и 10 элементов размера 0.3
+// если поставить пусто то на карте будут видны тока те что на экране
+var K_SCALE_SMALL = 0.3;
+var K_SCALE_MEDIUM = 0.45;
+var K_BEFORE_AFTER_SCALES = [{ l: 15, scale: K_SCALE_SMALL }, { l: 10, scale: K_SCALE_MEDIUM }];
+var K_SCALES_SUM = K_BEFORE_AFTER_SCALES.reduce(function (sum, el) {
+    return el.l + sum;
+}, 0);
+
+function getScale(rowIndex, rowFrom, rowTo, K_SCALE_NORMAL) {
+    if (rowIndex >= rowFrom && rowIndex <= rowTo) {
+        return K_SCALE_NORMAL;
+    }
+
+    if (K_BEFORE_AFTER_SCALES.length) {
+        if (rowIndex < rowFrom) {
+            var deltaS = rowFrom;
+            for (var index = K_BEFORE_AFTER_SCALES.length - 1; index >= 0; --index) {
+                deltaS -= K_BEFORE_AFTER_SCALES[index].l;
+                if (rowIndex >= deltaS) {
+                    return K_BEFORE_AFTER_SCALES[index].scale;
+                }
+            }
+
+            // yes, the code can be here (dirty calculus)
+            return K_BEFORE_AFTER_SCALES[0].scale;
+        }
+
+        if (rowIndex > rowTo) {
+            var _deltaS = rowTo;
+            for (var _index = K_BEFORE_AFTER_SCALES.length - 1; _index >= 0; --_index) {
+                _deltaS += K_BEFORE_AFTER_SCALES[_index].l;
+                if (rowIndex <= _deltaS) {
+                    return K_BEFORE_AFTER_SCALES[_index].scale;
+                }
+            }
+
+            // yes, the code can be here (dirty calculus)
+            return K_BEFORE_AFTER_SCALES[0].scale;
+        }
+    }
+    return K_SCALE_NORMAL;
+}
+
+// this calculations is not precise (dirty)
+function _getRealFromTo(rowFrom, rowTo, maxVisibleRows, totalSize) {
+    var addFrom = rowFrom + maxVisibleRows + K_SCALES_SUM > totalSize - 1 ? rowFrom + maxVisibleRows + K_SCALES_SUM - (totalSize - 1) : 0;
+
+    var dadd = K_SCALES_SUM - rowFrom;
+    var addTo = dadd >= 0 ? dadd : 0;
+
+    return {
+        rowFrom: Math.max(0, rowFrom - K_SCALES_SUM - addFrom),
+        rowTo: Math.min(totalSize - 1, rowFrom + maxVisibleRows + K_SCALES_SUM + addTo)
+    };
+}
+
+function getRealFromTo(rowFrom, rowTo, maxVisibleRows, totalSize) {
+    var current = _getRealFromTo(rowFrom, rowTo, maxVisibleRows, totalSize);
+
+    var result = {
+        rowFrom: current.rowFrom,
+        rowTo: current.rowTo
+    };
+
+    return result;
+}
+
+},{}],45:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.customDistanceToMouse = customDistanceToMouse;
+function customDistanceToMouse(pt, mousePos, markerProps) {
+    var K_SCALE_NORMAL = 0.65;
+
+    var K_MARKER_HEIGHT = 60;
+    // marker is more tall at top, so calc distance to some point at marker top
+    var K_MARKER_WEIGHT_PT = K_MARKER_HEIGHT * 0.7;
+    // distance to markers depends on scale so hover on big markers is more probable
+    var scale = markerProps.scale;
+    var x = pt.x;
+    var y = pt.y - K_MARKER_WEIGHT_PT * scale;
+
+    var scaleNormalized = Math.min(scale / K_SCALE_NORMAL, 1);
+    var K_MIN_DIST_MIN_KOEF = 0.6;
+
+    var distKoef = 1 + scaleNormalized * (K_MIN_DIST_MIN_KOEF - 1);
+    return distKoef * Math.sqrt((x - mousePos.x) * (x - mousePos.x) + (y - mousePos.y) * (y - mousePos.y));
+}
+
+},{}],46:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.getMarkerHolderStyle = getMarkerHolderStyle;
+exports.getMarkerStyle = getMarkerStyle;
+exports.getMarkerTextStyle = getMarkerTextStyle;
+function getMarkerHolderStyle(size, origin) {
+  var left = -size.width * origin.x;
+  var top = -size.height * origin.y;
+  return {
+    position: 'absolute',
+    width: size.width,
+    height: size.height,
+    left: left,
+    top: top,
+    cursor: 'pointer'
+  };
+}
+
+function getMarkerStyle(size, origin) {
+  var sizeOriginX = size.width * origin.x;
+  var sizeOriginY = size.height * origin.y;
+
+  return {
+    position: 'absolute',
+    width: size.width,
+    height: size.height,
+    left: 0,
+    top: 0,
+    willChange: 'transform', // it looks like this setting make firefox random marker movements smaller
+    backgroundSize: size.width + 'px ' + size.height + 'px',
+    backgroundRepeat: 'no-repeat',
+    // transition: 'transform 0.25s ease',
+    transition: 'transform 0.25s cubic-bezier(0.485, 1.650, 0.545, 0.835)',
+    WebkitTransition: '-webkit-transform 0.25s cubic-bezier(0.485, 1.650, 0.545, 0.835)',
+    transformOrigin: sizeOriginX + 'px ' + sizeOriginY + 'px',
+    WebkitTransformOrigin: sizeOriginX + 'px ' + sizeOriginY + 'px'
+  };
+}
+
+var textStyle_ = {
+  width: '100%',
+  textAlign: 'center',
+  marginTop: 10,
+  fontWeight: 'bold',
+  fontSize: '18px',
+  color: 'black'
+};
+
+function getMarkerTextStyle() {
+  return textStyle_;
+}
+
+},{}],47:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.default = exports.K_SCALE_NORMAL = undefined;
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _dec, _class, _class2, _temp;
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+var _propTypes = require('prop-types');
+
+var _propTypes2 = _interopRequireDefault(_propTypes);
+
+var _classnames = require('classnames');
+
+var _classnames2 = _interopRequireDefault(_classnames);
+
+var _reactControllables = require('react-controllables');
+
+var _reactControllables2 = _interopRequireDefault(_reactControllables);
+
+var _function = require('react-pure-render/function');
+
+var _function2 = _interopRequireDefault(_function);
+
+var _balloonPos = require('./helpers/balloon-pos.js');
+
+var _markerStyles = require('./helpers/marker-styles.js');
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var K_HINT_HTML_DEFAULT_Z_INDEX = 1000000;
+var K_SCALE_HOVER = 1;
+var K_SCALE_TABLE_HOVER = 1;
+var K_SCALE_NORMAL = 0.65;
+var K_MIN_CONTRAST = 0.4;
+
+function calcMarkerMarkerStyle(scale, zIndexStyle, markerStyle, imageStyle) {
+    var contrast = K_MIN_CONTRAST + (1 - K_MIN_CONTRAST) * Math.min(scale / K_SCALE_NORMAL, 1);
+
+    return _extends({
+        transform: 'scale(' + scale + ' , ' + scale + ')',
+        WebkitTransform: 'scale(' + scale + ' , ' + scale + ')',
+        filter: 'contrast(' + contrast + ')',
+        WebkitFilter: 'contrast(' + contrast + ')'
+    }, markerStyle, zIndexStyle, imageStyle);
+}
+
+function calcMarkerTextStyle(scale, markerTextStyle) {
+    var K_MAX_COLOR_VALUE = 0;
+    var K_MIN_COLOR_VALUE = 8;
+    var colorV = Math.ceil(K_MIN_COLOR_VALUE + (K_MAX_COLOR_VALUE - K_MIN_COLOR_VALUE) * Math.min(scale / K_SCALE_NORMAL, 1));
+    var colorHex = colorV.toString(16);
+    var colorHTML = '#' + colorHex + colorHex + colorHex;
+
+    return _extends({}, markerTextStyle, {
+        color: colorHTML
+    });
+}
+
+exports.K_SCALE_NORMAL = K_SCALE_NORMAL;
+var MapMarker = (_dec = (0, _reactControllables2.default)(['hoverState', 'showBallonState']), _dec(_class = (_temp = _class2 = function (_Component) {
+    _inherits(MapMarker, _Component);
+
+    function MapMarker(props) {
+        _classCallCheck(this, MapMarker);
+
+        var _this = _possibleConstructorReturn(this, (MapMarker.__proto__ || Object.getPrototypeOf(MapMarker)).call(this, props));
+
+        _this.shouldComponentUpdate = _function2.default;
+
+        _this._onShowBallonStateChange = function () {
+            var _this$props;
+
+            if (!_this.alive) return;
+            (_this$props = _this.props).onShowBallonStateChange.apply(_this$props, arguments);
+        };
+
+        _this._onHoverStateChange = function () {
+            var _this$props2;
+
+            if (!_this.alive) return;
+            (_this$props2 = _this.props).onHoverStateChange.apply(_this$props2, arguments);
+        };
+
+        _this._onMouseEnterContent = function () /*e*/{
+            _this.props.$onMouseAllow(false); // disable mouse move hovers
+        };
+
+        _this._onMouseLeaveContent = function () /*e*/{
+            _this.props.$onMouseAllow(true); // enable mouse move hovers
+        };
+
+        _this._onCloseClick = function () {
+            if (_this.props.onCloseClick) {
+                _this.props.onCloseClick();
+            }
+        };
+
+        _this.alive = true;
+        return _this;
+    }
+
+    _createClass(MapMarker, [{
+        key: 'componentWillUnmount',
+        value: function componentWillUnmount() {
+            // if (this.props.onCloseClick) {
+            //   this.props.onCloseClick();
+            // }
+            this.alive = false;
+        }
+
+        // no optimizations at all
+
+    }, {
+        key: 'render',
+        value: function render() {
+            var scale = this.props.$hover || this.props.showBallon ? K_SCALE_HOVER : K_SCALE_NORMAL;
+            scale = this.props.hoveredAtTable ? K_SCALE_TABLE_HOVER : scale;
+
+            var markerHolderStyle = (0, _markerStyles.getMarkerHolderStyle)(this.props.size, this.props.origin);
+            var markerStyle = (0, _markerStyles.getMarkerStyle)(this.props.size, this.props.origin);
+
+            var zIndexStyle = {
+                zIndex: Math.round(scale * 10000) - (this.props.showBallon ? 20 : 0) + (this.props.$hover ? K_HINT_HTML_DEFAULT_Z_INDEX : 0) // balloon
+            };
+
+            var textStyleDef = (0, _markerStyles.getMarkerTextStyle)();
+            var textStyle = calcMarkerTextStyle(scale, textStyleDef);
+
+            var showHint = this.props.hoverState || this.props.showBallonState; // || this.props.hoveredAtTable;
+
+            // baloon position calc
+            var mapWidth = this.props.$geoService.getWidth();
+            var mapHeight = this.props.$geoService.getHeight();
+            var markerDim = this.props.$getDimensions(this.props.$dimensionKey);
+
+            var hintBaloonHorizontalPosStyle = (0, _balloonPos.getHintBaloonHorizontalPosStyle)(markerDim.x, this.props.size.width, this.props.origin.x, mapWidth);
+            var hintBaloonVerticalPosClass = (0, _balloonPos.getHintBaloonVerticalPosClass)(markerDim.y, mapHeight, this.props.marker.height);
+
+            var hintBalloonBottomOffsetClass = (0, _balloonPos.getHintBottomOffsetClass)(this.props.size.width, this.props.origin.x);
+
+            // set baloon position at first and then animate (it must be some lib for react animations)
+            var noTransClass = this.props.$hover === true && this.props.hoverState !== true ? 'hint--notrans' : '';
+            var noTransBalloonClass = this.props.showBallon === true && this.props.showBallonState !== true ? 'hint--notrans' : '';
+
+            var imageClass = this.props.image ? '' : this.props.imageClass;
+            var imageStyle = this.props.image ? {
+                backgroundImage: 'url(' + this.props.image + ')'
+            } : null;
+
+            var styleMarkerMarker = calcMarkerMarkerStyle(scale, zIndexStyle, markerStyle, imageStyle);
+
+            // css hints library https://github.com/istarkov/html-hint
+            return _react2.default.createElement(
+                'div',
+                {
+                    style: markerHolderStyle,
+                    className: (0, _classnames2.default)('map-marker hint hint--html', this.props.hintType, hintBalloonBottomOffsetClass, noTransClass, noTransBalloonClass, hintBaloonVerticalPosClass, this.props.showBallon ? 'hint--balloon' : '', showHint ? 'hint--always' : 'hint--hidden') },
+                _react2.default.createElement(
+                    'div',
+                    {
+                        style: styleMarkerMarker,
+                        className: (0, _classnames2.default)('map-marker__marker', imageClass) },
+                    this.props.withText ? _react2.default.createElement(
+                        'div',
+                        { style: textStyle },
+                        this.props.marker.number
+                    ) : _react2.default.createElement('div', null)
+                ),
+                _react2.default.createElement(
+                    'div',
+                    { style: hintBaloonHorizontalPosStyle, className: (0, _classnames2.default)('hint__content map-marker-hint', this.props.showBallon ? '' : 'noevents'),
+                        onMouseEnter: this._onMouseEnterContent,
+                        onMouseLeave: this._onMouseLeaveContent },
+                    this.props.renderMarkerContent(this.props.marker)
+                )
+            );
+        }
+    }, {
+        key: 'componentDidUpdate',
+        value: function componentDidUpdate(prevProps) {
+            var _this2 = this;
+
+            var K_TRANS_DELAY = 30;
+
+            if (prevProps.$hover !== this.props.$hover) {
+                setTimeout(function () {
+                    return _this2._onHoverStateChange(_this2.props.$hover);
+                }, K_TRANS_DELAY);
+            }
+
+            if (prevProps.showBallon !== this.props.showBallon) {
+                setTimeout(function () {
+                    return _this2._onShowBallonStateChange(_this2.props.showBallon);
+                }, K_TRANS_DELAY);
+            }
+        }
+    }]);
+
+    return MapMarker;
+}(_react.Component), _class2.propTypes = {
+    $hover: _propTypes2.default.bool,
+    $dimensionKey: _propTypes2.default.any,
+    $getDimensions: _propTypes2.default.func,
+    $geoService: _propTypes2.default.any,
+    $onMouseAllow: _propTypes2.default.func,
+
+    marker: _propTypes2.default.any,
+    hoveredAtTable: _propTypes2.default.bool,
+    scale: _propTypes2.default.number,
+    showBallon: _propTypes2.default.bool,
+    onCloseClick: _propTypes2.default.func,
+    showBallonState: _propTypes2.default.bool.isRequired,
+    onShowBallonStateChange: _propTypes2.default.func.isRequired,
+
+    // animation helpers
+    hoverState: _propTypes2.default.bool.isRequired,
+    onHoverStateChange: _propTypes2.default.func.isRequired,
+
+    size: _propTypes2.default.any,
+    origin: _propTypes2.default.any,
+    imageClass: _propTypes2.default.string,
+    image: _propTypes2.default.string,
+    withText: _propTypes2.default.bool,
+    hintType: _propTypes2.default.string
+}, _class2.defaultProps = {
+    scale: K_SCALE_NORMAL,
+    hoverState: false,
+    showBallonState: false,
+    withText: false,
+    size: { width: 62, height: 60 },
+    origin: { x: 15 / 62, y: 1 },
+    imageClass: 'map-marker__marker--big',
+    hintType: 'hint--info'
+}, _temp)) || _class);
+exports.default = MapMarker;
+
+},{"./helpers/balloon-pos.js":43,"./helpers/marker-styles.js":46,"classnames":"classnames","prop-types":"prop-types","react":"react","react-controllables":"react-controllables","react-pure-render/function":76}],48:[function(require,module,exports){
 "use strict";
 
 module.exports = function (props) {
@@ -3127,7 +4452,7 @@ module.exports = function (props) {
     return React.createElement("img", { className: "w-100 " + className, src: "/" + url, title: title, alt: description });
 };
 
-},{}],35:[function(require,module,exports){
+},{}],49:[function(require,module,exports){
 'use strict';
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
@@ -3174,7 +4499,698 @@ var renderArticle = function renderArticle(props) {
 
 module.exports = renderArticle;
 
-},{"./image":34,"./section-title":36,"classNames":46,"reactstrap":"reactstrap"}],36:[function(require,module,exports){
+},{"./image":48,"./section-title":56,"classNames":75,"reactstrap":"reactstrap"}],50:[function(require,module,exports){
+"use strict";
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var _require = require('react-router-dom'),
+    Link = _require.Link;
+
+var PageItem = function (_React$Component) {
+    _inherits(PageItem, _React$Component);
+
+    function PageItem(props) {
+        _classCallCheck(this, PageItem);
+
+        var _this = _possibleConstructorReturn(this, (PageItem.__proto__ || Object.getPrototypeOf(PageItem)).call(this, props));
+
+        _this.renderLink = _this.renderLink.bind(_this);
+        return _this;
+    }
+
+    _createClass(PageItem, [{
+        key: "renderLink",
+        value: function renderLink(title) {
+            var path = this.props.path;
+
+            return React.createElement(
+                Link,
+                { to: path },
+                React.createElement(
+                    "span",
+                    null,
+                    title
+                )
+            );
+        }
+    }, {
+        key: "render",
+        value: function render() {
+            var _props = this.props,
+                _props$data = _props.data,
+                thumbnailUrl = _props$data.thumbnailUrl,
+                title = _props$data.title,
+                extraText = _props.extraText;
+
+
+            return React.createElement(
+                "div",
+                { className: "page-item-wrapper" },
+                React.createElement(
+                    "div",
+                    { className: "page-item-thumbnail" },
+                    React.createElement("img", { className: "w-100", src: "/" + thumbnailUrl }),
+                    React.createElement("div", { className: "overlay" }),
+                    this.renderLink(localizationString.getString("Chi tiết"))
+                ),
+                React.createElement(
+                    "div",
+                    { className: "page-item-title" },
+                    this.renderLink(title),
+                    React.createElement(
+                        "span",
+                        { className: "extra-text" },
+                        extraText
+                    )
+                )
+            );
+        }
+    }]);
+
+    return PageItem;
+}(React.Component);
+
+PageItem.defautProps = {
+    basePath: '/',
+    extraText: '',
+    data: {
+        title: 'Missing title!',
+        thumbnailUrl: '/img/default.png'
+    }
+};
+
+module.exports = PageItem;
+
+},{"react-router-dom":"react-router-dom"}],51:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _class, _temp;
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+var _propTypes = require('prop-types');
+
+var _propTypes2 = _interopRequireDefault(_propTypes);
+
+var _classnames = require('classnames');
+
+var _classnames2 = _interopRequireDefault(_classnames);
+
+var _pager = require('./pagination/pager');
+
+var _pager2 = _interopRequireDefault(_pager);
+
+var _itemContainer = require('./pagination/item-container');
+
+var _itemContainer2 = _interopRequireDefault(_itemContainer);
+
+var _pagerAjax = require('./pagination/pager-ajax');
+
+var _pagerAjax2 = _interopRequireDefault(_pagerAjax);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var componentName = (_temp = _class = function (_Component) {
+    _inherits(componentName, _Component);
+
+    function componentName(props) {
+        _classCallCheck(this, componentName);
+
+        var _this = _possibleConstructorReturn(this, (componentName.__proto__ || Object.getPrototypeOf(componentName)).call(this, props));
+
+        _this.state = {
+            currentPage: 1
+        };
+        _this.onItemsChange = _this.onItemsChange.bind(_this);
+        return _this;
+    }
+
+    _createClass(componentName, [{
+        key: 'onItemsChange',
+        value: function onItemsChange(pageItems, currentPage, totalPages) {
+            this.setState({ pageItems: pageItems, currentPage: currentPage, totalPages: totalPages });
+        }
+    }, {
+        key: 'render',
+        value: function render() {
+            var _props = this.props,
+                className = _props.className,
+                items = _props.items,
+                itemPerPage = _props.itemPerPage,
+                layout = _props.layout,
+                renderItem = _props.renderItem,
+                itemWrapperClassName = _props.itemWrapperClassName,
+                getPageUrl = _props.getPageUrl,
+                currentPage = _props.currentPage,
+                totalPages = _props.totalPages;
+
+            //ItemContainer will render current page item
+
+            return _react2.default.createElement(
+                'div',
+                { className: (0, _classnames2.default)(className, "pagination-container") },
+                _react2.default.createElement(_itemContainer2.default, { className: "mb-4",
+                    items: this.state.pageItems || items,
+                    layout: layout,
+                    renderItem: renderItem,
+                    itemWrapperClassName: itemWrapperClassName }),
+                getPageUrl ? _react2.default.createElement(_pagerAjax2.default, { className: 'float-right',
+                    currentPage: currentPage,
+                    totalPages: totalPages,
+                    itemPerPage: itemPerPage,
+                    getPageUrl: getPageUrl,
+                    onItemsChange: this.onItemsChange
+                }) : _react2.default.createElement(_pager2.default, { className: 'float-right',
+                    items: items,
+                    itemPerPage: itemPerPage,
+                    onItemsChange: this.onItemsChange
+                })
+            );
+        }
+    }]);
+
+    return componentName;
+}(_react.Component), _class.propTypes = {
+    renderItem: _propTypes2.default.func.isRequired
+}, _class.defaultProps = {
+    items: [],
+    itemPerPage: 9,
+    layout: {
+        xs: 12, sm: 6, md: 4, lg: 4, xl: 4
+    }
+}, _temp);
+exports.default = componentName;
+
+},{"./pagination/item-container":52,"./pagination/pager":55,"./pagination/pager-ajax":54,"classnames":"classnames","prop-types":"prop-types","react":"react"}],52:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _class, _temp;
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactDom = require('react-dom');
+
+var _reactDom2 = _interopRequireDefault(_reactDom);
+
+var _reactstrap = require('reactstrap');
+
+var _itemWrapper = require('./item-wrapper');
+
+var _itemWrapper2 = _interopRequireDefault(_itemWrapper);
+
+var _jquery = require('jquery');
+
+var _jquery2 = _interopRequireDefault(_jquery);
+
+var _classnames = require('classnames');
+
+var _classnames2 = _interopRequireDefault(_classnames);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var PagingItemContainer = (_temp = _class = function (_Component) {
+    _inherits(PagingItemContainer, _Component);
+
+    function PagingItemContainer(props) {
+        _classCallCheck(this, PagingItemContainer);
+
+        var _this = _possibleConstructorReturn(this, (PagingItemContainer.__proto__ || Object.getPrototypeOf(PagingItemContainer)).call(this, props));
+
+        _this.state = {
+            itemToDisplay: []
+        };
+        _this.refreshContainerView = _this.refreshContainerView.bind(_this);
+        _this.displayNewItems = _this.displayNewItems.bind(_this);
+        return _this;
+    }
+
+    _createClass(PagingItemContainer, [{
+        key: 'componentWillReceiveProps',
+        value: function componentWillReceiveProps(nextProps) {
+            if (JSON.stringify(nextProps.items) != JSON.stringify(this.props.items)) {
+                this.refreshContainerView(nextProps.items);
+            }
+        }
+    }, {
+        key: 'displayNewItems',
+        value: function displayNewItems() {
+            this.setState({ displayNewItems: this.itemToDisplay });
+        }
+    }, {
+        key: 'refreshContainerView',
+        value: function refreshContainerView(itemToDisplay) {
+            this.itemToDisplay = itemToDisplay;
+
+            var $wrapper = (0, _jquery2.default)(_reactDom2.default.findDOMNode(this.refs['wrapper']));
+            (0, _jquery2.default)('.paging-item-wrapper.on-display').addClass('fade-left').delay(500).queue(this.displayNewItems);
+        }
+    }, {
+        key: 'render',
+        value: function render() {
+            var _props = this.props,
+                className = _props.className,
+                items = _props.items,
+                renderItem = _props.renderItem,
+                layout = _props.layout,
+                itemWrapperClassName = _props.itemWrapperClassName;
+
+            return _react2.default.createElement(
+                'div',
+                { className: (0, _classnames2.default)("paging-wrapper", className), ref: 'wrapper' },
+                _react2.default.createElement(
+                    _reactstrap.Row,
+                    { className: 'paging-item-container' },
+                    items.map(function (item, index) {
+                        return _react2.default.createElement(_itemWrapper2.default, _extends({ key: index, className: (0, _classnames2.default)("paging-item-wrapper", itemWrapperClassName) }, layout, { item: item, renderItem: renderItem }));
+                    })
+                )
+            );
+        }
+    }]);
+
+    return PagingItemContainer;
+}(_react.Component), _class.defaultProps = {
+    items: []
+}, _temp);
+exports.default = PagingItemContainer;
+
+},{"./item-wrapper":53,"classnames":"classnames","jquery":"jquery","react":"react","react-dom":"react-dom","reactstrap":"reactstrap"}],53:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactstrap = require('reactstrap');
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var PagingItemWrapper = function (_Component) {
+    _inherits(PagingItemWrapper, _Component);
+
+    function PagingItemWrapper() {
+        _classCallCheck(this, PagingItemWrapper);
+
+        return _possibleConstructorReturn(this, (PagingItemWrapper.__proto__ || Object.getPrototypeOf(PagingItemWrapper)).apply(this, arguments));
+    }
+
+    _createClass(PagingItemWrapper, [{
+        key: 'componentWillUnmount',
+        value: function componentWillUnmount() {}
+    }, {
+        key: 'render',
+        value: function render() {
+            var _props = this.props,
+                xs = _props.xs,
+                sm = _props.sm,
+                md = _props.md,
+                lg = _props.lg,
+                xl = _props.xl,
+                item = _props.item,
+                renderItem = _props.renderItem,
+                className = _props.className;
+
+            return _react2.default.createElement(
+                _reactstrap.Col,
+                { className: className, xs: xs, sm: sm, md: md, lg: lg, xl: xl },
+                renderItem(item)
+            );
+        }
+    }]);
+
+    return PagingItemWrapper;
+}(_react.Component);
+
+exports.default = PagingItemWrapper;
+
+},{"react":"react","reactstrap":"reactstrap"}],54:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _class, _temp;
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactRouterDom = require('react-router-dom');
+
+var _underscore = require('underscore');
+
+var _underscore2 = _interopRequireDefault(_underscore);
+
+var _classnames = require('classnames');
+
+var _classnames2 = _interopRequireDefault(_classnames);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var Pager = (_temp = _class = function (_React$Component) {
+    _inherits(Pager, _React$Component);
+
+    function Pager(props) {
+        _classCallCheck(this, Pager);
+
+        var _this = _possibleConstructorReturn(this, (Pager.__proto__ || Object.getPrototypeOf(Pager)).call(this, props));
+
+        _this.state = { pager: {} };
+        _this.renderPage = _this.renderPage.bind(_this);
+        _this.renderPageLink = _this.renderPageLink.bind(_this);
+        return _this;
+    }
+
+    _createClass(Pager, [{
+        key: 'renderPageLink',
+        value: function renderPageLink(page, label) {
+            var getPageUrl = this.props.getPageUrl;
+
+            return _react2.default.createElement(_reactRouterDom.Link, { className: 'page-link', to: getPageUrl(page), dangerouslySetInnerHTML: { __html: label || page } });
+        }
+    }, {
+        key: 'renderPage',
+        value: function renderPage() {
+            var _props = this.props,
+                currentPage = _props.currentPage,
+                totalPages = _props.totalPages,
+                basePath = _props.basePath,
+                getPageUrl = _props.getPageUrl;
+
+            var pageComonents = [];
+
+            for (var page = 1; page <= totalPages; page++) {
+                pageComonents.push(_react2.default.createElement(
+                    'li',
+                    { key: page, className: (0, _classnames2.default)("page-item", { active: currentPage === page }) },
+                    this.renderPageLink(page)
+                ));
+            }
+
+            return pageComonents;
+        }
+    }, {
+        key: 'render',
+        value: function render() {
+            var _props2 = this.props,
+                totalPages = _props2.totalPages,
+                currentPage = _props2.currentPage,
+                getPageUrl = _props2.getPageUrl;
+
+
+            if (!totalPages || totalPages <= 1) {
+                // don't display pager if there is only 1 page
+                return null;
+            }
+
+            return _react2.default.createElement(
+                'div',
+                { className: (0, _classnames2.default)("pager", this.props.className) },
+                _react2.default.createElement(
+                    'ul',
+                    { className: 'pagination' },
+                    _react2.default.createElement(
+                        'li',
+                        { className: (0, _classnames2.default)("page-item", { disabled: currentPage === 1 }) },
+                        this.renderPageLink(1, '<i class="fa fa-angle-left" aria-hidden="true"></i>')
+                    ),
+                    this.renderPage(),
+                    _react2.default.createElement(
+                        'li',
+                        { className: (0, _classnames2.default)("page-item", { disabled: currentPage === totalPages }) },
+                        this.renderPageLink(totalPages, '<i class="fa fa-angle-right" aria-hidden="true"></i>')
+                    )
+                )
+            );
+        }
+    }]);
+
+    return Pager;
+}(_react2.default.Component), _class.propTypes = {
+    onItemsChange: _react.PropTypes.func.isRequired,
+    initialPage: _react.PropTypes.number
+}, _temp);
+exports.default = Pager;
+
+},{"classnames":"classnames","react":"react","react-router-dom":"react-router-dom","underscore":78}],55:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _class, _temp;
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+var _underscore = require('underscore');
+
+var _underscore2 = _interopRequireDefault(_underscore);
+
+var _classnames = require('classnames');
+
+var _classnames2 = _interopRequireDefault(_classnames);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var Pager = (_temp = _class = function (_React$Component) {
+    _inherits(Pager, _React$Component);
+
+    function Pager(props) {
+        _classCallCheck(this, Pager);
+
+        var _this = _possibleConstructorReturn(this, (Pager.__proto__ || Object.getPrototypeOf(Pager)).call(this, props));
+
+        _this.state = { pager: {} };
+        return _this;
+    }
+
+    _createClass(Pager, [{
+        key: 'componentWillMount',
+        value: function componentWillMount() {
+            // set page if items array isn't empty
+            if (this.props.items && this.props.items.length) {
+                this.setPage(this.props.initialPage);
+            }
+        }
+    }, {
+        key: 'componentDidUpdate',
+        value: function componentDidUpdate(prevProps, prevState) {
+            // reset page if items array has changed
+            if (this.props.items !== prevProps.items) {
+                this.setPage(this.props.initialPage);
+            }
+        }
+    }, {
+        key: 'setPage',
+        value: function setPage(page) {
+            var items = this.props.items;
+            var pager = this.state.pager;
+
+            if (page < 1 || page > pager.totalPages) {
+                return;
+            }
+
+            // get new pager object for specified page
+            pager = this.getPager(items.length, page);
+
+            // get new page of items from items array
+            var pageOfItems = items.slice(pager.startIndex, pager.endIndex + 1);
+
+            // update state
+            this.setState({ pager: pager });
+
+            // call change page function in parent component
+            this.props.onItemsChange(pageOfItems);
+        }
+    }, {
+        key: 'getPager',
+        value: function getPager(totalItems, currentPage, pageSize) {
+            // default to first page
+            currentPage = currentPage || 1;
+
+            // default page size is 10
+            pageSize = pageSize || this.props.itemPerPage;
+
+            // calculate total pages
+            var totalPages = Math.ceil(totalItems / pageSize);
+
+            var startPage, endPage;
+            if (totalPages <= 10) {
+                // less than 10 total pages so show all
+                startPage = 1;
+                endPage = totalPages;
+            } else {
+                // more than 10 total pages so calculate start and end pages
+                if (currentPage <= 6) {
+                    startPage = 1;
+                    endPage = 10;
+                } else if (currentPage + 4 >= totalPages) {
+                    startPage = totalPages - 9;
+                    endPage = totalPages;
+                } else {
+                    startPage = currentPage - 5;
+                    endPage = currentPage + 4;
+                }
+            }
+
+            // calculate start and end item indexes
+            var startIndex = (currentPage - 1) * pageSize;
+            var endIndex = Math.min(startIndex + pageSize - 1, totalItems - 1);
+
+            // create an array of pages to ng-repeat in the pager control
+            var pages = _underscore2.default.range(startPage, endPage + 1);
+
+            // return object with all pager properties required by the view
+            return {
+                totalItems: totalItems,
+                currentPage: currentPage,
+                pageSize: pageSize,
+                totalPages: totalPages,
+                startPage: startPage,
+                endPage: endPage,
+                startIndex: startIndex,
+                endIndex: endIndex,
+                pages: pages
+            };
+        }
+    }, {
+        key: 'render',
+        value: function render() {
+            var _this2 = this;
+
+            var pager = this.state.pager;
+
+            if (!pager.pages || pager.pages.length <= 1) {
+                // don't display pager if there is only 1 page
+                return null;
+            }
+
+            return _react2.default.createElement(
+                'div',
+                { className: (0, _classnames2.default)("pager", this.props.className) },
+                _react2.default.createElement(
+                    'ul',
+                    { className: 'pagination' },
+                    _react2.default.createElement(
+                        'li',
+                        { className: (0, _classnames2.default)("page-item", { disabled: pager.currentPage === 1 }) },
+                        _react2.default.createElement(
+                            'a',
+                            { className: 'page-link', onClick: function onClick() {
+                                    return _this2.setPage(1);
+                                } },
+                            '<'
+                        )
+                    ),
+                    pager.pages.map(function (page, index) {
+                        return _react2.default.createElement(
+                            'li',
+                            { key: index, className: (0, _classnames2.default)("page-item", { active: pager.currentPage === page }) },
+                            _react2.default.createElement(
+                                'a',
+                                { className: 'page-link', onClick: function onClick() {
+                                        return _this2.setPage(page);
+                                    } },
+                                page
+                            )
+                        );
+                    }),
+                    _react2.default.createElement(
+                        'li',
+                        { className: (0, _classnames2.default)("page-item", { disabled: pager.currentPage === pager.totalPages }) },
+                        _react2.default.createElement(
+                            'a',
+                            { className: 'page-link', onClick: function onClick() {
+                                    return _this2.setPage(pager.totalPages);
+                                } },
+                            ">"
+                        )
+                    )
+                )
+            );
+        }
+    }]);
+
+    return Pager;
+}(_react2.default.Component), _class.defaultProps = {
+    initialPage: 1
+}, _class.propTypes = {
+    items: _react.PropTypes.array.isRequired,
+    onItemsChange: _react.PropTypes.func.isRequired,
+    initialPage: _react.PropTypes.number
+}, _temp);
+exports.default = Pager;
+
+},{"classnames":"classnames","react":"react","underscore":78}],56:[function(require,module,exports){
 "use strict";
 
 module.exports = function (props) {
@@ -3189,7 +5205,215 @@ module.exports = function (props) {
     );
 };
 
-},{}],37:[function(require,module,exports){
+},{}],57:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+var _sidebarWidget = require('./sidebar-widget');
+
+var _sidebarWidget2 = _interopRequireDefault(_sidebarWidget);
+
+var _reactRouterDom = require('react-router-dom');
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var SidebarMenu = function (_Component) {
+    _inherits(SidebarMenu, _Component);
+
+    function SidebarMenu() {
+        _classCallCheck(this, SidebarMenu);
+
+        return _possibleConstructorReturn(this, (SidebarMenu.__proto__ || Object.getPrototypeOf(SidebarMenu)).apply(this, arguments));
+    }
+
+    _createClass(SidebarMenu, [{
+        key: 'render',
+        value: function render() {
+            var _props = this.props,
+                noBorder = _props.noBorder,
+                title = _props.title,
+                onTransitionTo = _props.onTransitionTo,
+                currentUrl = _props.currentUrl,
+                items = _props.items;
+
+
+            return _react2.default.createElement(
+                _sidebarWidget2.default,
+                { noBorder: noBorder, title: title },
+                _react2.default.createElement(
+                    'ul',
+                    { className: 'sidebar-widget-menu' },
+                    items.map(function (item, index) {
+                        return _react2.default.createElement(
+                            'li',
+                            { className: 'sidebar-widget-item', key: index },
+                            _react2.default.createElement(
+                                _reactRouterDom.NavLink,
+                                { className: 'sidebar-widget-link', to: item.path, activeClassName: 'current' },
+                                _react2.default.createElement(
+                                    'span',
+                                    { className: 'sidebar-widget-link-title' },
+                                    item.title
+                                )
+                            )
+                        );
+                    })
+                )
+            );
+        }
+    }]);
+
+    return SidebarMenu;
+}(_react.Component);
+
+SidebarMenu.defaultProps = {
+    items: []
+};
+
+exports.default = SidebarMenu;
+
+},{"./sidebar-widget":58,"react":"react","react-router-dom":"react-router-dom"}],58:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _class, _temp;
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+var _propTypes = require('prop-types');
+
+var _propTypes2 = _interopRequireDefault(_propTypes);
+
+var _classnames = require('classnames');
+
+var _classnames2 = _interopRequireDefault(_classnames);
+
+var _reactRouterDom = require('react-router-dom');
+
+var _reactstrap = require('reactstrap');
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var SidebarWidget = (_temp = _class = function (_Component) {
+    _inherits(SidebarWidget, _Component);
+
+    function SidebarWidget(props) {
+        _classCallCheck(this, SidebarWidget);
+
+        var _this = _possibleConstructorReturn(this, (SidebarWidget.__proto__ || Object.getPrototypeOf(SidebarWidget)).call(this, props));
+
+        _this.state = {
+            toggle: props.toggleDefault
+        };
+
+        _this.widgetClassName = (0, _classnames2.default)("widget-item", { "no-border": props.noBorder });
+        _this.titleClassName = (0, _classnames2.default)('widget-item-title', props.titleClassName);
+        _this.toggle = _this.toggle.bind(_this);
+        _this.renderContent = _this.renderContent.bind(_this);
+        return _this;
+    }
+
+    _createClass(SidebarWidget, [{
+        key: 'toggle',
+        value: function toggle() {
+            this.setState({ toggle: !this.state.toggle });
+        }
+    }, {
+        key: 'renderContent',
+        value: function renderContent() {
+            var _props = this.props,
+                children = _props.children,
+                className = _props.className;
+
+
+            return _react2.default.createElement(
+                'div',
+                { className: (0, _classnames2.default)(className, 'widget-item-content') },
+                children
+            );
+        }
+    }, {
+        key: 'render',
+        value: function render() {
+            var _props2 = this.props,
+                title = _props2.title,
+                link = _props2.link,
+                noCollapse = _props2.noCollapse;
+
+
+            return _react2.default.createElement(
+                'div',
+                { className: this.widgetClassName },
+                _react2.default.createElement(
+                    'div',
+                    { className: 'widget-item-header' },
+                    link ? _react2.default.createElement(
+                        _reactRouterDom.Link,
+                        { to: link, className: this.titleClassName },
+                        title
+                    ) : _react2.default.createElement(
+                        'span',
+                        { href: '#', className: this.titleClassName },
+                        title
+                    ),
+                    noCollapse || _react2.default.createElement(
+                        'span',
+                        { className: 'chevron', onClick: this.toggle },
+                        _react2.default.createElement('i', { className: 'fa fa-angle-down', 'aria-hidden': 'true' })
+                    )
+                ),
+                _react2.default.createElement(
+                    'div',
+                    { className: 'widget-item-content-container' },
+                    noCollapse ? this.renderContent() : _react2.default.createElement(
+                        _reactstrap.Collapse,
+                        { isOpen: this.state.toggle },
+                        this.renderContent()
+                    )
+                )
+            );
+        }
+    }]);
+
+    return SidebarWidget;
+}(_react.Component), _class.propTypes = {
+    title: _propTypes2.default.string.isRequired,
+    toggleDefault: _propTypes2.default.bool
+}, _class.defaultProps = {
+    title: 'Missing title',
+    toggleDefault: true
+}, _temp);
+exports.default = SidebarWidget;
+
+},{"classnames":"classnames","prop-types":"prop-types","react":"react","react-router-dom":"react-router-dom","reactstrap":"reactstrap"}],59:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -3231,8 +5455,10 @@ var Sidebar = function (_React$Component) {
 
 exports.default = Sidebar;
 
-},{}],38:[function(require,module,exports){
+},{}],60:[function(require,module,exports){
 'use strict';
+
+var _googleMap = require('./reducers/google-map');
 
 var _routes = require('../routes');
 
@@ -3256,12 +5482,94 @@ var reducer = combineReducers({
     menu: menu,
     connectedBasePage: connectedBasePage,
     router: routerReducer,
-    appRouter: _routes.reducer
+    appRouter: _routes.reducer,
+    googleMap: _googleMap.googleMapReducer
 });
 
 module.exports = reducer;
 
-},{"../routes":9,"./_layout":10,"./_layout/header/menu":19,"./_layout/main/connected-base-page":22,"./reducers/localization":39,"react-router-redux":"react-router-redux","redux":"redux"}],39:[function(require,module,exports){
+},{"../routes":17,"./_layout":18,"./_layout/header/menu":27,"./_layout/main/connected-base-page":30,"./reducers/google-map":61,"./reducers/localization":62,"react-router-redux":"react-router-redux","redux":"redux"}],61:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+var SHOW_MARKER_BALLOON = "GMAP_SHOW_MARKER_BALLOON";
+var CREATE_MAP = "GMAP_CEATE_MAP";
+var SET_MAP_VALUE = "GMAP_SET_MAP";
+var SET_MAP_MARKERS = "GMAP_SET_MAP_MARKERS";
+
+var showMarkerBalloon = function showMarkerBalloon(mapId, markerId) {
+    return {
+        type: SHOW_MARKER_BALLOON,
+        mapId: mapId,
+        markerId: markerId
+    };
+};
+
+var createMap = function createMap(mapId) {
+    return {
+        type: CREATE_MAP,
+        mapId: mapId
+    };
+};
+
+var setMapValue = function setMapValue(mapId, map) {
+    return {
+        type: SET_MAP_VALUE,
+        mapId: mapId,
+        map: map
+    };
+};
+
+var setMapMarkers = function setMapMarkers(mapId, markers) {
+    return {
+        type: SET_MAP_MARKERS,
+        mapId: mapId,
+        markers: markers
+    };
+};
+
+var googleMapInitialState = {};
+
+var googleMapReducer = function googleMapReducer() {
+    var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : googleMapInitialState;
+    var action = arguments[1];
+
+    switch (action.type) {
+        case CREATE_MAP:
+            var newState = $.extend(true, {}, state);
+            newState[action.mapId] = {};
+            return newState;
+        case SET_MAP_VALUE:
+            var newState = $.extend(true, {}, state);
+            newState[action.mapId] = $.extend(true, {}, newState[action.mapId], action.map);
+            return newState;
+        case SET_MAP_MARKERS:
+            var newState = $.extend(true, {}, state
+
+            //Đôi khi, action này đc gọi trước khi init map
+            //các giá trị của map sẽ lấy theo mặc định của component
+            );if (!newState[action.mapId]) newState[action.mapId] = {};
+
+            newState[action.mapId].markers = action.markers;
+            return newState;
+        case SHOW_MARKER_BALLOON:
+            var newState = $.extend(true, {}, state);
+            newState[action.mapId].showBalloonForMarker = action.markerId;
+            return newState;
+        default:
+            return state;
+    }
+};
+
+exports.createMap = createMap;
+exports.showMarkerBalloon = showMarkerBalloon;
+exports.setMapValue = setMapValue;
+exports.setMapMarkers = setMapMarkers;
+exports.googleMapReducer = googleMapReducer;
+
+},{}],62:[function(require,module,exports){
 "use strict";
 
 var $ = require('jquery');
@@ -3312,36 +5620,453 @@ module.exports = {
     reducer: reducer
 };
 
-},{"jquery":"jquery"}],40:[function(require,module,exports){
+},{"jquery":"jquery"}],63:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.dataRequest = undefined;
+exports.fetchEntities = exports.dataRequest = undefined;
 
 var _requestData = require('./ultilities/requestData');
 
 var _requestData2 = _interopRequireDefault(_requestData);
 
+var _fetchEntities = require('./ultilities/fetchEntities');
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 exports.dataRequest = _requestData2.default;
+exports.fetchEntities = _fetchEntities.fetchEntities;
 
-},{"./ultilities/requestData":41}],41:[function(require,module,exports){
+},{"./ultilities/fetchEntities":64,"./ultilities/requestData":65}],64:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.fetchEntities = fetchEntities;
+var dataRequest = require('./requestData');
+
+function getItemsWithPath(items, basePath) {
+    var itemsWithPath = items.map(function (item) {
+        item.path = basePath + '/' + item.name;
+        return item;
+    });
+    return itemsWithPath;
+}
+
+function fetchEntities(mvcControllerUrl, postParams, baseItemPath, callBack) {
+    var page = postParams.page,
+        pageSize = postParams.pageSize,
+        filtering = postParams.filtering,
+        sorted = postParams.sorted,
+        categories = postParams.categories,
+        additionalFields = postParams.additionalFields;
+
+
+    dataRequest(mvcControllerUrl + "/GetTableData", pageSize, page, sorted, filtering, categories, additionalFields, function (responseItems) {
+        if (responseItems.length) {
+            var itemsWithPath = getItemsWithPath(responseItems, baseItemPath);
+            $.get(mvcControllerUrl + '/GetTotalEntitiesCount', function (totalItem) {
+                var totalPages = Math.ceil(totalItem / pageSize);
+                callBack(itemsWithPath, totalPages);
+            });
+        }
+    });
+}
+
+},{"./requestData":65}],65:[function(require,module,exports){
 "use strict";
 
-var requestData = function requestData(url, pageSize, page, sorted, filtering, taxonomies, callback) {
+var requestData = function requestData(url, pageSize, page, sorted, filtering, taxonomies, additionalFields, callback) {
     $.ajax({
         url: url,
         method: "POST",
-        data: { pageSize: pageSize, page: page, sorted: sorted, filtering: filtering, taxonomies: taxonomies },
+        data: { pageSize: pageSize, page: page, sorted: sorted, filtering: filtering, taxonomies: taxonomies, additionalFields: additionalFields },
         success: callback
     });
 };
+
 module.exports = requestData;
 
-},{}],42:[function(require,module,exports){
+},{}],66:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _class, _temp;
+//Components
+
+
+//Helper functions
+
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactRedux = require('react-redux');
+
+var _reactstrap = require('reactstrap');
+
+var _components = require('../../shared/components');
+
+var _renderItems = require('../helper/render-items');
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var _require = require('../../shared/ultilities'),
+    fetchEntities = _require.fetchEntities;
+
+var _require2 = require('../helper/functions'),
+    getCurrentCategory = _require2.getCurrentCategory;
+
+var pageConfigure = require('../configuration.js');
+
+var DefaultView = (_temp = _class = function (_Component) {
+    _inherits(DefaultView, _Component);
+
+    function DefaultView(props) {
+        _classCallCheck(this, DefaultView);
+
+        return _possibleConstructorReturn(this, (DefaultView.__proto__ || Object.getPrototypeOf(DefaultView)).call(this, props));
+    }
+
+    _createClass(DefaultView, [{
+        key: 'componentWillReceiveProps',
+        value: function componentWillReceiveProps(nextProps) {
+            if (JSON.stringify(nextProps.match) != JSON.stringify(this.props.match) || JSON.stringify(nextProps.categories) != JSON.stringify(this.props.categories)) {
+                var categories = nextProps.categories,
+                    match = nextProps.match,
+                    onDataFetch = nextProps.onDataFetch;
+
+                var currentCategory = getCurrentCategory(match, categories);
+                var currentPage = match.params.page;
+
+                var postParams = {
+                    page: currentPage,
+                    pageSize: pageConfigure.ITEM_PER_PAGE,
+                    categories: currentCategory.id && _defineProperty({}, pageConfigure.TAXONOMY_TYPE_ID_CATEGORY, currentCategory.id)
+                };
+                var baseItemPath = pageConfigure.page + '/' + pageConfigure.detailPage;
+
+                fetchEntities(pageConfigure.mvcController, postParams, baseItemPath, function (items, totalPages) {
+                    onDataFetch({ items: items, totalPages: totalPages }, 0);
+                });
+            }
+        }
+    }, {
+        key: 'render',
+        value: function render() {
+            var _props = this.props,
+                match = _props.match,
+                _props$pageContent = _props.pageContent,
+                thumbnail = _props$pageContent.thumbnail,
+                title = _props$pageContent.title,
+                categories = _props.categories,
+                items = _props.items,
+                totalPages = _props.totalPages;
+
+            var currentCategory = getCurrentCategory(match, categories);
+            var currentPage = parseInt(match.params.page);
+
+            return _react2.default.createElement(
+                _reactstrap.Row,
+                null,
+                _react2.default.createElement(_components.Image, _extends({ className: 'h-100' }, thumbnail)),
+                _react2.default.createElement(
+                    'div',
+                    { className: 'page-titles mt-4 mb-3' },
+                    _react2.default.createElement(
+                        'span',
+                        { className: 'page-title' },
+                        title
+                    ),
+                    _react2.default.createElement(
+                        'span',
+                        null,
+                        '|'
+                    ),
+                    _react2.default.createElement(
+                        'span',
+                        { className: 'page-title' },
+                        currentCategory && currentCategory.title
+                    )
+                ),
+                currentCategory && _react2.default.createElement(_components.Pagination, { itemWrapperClassName: 'page-item', className: 'w-100',
+                    items: items,
+                    totalPages: totalPages,
+                    currentPage: currentPage,
+                    getPageUrl: function getPageUrl(pageNumber) {
+                        return String(match.path).replace(':category', currentCategory.name).replace(':page', pageNumber);
+                    },
+
+                    renderItem: _renderItems.renderItem,
+                    onPageChange: this.onPageChange
+                })
+            );
+        }
+    }]);
+
+    return DefaultView;
+}(_react.Component), _class.defaultProps = {
+    categories: [],
+    pageContent: {
+        thumbnail: {}
+    }
+}, _temp);
+
+
+var mapStateToProps = function mapStateToProps(state, ownProps) {
+    var _state$connectedBaseP = state.connectedBasePage.pages[pageConfigure.page],
+        totalPages = _state$connectedBaseP.totalPages,
+        items = _state$connectedBaseP.items,
+        categories = _state$connectedBaseP.categories,
+        pageContent = _state$connectedBaseP.pageContent;
+
+    return {
+        totalPages: totalPages,
+        items: items,
+        categories: categories,
+        pageContent: pageContent
+    };
+};
+
+exports.default = (0, _reactRedux.connect)(mapStateToProps)(DefaultView);
+
+},{"../../shared/components":35,"../../shared/ultilities":63,"../configuration.js":67,"../helper/functions":68,"../helper/render-items":69,"react":"react","react-redux":"react-redux","reactstrap":"reactstrap"}],67:[function(require,module,exports){
+'use strict';
+
+module.exports = {
+    mvcController: '/post',
+    page: 'thu-vien',
+    detailPage: 'chi-tiet',
+    showBreadcrumbs: true,
+    ITEM_PER_PAGE: 5,
+    TAXONOMY_TYPE_ID_TAG: 40006,
+    TAXONOMY_TYPE_ID_CATEGORY: 40005
+};
+
+},{}],68:[function(require,module,exports){
+'use strict';
+
+function getCurrentCategory(match, categories) {
+    var currentCategory = categories.filter(function (categoryItem) {
+        return categoryItem.name === match.params.category;
+    })[0];
+    return currentCategory;
+}
+
+function getCategoryUrl(match, categoryName, page) {
+    return String(match.path).replace(':category', categoryName).replace(':page', 1);
+}
+
+module.exports = {
+    getCategoryUrl: getCategoryUrl,
+    getCurrentCategory: getCurrentCategory
+};
+
+},{}],69:[function(require,module,exports){
+arguments[4][11][0].apply(exports,arguments)
+},{"../../shared/components":35,"dup":11}],70:[function(require,module,exports){
+'use strict';
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _class, _temp; //React/Redux
+
+
+//Actions
+
+
+//Components
+
+
+//Routes component
+
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactRouter = require('react-router');
+
+var _redux = require('redux');
+
+var _reactRedux = require('react-redux');
+
+var _routes = require('../routes');
+
+var _basePage = require('../shared/_layout/main/base-page');
+
+var _basePage2 = _interopRequireDefault(_basePage);
+
+var _components = require('../shared/components');
+
+var _reactstrap = require('reactstrap');
+
+var _defaultView = require('./components/default-view');
+
+var _defaultView2 = _interopRequireDefault(_defaultView);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+//Page configuration
+var pageConfigure = require('./configuration.js');
+
+var _require = require('./helper/functions'),
+    getCategoryUrl = _require.getCategoryUrl,
+    getCurrentCategory = _require.getCurrentCategory;
+
+var ThuVien = (_temp = _class = function (_Component) {
+    _inherits(ThuVien, _Component);
+
+    function ThuVien(props) {
+        _classCallCheck(this, ThuVien);
+
+        var _this = _possibleConstructorReturn(this, (ThuVien.__proto__ || Object.getPrototypeOf(ThuVien)).call(this, props));
+
+        _this.renderSidebar = _this.renderSidebar.bind(_this);
+        return _this;
+    }
+
+    _createClass(ThuVien, [{
+        key: 'componentWillMount',
+        value: function componentWillMount() {
+            var _props = this.props,
+                match = _props.match,
+                onError = _props.onError,
+                onDataFetch = _props.onDataFetch,
+                refreshRoutePath = _props.refreshRoutePath,
+                categories = _props.categories,
+                pageContent = _props.pageContent,
+                items = _props.items;
+
+
+            if (!pageContent) $.get('/page/getsingle?entityName=' + pageConfigure.page, function (response) {
+                onDataFetch({ pageContent: response.details }, 50);
+            });
+
+            if (!categories.length) $.get('/TaxonomyUI/GetTaxonomies', { taxonomyTypeId: pageConfigure.TAXONOMY_TYPE_ID_CATEGORY }, function (responseCategories) {
+                responseCategories.unshift({
+                    name: localizationString.getString('tat-ca'),
+                    path: getCategoryUrl(match, localizationString.getString('tat-ca'), 1),
+                    title: localizationString.getString("Tất cả")
+                });
+                onDataFetch({ categories: responseCategories }, 50);
+            });
+
+            refreshRoutePath(pageConfigure.page);
+        }
+    }, {
+        key: 'renderSidebar',
+        value: function renderSidebar() {
+            var _props2 = this.props,
+                categories = _props2.categories,
+                match = _props2.match;
+
+
+            var categoryMenuItems = categories.map(function (_ref) {
+                var name = _ref.name,
+                    title = _ref.title;
+
+                return { path: getCategoryUrl(match, name, 1), title: title };
+            });
+
+            return _react2.default.createElement(
+                _components.Sidebar,
+                { title: localizationString.getString("Danh mục") },
+                _react2.default.createElement(_components.SidebarMenu, { noBorder: true, title: localizationString.getString('loại công trình'),
+                    items: categoryMenuItems,
+                    currentUrl: match.url
+                })
+            );
+        }
+    }, {
+        key: 'renderRoutes',
+        value: function renderRoutes() {
+            var _props3 = this.props,
+                match = _props3.match,
+                categories = _props3.categories,
+                onDataFetch = _props3.onDataFetch;
+
+
+            return _react2.default.createElement(
+                _reactRouter.Switch,
+                null,
+                _react2.default.createElement(_reactRouter.Route, { path: match.path, render: function render(route) {
+                        return _react2.default.createElement(_defaultView2.default, _extends({}, route, { onDataFetch: onDataFetch }));
+                    } })
+            );
+        }
+    }, {
+        key: 'render',
+        value: function render() {
+            return _react2.default.createElement(
+                _reactstrap.Container,
+                { id: 'thu-vien' },
+                _react2.default.createElement(
+                    _reactstrap.Row,
+                    null,
+                    _react2.default.createElement(
+                        _reactstrap.Col,
+                        _defineProperty({ xl: '12', lg: '4' }, 'xl', '3'),
+                        this.renderSidebar()
+                    ),
+                    _react2.default.createElement(
+                        _reactstrap.Col,
+                        _defineProperty({ xl: '12', lg: '8' }, 'xl', '9'),
+                        this.renderRoutes()
+                    )
+                )
+            );
+        }
+    }]);
+
+    return ThuVien;
+}(_react.Component), _class.defaultProps = {
+    categories: []
+}, _temp);
+
+
+var mapStateToProps = function mapStateToProps(state, ownProps) {
+    return {};
+};
+
+var mapDispatchToProps = function mapDispatchToProps(dispatch) {
+    return _extends({}, (0, _redux.bindActionCreators)({ refreshRoutePath: _routes.refreshRoutePath }, dispatch));
+};
+
+var ConnectedThuVien = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(ThuVien);
+
+module.exports = (0, _basePage2.default)({ page: pageConfigure.page, showBreadcrumbs: pageConfigure.showBreadcrumbs })(ConnectedThuVien);
+
+},{"../routes":17,"../shared/_layout/main/base-page":29,"../shared/components":35,"./components/default-view":66,"./configuration.js":67,"./helper/functions":68,"react":"react","react-redux":"react-redux","react-router":"react-router","reactstrap":"reactstrap","redux":"redux"}],71:[function(require,module,exports){
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -3449,7 +6174,7 @@ module.exports = function (_React$Component) {
     return _class;
 }(React.Component);
 
-},{"../../shared/components/section-title":36,"classnames":"classnames","jquery":"jquery","react-router-dom":"react-router-dom","reactstrap":"reactstrap"}],43:[function(require,module,exports){
+},{"../../shared/components/section-title":56,"classnames":"classnames","jquery":"jquery","react-router-dom":"react-router-dom","reactstrap":"reactstrap"}],72:[function(require,module,exports){
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -3486,7 +6211,7 @@ var DuAn = function (_React$Component) {
             projects: []
         };
 
-        dataRequest("/project/GetTableData", 7, 1, null, null, null, function (response) {
+        dataRequest("/project/GetTableData", 7, 1, null, null, null, null, function (response) {
             _this.setState({ projects: response });
         });
         return _this;
@@ -3564,7 +6289,7 @@ var DuAn = function (_React$Component) {
 
 module.exports = DuAn;
 
-},{"../../shared/components/du-an/du-an":33,"../../shared/components/section-title":36,"../../shared/ultilities":40,"react-router-dom":"react-router-dom","reactstrap":"reactstrap"}],44:[function(require,module,exports){
+},{"../../shared/components/du-an/du-an":40,"../../shared/components/section-title":56,"../../shared/ultilities":63,"react-router-dom":"react-router-dom","reactstrap":"reactstrap"}],73:[function(require,module,exports){
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -3656,7 +6381,7 @@ var Slider = function (_React$Component) {
 
 module.exports = Slider;
 
-},{"jquery":"jquery","react-owl-carousel2":"react-owl-carousel2"}],45:[function(require,module,exports){
+},{"jquery":"jquery","react-owl-carousel2":"react-owl-carousel2"}],74:[function(require,module,exports){
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -3725,7 +6450,7 @@ var PageComponent = function (_React$Component) {
 
 module.exports = BasePage({ page: 'trang-chu' })(PageComponent);
 
-},{"../shared/_layout/main/base-page":21,"./components/cong-trinh":42,"./components/du-an":43,"./components/slider":44,"reactstrap":"reactstrap"}],46:[function(require,module,exports){
+},{"../shared/_layout/main/base-page":29,"./components/cong-trinh":71,"./components/du-an":72,"./components/slider":73,"reactstrap":"reactstrap"}],75:[function(require,module,exports){
 /*!
   Copyright (c) 2016 Jed Watson.
   Licensed under the MIT License (MIT), see
@@ -3775,49 +6500,58 @@ module.exports = BasePage({ page: 'trang-chu' })(PageComponent);
 	}
 }());
 
-},{}],47:[function(require,module,exports){
-/*!
-  Copyright (c) 2015 Jed Watson.
-  Based on code that is Copyright 2013-2015, Facebook, Inc.
-  All rights reserved.
-*/
-/* global define */
+},{}],76:[function(require,module,exports){
+'use strict';
 
-(function () {
-	'use strict';
+exports.__esModule = true;
+exports['default'] = shouldPureComponentUpdate;
 
-	var canUseDOM = !!(
-		typeof window !== 'undefined' &&
-		window.document &&
-		window.document.createElement
-	);
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-	var ExecutionEnvironment = {
+var _shallowEqual = require('./shallowEqual');
 
-		canUseDOM: canUseDOM,
+var _shallowEqual2 = _interopRequireDefault(_shallowEqual);
 
-		canUseWorkers: typeof Worker !== 'undefined',
+function shouldPureComponentUpdate(nextProps, nextState) {
+  return !(0, _shallowEqual2['default'])(this.props, nextProps) || !(0, _shallowEqual2['default'])(this.state, nextState);
+}
 
-		canUseEventListeners:
-			canUseDOM && !!(window.addEventListener || window.attachEvent),
+module.exports = exports['default'];
+},{"./shallowEqual":77}],77:[function(require,module,exports){
+'use strict';
 
-		canUseViewport: canUseDOM && !!window.screen
+exports.__esModule = true;
+exports['default'] = shallowEqual;
 
-	};
+function shallowEqual(objA, objB) {
+  if (objA === objB) {
+    return true;
+  }
 
-	if (typeof define === 'function' && typeof define.amd === 'object' && define.amd) {
-		define(function () {
-			return ExecutionEnvironment;
-		});
-	} else if (typeof module !== 'undefined' && module.exports) {
-		module.exports = ExecutionEnvironment;
-	} else {
-		window.ExecutionEnvironment = ExecutionEnvironment;
-	}
+  if (typeof objA !== 'object' || objA === null || typeof objB !== 'object' || objB === null) {
+    return false;
+  }
 
-}());
+  var keysA = Object.keys(objA);
+  var keysB = Object.keys(objB);
 
-},{}],48:[function(require,module,exports){
+  if (keysA.length !== keysB.length) {
+    return false;
+  }
+
+  // Test for A's keys different from B.
+  var bHasOwnProperty = Object.prototype.hasOwnProperty.bind(objB);
+  for (var i = 0; i < keysA.length; i++) {
+    if (!bHasOwnProperty(keysA[i]) || objA[keysA[i]] !== objB[keysA[i]]) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+module.exports = exports['default'];
+},{}],78:[function(require,module,exports){
 //     Underscore.js 1.8.3
 //     http://underscorejs.org
 //     (c) 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors

@@ -38,7 +38,7 @@ class PageComponent extends React.Component {
     fetchData(currentCategory) {
                 const { onDataFetch } = this.props
 
-            dataRequest('/construction/gettabledata', 9, 1, null, null, currentCategory && { 10003: currentCategory.id }, function (response) {
+            dataRequest('/construction/gettabledata', 9, 1, null, null, currentCategory && { 10003: currentCategory.id }, null, function (response) {
                 onDataFetch({ items: response }, 0)
             })
     }

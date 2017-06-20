@@ -34,7 +34,10 @@ var libs = [
     'redux',
     'tether',
     'react-breadcrumbs',
-    'list-to-tree'
+    'list-to-tree',
+    'google-map-react',
+    'react-pure-render',
+    'react-controllables'
 ];
 
 gulp.task('sass', function() {
@@ -63,7 +66,11 @@ gulp.task('jsx', function() {
             debug: true
         })
         .transform(babelify, {
-            'presets': ['es2015', 'react']
+            'presets': ['es2015', 'react'],
+            'plugins': ['transform-decorators-legacy',
+                'babel-plugin-transform-class-properties',
+                'babel-plugin-transform-object-rest-spread'
+            ]
         })
         .external(libs)
         .bundle()

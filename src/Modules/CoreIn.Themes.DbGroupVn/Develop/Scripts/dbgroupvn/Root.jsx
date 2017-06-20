@@ -12,7 +12,7 @@ const Layout = require('./shared/_layout').default
 const TrangChu = require('./trang-chu/index')
 const GioiThieu = require('./gioi-thieu/index')
 const CongTrinh = require('./cong-trinh/index')
-
+ 
 import { default as ExtendConnectedRouter } from './shared/components/_commons/extended-ConnectedRouter';
 
 class Root extends React.Component {

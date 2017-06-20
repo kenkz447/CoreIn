@@ -9,7 +9,6 @@ namespace CoreIn.Modules.Homeclick
     public class EntityTypeManager
     {
         public EntityType Project { get; private set; }
-        public EntityType Post { get; private set; }
         public EntityType Construction { get; set; }
         public EntityType Collection { get; set; }
 
@@ -23,17 +22,6 @@ namespace CoreIn.Modules.Homeclick
                     new EntityTypeDetail{Field ="title", Value = "Project", Language = "en-US"},
                     new EntityTypeDetail{Field ="title", Value = "Dự Án", Language = "vi-VN"}
                 }, upperUser, false);
-
-            Post = entityTypeManager.RegisterEntityType(
-                new EntityType { Name = "post" },
-                new EntityTypeDetail[] {
-                    new EntityTypeDetail{ Field ="title", Value = "Post", Language = "en-US"},
-                    new EntityTypeDetail{ Field ="title", Value = "Bài viết", Language = "vi-VN"},
-
-                    new EntityTypeDetail{ Field ="group", Value = "Post", Language = "en-US"},
-                    new EntityTypeDetail{ Field ="group", Value = "Bài viết", Language = "vi-VN"},
-
-                }, upperUser);
 
             Construction = entityTypeManager.RegisterEntityType(
             new EntityType { Name = "construction" },

@@ -284,6 +284,7 @@
     <Content Include="wwwroot\img\flags\Zambia.png" />
     <Content Include="wwwroot\img\flags\Zimbabwe.png" />
     <Content Include="wwwroot\img\logo.png" />
+    <Content Include="wwwroot\img\_logo.png" />
     <Content Include="wwwroot\js\vendor.js" />
     <Content Include="wwwroot\js\vendor.min.js" />
     <Content Include="wwwroot\lib\jquery.filer\assets\fonts\jquery.filer-icons\jquery-filer-preview.html" />

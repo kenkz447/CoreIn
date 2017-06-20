@@ -18,7 +18,7 @@ import { INIT_ROUTES } from './dbgroupvn/routes';
 global.localizationString = require('./dbgroupvn/shared/_localization');
 
 $(document).ready(function () {
-    $.ajax({
+    $.ajax({ 
         url: "/DbGroupVn/GetSiteInitData",
         success: (response) => {
 
@@ -58,3 +58,5 @@ function onElementHeightChange(elm, callback) {
 onElementHeightChange(document.body, function () {
     AOS.refresh();
 });
+
+global.__DEV__ = true;

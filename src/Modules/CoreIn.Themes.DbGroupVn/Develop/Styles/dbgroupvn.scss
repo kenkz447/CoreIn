@@ -10,6 +10,8 @@ $text-dark: #5D5E5E;
 @import "dbgroupvn/page-load";
 @import "dbgroupvn/quy-trinh";
 @import "dbgroupvn/category-menu";
+@import "dbgroupvn/sidebar";
+@import "dbgroupvn/map-marker";
 //Variables
 html {
     font-size: 13px;
@@ -296,13 +298,17 @@ body,
             margin: 0 .5rem;
             font-family: FontAwesome;
         }
+        &:last-child {
+             :after {
+                content: none
+            }
+        }
     }
     a {
         color: #9A9999;
     }
     @include media-breakpoint-up(lg) {
         border: 1px solid #a2a2a2;
-
     }
 }
 
@@ -318,5 +324,39 @@ body,
             color: $text-highlight;
             font-weight: bold;
         }
+    }
+}
+
+.g-map {
+    min-height: 300px;
+    display: grid;
+    .gmnoprint {
+        opacity: 0;
+    }
+}
+
+.big-g-map {
+    height: 70%
+}
+
+.map_icon_text_red {
+    background: url(../img/marker.png)
+}
+
+.pager {
+    text-align: right;
+    .page-item {
+        margin-right: .5rem;
+        color: #fff;
+        cursor: pointer;
+        &.active {
+            font-weight: bold;
+        }
+    }
+    .page-link.active:hover {
+        color: #fff;
+    }
+    .disabled {
+        display: none;
     }
 }

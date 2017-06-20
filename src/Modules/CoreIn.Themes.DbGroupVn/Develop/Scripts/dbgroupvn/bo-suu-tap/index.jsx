@@ -8,7 +8,7 @@ import { refreshRoutePath } from '../routes'
 import { Sidebar, Image, CategoryMenu } from '../shared/components'
 
 import { dataRequest } from '../shared/ultilities'
-import PageItem from './components/page-item'
+import PageItem from '../shared/components'
 
 class PageComponent extends React.Component {
     constructor() {
@@ -38,7 +38,7 @@ class PageComponent extends React.Component {
     fetchData(currentCategory) {
                 const { onDataFetch } = this.props
 
-            dataRequest('/collection/gettabledata', 9, 1, null, null, currentCategory && { 30003: currentCategory.id }, function (response) {
+            dataRequest('/collection/gettabledata', 9, 1, null, null, currentCategory && { 30003: currentCategory.id }, null, function (response) {
                 onDataFetch({ items: response }, 0)
             })
     }
@@ -85,7 +85,7 @@ class PageComponent extends React.Component {
                                 items.map((item, index) => {
                                     return (
                                         <Col key={ item.id } xs="6" lg="4" className="page-item">
-                                            <PageItem data={ item } />
+                                            <PageItem data={ item } extraText={item.area} basePath={'./bo-suu-tap'} />
                                         </Col>
                                     );
                                 })

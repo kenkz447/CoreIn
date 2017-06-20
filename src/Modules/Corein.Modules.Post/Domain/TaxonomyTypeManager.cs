@@ -1,13 +1,9 @@
-﻿using CoreIn.Commons;
-using CoreIn.EntityCore;
+﻿using CoreIn.EntityCore;
 using CoreIn.Models;
 using CoreIn.Models.Authentication;
 using CoreIn.Resources.ConstantKeys;
 using Microsoft.AspNetCore.Identity;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace CoreIn.Modules.Post
 {
@@ -20,14 +16,20 @@ namespace CoreIn.Modules.Post
             var supperUser = userManager.FindByNameAsync(AppKey.SupperAdminUserName).Result;
 
             PostCategory = taxonomyManager.RegisterTaxonomyType(
-                entityTypeManager.Post,
-                "post-category",
+                entityTypeManager.Liblary,
+                "liblary-blog-category",
                 new Dictionary<string, string>
                 {
                     {"title", "Category" },
-                }, supperUser
-                );
+                }, supperUser);
 
+            PostCategory = taxonomyManager.RegisterTaxonomyType(
+                entityTypeManager.Liblary,
+                "liblary-blog-tag",
+                new Dictionary<string, string>
+                {
+                    {"title", "Tag" },
+                }, supperUser);
         }
     }
 }

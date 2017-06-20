@@ -6,7 +6,9 @@ using System.Threading.Tasks;
 
 namespace CoreIn.Modules.Post.Models
 {
-    public class PostEntity : BaseEntity, IEntityWithDetails<PostEntityDetail>
+    public class PostEntity : BaseEntity, 
+        IEntityWithDetails<PostEntityDetail>,
+        IEntityWithTaxonomies<PostEntityTaxonomy>
     {
         public PostEntity()
         {

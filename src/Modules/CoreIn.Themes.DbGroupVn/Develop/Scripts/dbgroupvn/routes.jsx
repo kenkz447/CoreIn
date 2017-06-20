@@ -2,35 +2,77 @@ import TrangChu from './trang-chu/index'
 import VeChungToi from './gioi-thieu/index'
 import CongTrinh from './cong-trinh/index'
 import BoSuuTap from './bo-suu-tap/index'
+import DuAn from './du-an/index'
+import ThuVien from './thu-vien/index'
 
 const getRoutes = () => ({
     exact: true,
     path: '/',
     name: 'trang-chu',
-    label: localizationString.getString("Trang chủ"),
+    label: localizationString.getString('Trang chủ'),
     component: TrangChu,
     childRoutes: [
         {
             exact: true,
             path: '/ve-chung-toi',
             name: 've-chung-toi',
-            defaultLabel: localizationString.getString("Về chúng tôi"),
+            defaultLabel: localizationString.getString('Về chúng tôi'),
             component: VeChungToi
         },
         {
             exact: true,
             path: '/cong-trinh',
             name: 'cong-trinh',
-            defaultLabel: localizationString.getString("Công trình"),
+            defaultLabel: localizationString.getString('Công trình'),
             component: CongTrinh
         },
-                {
+        {
             exact: true,
             path: '/bo-suu-tap',
             name: 'bo-suu-tap',
-            defaultLabel: localizationString.getString("Bộ sưu tập"),
+            defaultLabel: localizationString.getString('Bộ sưu tập'),
             component: BoSuuTap
-        }
+        },
+        {
+            path: '/du-an',
+            name: 'du-an',
+            defaultUrl: `/du-an/${localizationString.getString('tat-ca')}/1`,
+            defaultLabel: localizationString.getString('Dự án'),
+            component: DuAn,
+            childRoutes: [
+                {
+                    path: '/du-an/:category/:page',
+                    name: 'du-an-category',
+                    defaultLabel: localizationString.getString('Dự án'),
+                },
+                {
+                    path: '/du-an/:du-an',
+                    name: 'du-an-chi-tiet',
+                    defaultLabel: localizationString.getString('Dự án'),
+                }
+            ]
+        },
+        {
+            exact: true,
+            path: '/thu-vien',
+            name: 'thu-vien',
+            redirectToChild: 0,
+            defaultLabel: localizationString.getString('Thư viện'),
+            component: ThuVien,
+            childRoutes: [
+                {
+                    path: '/:category/:page',
+                    name: 'thu-vien-category',
+                    defaultLocation: '/tat-ca/1',
+                    defaultLabel: localizationString.getString('Thư viện'),
+                },
+                {
+                    path: '/chi-tiet/:blog',
+                    name: 'thu-vien-chi-tiet',
+                    defaultLabel: localizationString.getString('Thư viện'),
+                }
+            ]
+        },
     ]
 })
 
@@ -64,8 +106,8 @@ const getRoutePath = (routes = [], currentRouteName, labels) => {
     return resultRoutePath
 }
 
-const INIT_ROUTES = "INIT_ROUTES"
-const REFRESH_ROUTE_PATH = "REFRESG_ROUTE_PATH"
+const INIT_ROUTES = 'INIT_ROUTES'
+const REFRESH_ROUTE_PATH = 'REFRESG_ROUTE_PATH'
 
 const refreshRoutePath = (currentRouteName, replaceRouteDefaultLabels) => ({
     type: REFRESH_ROUTE_PATH,

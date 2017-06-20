@@ -116,6 +116,18 @@ namespace CoreIn.App
             var results = _entityController.ToViewModels(filterResult.ToList());
             return Json(results);
         }
+		
+		[AllowAnonymous]
+		public int GetTotalEntitiesCount()
+			=> _entityController.EntityHelper.Entities().Count();
+		
+        [AllowAnonymous]
+        public JsonResult GetRandomEntity(int count)
+        {
+            var filterResult = _entityController.GetRandomEntities(count);
+            var results = _entityController.ToViewModels(filterResult.ToList());
+            return Json(results);
+        }
 
         [AllowAnonymous]
         public JsonResult GetSingle(string entityName)

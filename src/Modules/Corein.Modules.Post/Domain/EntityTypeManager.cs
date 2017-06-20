@@ -8,20 +8,19 @@ namespace CoreIn.Modules.Post
 {
     public class EntityTypeManager
     {
-        public EntityType Post { get; private set; }
+        public EntityType Liblary { get; private set; }
 
         public EntityTypeManager(IEntityTypeManager entityTypeManager, UserManager<User> userManager)
         {
             var upperUser = userManager.FindByNameAsync(AppKey.SupperAdminUserName).Result;
-            Post = entityTypeManager.RegisterEntityType(
-                new EntityType { Name = "post" },
+            Liblary = entityTypeManager.RegisterEntityType(
+                new EntityType { Name = "liblary" },
                 new EntityTypeDetail[] {
-                    new EntityTypeDetail{ Field ="title", Value = "Post", Language = "en-US"},
-                    new EntityTypeDetail{ Field ="title", Value = "Bài viết", Language = "vi-VN"},
+                    new EntityTypeDetail{ Field ="title", Value = "Liblary", Language = "en-US"},
+                    new EntityTypeDetail{ Field ="title", Value = "Thư viện", Language = "vi-VN"},
 
-                    new EntityTypeDetail{ Field ="group", Value = "Post", Language = "en-US"},
+                    new EntityTypeDetail{ Field ="group", Value = "Blog", Language = "en-US"},
                     new EntityTypeDetail{ Field ="group", Value = "Bài viết", Language = "vi-VN"},
-
                 }, upperUser);
         }
     }

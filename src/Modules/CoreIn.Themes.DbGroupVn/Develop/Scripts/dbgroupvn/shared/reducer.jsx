@@ -7,6 +7,7 @@ const menu = require('./_layout/header/menu').reducer;
 const layout = require('./_layout').reducer;
 const connectedBasePage = require('./_layout/main/connected-base-page').reducer;
 
+import { googleMapReducer } from './reducers/google-map'
 import { reducer as appRouter } from '../routes'
 
 const reducer = combineReducers({
@@ -15,7 +16,8 @@ const reducer = combineReducers({
     menu,
     connectedBasePage,
     router: routerReducer,
-    appRouter
+    appRouter,
+    googleMap: googleMapReducer
 })
 
 module.exports = reducer;

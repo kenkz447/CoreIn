@@ -25,44 +25,46 @@ module.exports = (props) => {
 };
 
 },{"./shared":4,"jquery":"XpFelZ"}],3:[function(require,module,exports){
-const Index = Corein.pageTemplates.index;
-const { create, index: { dataUrl, deleteUrl, tableColumns } } = require('./shared');
-
-const Create = require('./create');
+const $ = require('jquery');
+const Page = Corein.pageTemplates.index;
+const { index: { dataUrl, deleteUrl, tableColumns } } = require('./shared');
 
 module.exports = (props) => {
-    const { title } = props;
+    const pageProps = $.extend(true, {
+        dataUrl,
+        deleteUrl,
+        tableColumns
+    }, props);
 
     return (
-        React.createElement(Index, {title: title, createNewUrl: create.url, dataUrl: dataUrl, deleteUrl: deleteUrl, tableColumns: tableColumns})            
+        React.createElement(Page, React.__spread({},  pageProps))            
     );
 };
 
-},{"./create":2,"./shared":4}],4:[function(require,module,exports){
+},{"./shared":4,"jquery":"XpFelZ"}],4:[function(require,module,exports){
 const $ = require('jquery');
 
 const mvcController = 'post';
 
 module.exports = {
     index: {
-        url: `/${mvcController}`,
         dataUrl: `/${mvcController}/GetTableData`,
         deleteUrl: `/${mvcController}/delete`,
         tableColumns: [{
-            header: "Thumbnail",
-            accessor: 'thumbnail',
-            render: row => (React.createElement("div", null, React.createElement("img", {className: "table-thumbnail", src: row.value}))),
-            width: 160,
+            Header: "Thumbnail",
+            accessor: 'thumbnailUrl',
+            Cell: props => (React.createElement("div", {className: "image-fill table-thumbnail", style: { backgroundImage: `url(${props.value})`}})),
+            width: 85,
             sortable: false,
-            hideFilter: true
+            filterable: false
         }, {
-            header: "Title",
+            Header: "Title",
             accessor: 'title',
-            render: row => (React.createElement("div", null, React.createElement("a", {href: `/${mvcController}/update/${row.rowValues.id}`, target: "blank"}, row.value))),
+            Cell: props => (React.createElement("div", null, React.createElement("a", {href: `/${mvcController}/update/${props.row.id}`}, props.value))),
+            filterable: true,
         }]
     },
     create: {
-        url: `/${mvcController}/create`,
         formUrl: `/${mvcController}/GetForm`,
         formSubmitData: {
             url: `/${mvcController}/create`,

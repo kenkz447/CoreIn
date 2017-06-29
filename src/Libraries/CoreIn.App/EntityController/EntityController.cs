@@ -87,7 +87,10 @@ namespace CoreIn.App
             }
             localizationFilteredDetails.AddRange(tempDetails);
 
-            result.Meta = new Dictionary<string, string>() { { "id", entityId.ToString() } };
+            result.Meta = new Dictionary<string, string>() {
+                { "id", entityId.ToString() },
+                { "entityTypeId", entity.EntityTypeId?.ToString() }
+            };
             result.Details = FormUtitities.EntityDetailsToFieldValues<TEntityDetail, TFormDetailViewModel>(localizationFilteredDetails);
 
             return result;
@@ -133,6 +136,9 @@ namespace CoreIn.App
         public virtual IEnumerable<TEntity> GetEntities(DataRequest dataRequest)
         {
             var entities = EntityHelper.Entities();
+
+            if (dataRequest.EntityTypeId != 0)
+                entities = entities.Where(o => o.EntityTypeId == dataRequest.EntityTypeId);
 
             var filterResult = entities;
 
@@ -182,9 +188,6 @@ namespace CoreIn.App
             if (dataRequest.Page == 0)
                 dataRequest.Page = 1;
 
-            filterResult = filterResult.Skip((dataRequest.Page - 1) * dataRequest.PageSize);
-            filterResult = filterResult.Take(dataRequest.PageSize);
-
             return filterResult;
         }
 
@@ -233,7 +236,13 @@ namespace CoreIn.App
                 };
                 viewModel.SetId(entity.Id);
                 viewModel.SetName(entity.Name);
-                viewModel.SetThumbnail(details.FirstOrDefault(o => o.Field == "thumbnail" && o.Suffix == AppKey.FileUrlPropertyName)?.Value);
+                var thumnailUrl = details.FirstOrDefault(o => o.Field == "thumbnail" && o.Suffix == AppKey.FileUrlPropertyName)?.Value;
+
+                if (!thumnailUrl.StartsWith("/") && (!thumnailUrl.StartsWith("https://") || !thumnailUrl.StartsWith("http://")))
+                    thumnailUrl = "/" + thumnailUrl;
+
+                viewModel.SetThumbnail(thumnailUrl);
+
                 if(moreFields != null)
                     foreach (var field in moreFields)
                     {

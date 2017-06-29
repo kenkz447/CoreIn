@@ -1,18 +1,14 @@
-const ConnectedBasePage = require('./connected-base-page').default;
-const PropTypes = require('prop-types');
+import  ConnectedBasePage from './connected-base-page'
+import { default as PropTypes } from 'prop-types'
 
-const baseArgs = {
-    page: ''
-}
+export default (args = {}) => Element => class BasePage extends React.Component {
+    static propsType = {
+        page: PropTypes.string.require
+    }
 
-baseArgs.PropTypes = {
-    page: PropTypes.string.require
-}
-
-module.exports = (args = baseArgs) => Element => class extends React.Component {
     render() {
         return (
-            <ConnectedBasePage {...args} {...this.props} component={Element} />
+            <ConnectedBasePage {...args} {...this.props} component={ Element } />
         )
     }
 }

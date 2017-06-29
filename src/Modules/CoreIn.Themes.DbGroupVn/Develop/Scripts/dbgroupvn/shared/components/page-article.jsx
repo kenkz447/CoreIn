@@ -20,4 +20,4 @@ const renderArticle = (props) => {
     );
 }
 
-module.exports = renderArticle;
+export default renderArticle;

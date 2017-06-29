@@ -2038,7 +2038,7 @@ const reducer = (state = initialState, action) => {
             newState.loading = true;
             break;
         case keys.loaded:
-            newState.data = action.data;
+            newState.data = action.data.entities;
             newState.pages = parseInt(newState.data.length / newState.defaultPageSize);
             if ((newState.data.length % newState.defaultPageSize) !== 0)
                 newState.pages++;
@@ -2075,11 +2075,11 @@ function defaultFilterMethod(filter, row, column) {
     return void 0 === row[id] || String(row[id]).startsWith(filter.value)
 }
 
-const dataRequest = (url, pageSize, page, sorted, filtering, taxonomies, callback) => {
+const dataRequest = (url, pageSize, page, sorted, filtering, taxonomies, entityTypeId, callback) => {
     $.ajax({
         url,
         method: "POST",
-        data: { pageSize, page, sorted, filtering, taxonomies },
+        data: { pageSize, page, sorted, filtering, taxonomies, entityTypeId },
         success: callback
     });
 }
@@ -2122,7 +2122,10 @@ class Table extends React.Component {
             return !filter.id.startsWith('taxonomyTypes');
         });
 
-        dataRequest(dataUrl, state.pageSize, state.page, state.sorted, filtered, taxonomyFiltering, dataLoad);
+        const entityTypeId = this.state.entityTypeId;
+
+        dataRequest(dataUrl, state.pageSize, state.page, state.sorted, filtered, taxonomyFiltering, entityTypeId, dataLoad);
+
         this.ReactTableState = state;
         this.ReactTableInstance = instance;
     }
@@ -2141,8 +2144,7 @@ class Table extends React.Component {
                             React.createElement("input", {type: "checkbox", 
                                 onClick: () => {
                                     selectRow(props.index);
-                                }, checked: checked}), 
-                            React.createElement("span", null)
+                                }, checked: checked})
                         )
                     )
                 },
@@ -2158,8 +2160,13 @@ class Table extends React.Component {
             Header: "Actions",
             accessor: 'id',
             Cell: props => {
+                console.log(props)
                 return (
                     React.createElement("div", {className: "table-row-actions"}, 
+                        React.createElement("div", null, 
+                            "Id: ", props.value
+                        ), 
+                        
                         React.createElement(ButtonGroup, null, 
                             React.createElement("button", {className: "btn btn-icon text-danger", 
                                 onClick: () => {

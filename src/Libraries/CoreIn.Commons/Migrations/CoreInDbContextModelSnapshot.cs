@@ -915,6 +915,36 @@ namespace CoreIn.Commons.Migrations
                     b.ToTable("CoreIn_ProjectTaxonomy");
                 });
 
+            modelBuilder.Entity("CoreIn.Modules.Post.Models.PostComment", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Author")
+                        .IsRequired();
+
+                    b.Property<string>("Content")
+                        .IsRequired();
+
+                    b.Property<string>("Email");
+
+                    b.Property<long>("EntityId");
+
+                    b.Property<long?>("ReplyToCommentId");
+
+                    b.Property<DateTime>("Time");
+
+                    b.Property<string>("Url");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EntityId");
+
+                    b.HasIndex("ReplyToCommentId");
+
+                    b.ToTable("CoreIn_PostComment");
+                });
+
             modelBuilder.Entity("CoreIn.Modules.Post.Models.PostEntity", b =>
                 {
                     b.Property<long>("Id")
@@ -934,6 +964,8 @@ namespace CoreIn.Commons.Migrations
                     b.Property<long?>("ParentId");
 
                     b.HasKey("Id");
+
+                    b.HasAlternateKey("Name");
 
                     b.HasIndex("EntityTypeId");
 
@@ -1444,6 +1476,18 @@ namespace CoreIn.Commons.Migrations
                         .WithMany()
                         .HasForeignKey("TaxonomyId")
                         .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("CoreIn.Modules.Post.Models.PostComment", b =>
+                {
+                    b.HasOne("CoreIn.Modules.Post.Models.PostEntity", "Entity")
+                        .WithMany("Comments")
+                        .HasForeignKey("EntityId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("CoreIn.Modules.Post.Models.PostComment", "ReplyToComment")
+                        .WithMany()
+                        .HasForeignKey("ReplyToCommentId");
                 });
 
             modelBuilder.Entity("CoreIn.Modules.Post.Models.PostEntity", b =>

@@ -3,6 +3,8 @@ const { NavLink } = require('react-router-dom');
 const { connect } = require('react-redux');
 const PropTypes = require('prop-types');
 
+import { DEFAULT_MENU } from '../../reducers/app-routes'
+
 class Menu extends React.Component {
     render() {
         const { menuItems } = this.props;
@@ -11,8 +13,8 @@ class Menu extends React.Component {
                 {
                     menuItems.map((menuItem, index) => {
                         return (
-                            <NavLink key={index} exact={menuItem.url == '/'} to={menuItem.url} activeClassName="current">
-                                {menuItem.title}
+                            <NavLink key={ index } exact={ menuItem.url == '/' } to={ menuItem.url } activeClassName="current">
+                                { menuItem.label }
                             </NavLink>
                         )
                     })
@@ -27,7 +29,7 @@ Menu.propTypes = {
 }
 
 const stateToProps = (state) => ({
-    menuItems: state.menu.menuItems,
+    menuItems: state.appRouter.menus[ DEFAULT_MENU ]
 });
 
 module.exports = connect(stateToProps, null, null, { pure: false })(Menu);

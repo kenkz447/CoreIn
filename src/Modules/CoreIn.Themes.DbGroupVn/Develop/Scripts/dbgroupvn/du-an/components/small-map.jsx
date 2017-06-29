@@ -5,9 +5,9 @@ import { Input } from 'reactstrap'
 import { SidebarWidget, GoogleMap } from '../../shared/components'
 
 import { default as classNames } from 'classnames'
-const pageConfigures = require('../page-configure.js')
+const pageConfigures = require('../configuration.js')
 
-class SearchCity extends Component {
+class SmallMap extends Component {
     renderMarkerContent(marker) {
         return (
             <div className="marker-info">
@@ -21,14 +21,14 @@ class SearchCity extends Component {
             </div>
         )
     }
-
+    
     render() {
-
+        
         return (
             <SidebarWidget noBorder noCollapse title={ localizationString.getString('Bản đồ') }>
                 <div className="no-left-space">
                     <div className="g-map">
-                        <GoogleMap {...this.props.map} dispath={this.props.dispath} renderMarkerContent={ this.renderMarkerContent } />
+                        <GoogleMap {...this.props.map} renderMarkerContent={ this.renderMarkerContent } />
                     </div>
                     <div className={classNames('mt-3', {'d-none': this.props.hiddenBigMapLink})}>
                         <Link className="btn btn-secondary" to={ this.props.linkToBigMap }>
@@ -48,4 +48,4 @@ const mapStateToProps = (state, ownProps) => {
     }
 }
 
-export default connect(mapStateToProps)(SearchCity);
+export default connect(mapStateToProps)(SmallMap);

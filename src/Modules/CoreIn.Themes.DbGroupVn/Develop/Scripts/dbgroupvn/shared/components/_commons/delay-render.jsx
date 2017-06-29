@@ -1,4 +1,4 @@
-const DelayRender = (args = {}) => (Element) => class Component extends React.Component {
+const RenderDelay = (args = {}) => (Element) => class Component extends React.Component {
   constructor() {
     super();
     this.state = { ready: true };
@@ -36,4 +36,4 @@ const DelayRender = (args = {}) => (Element) => class Component extends React.Co
   }
 };
 
-module.exports = DelayRender;
+export default RenderDelay

@@ -1,7 +1,7 @@
-const Title = require('./components/section-title');
-const PageArticle = require('./components/page-article');
-const Image = require('./components/image');
-const RenderDelay = require('./components/_commons/delay-render');
+import { default as Title } from './components/section-title'
+import { default as PageArticle } from './components/page-article'
+import { default as Image } from './components/image'
+import { default as RenderDelay } from './components/_commons/delay-render'
 
 import { default as ConnectedBreacrumbs } from './components/connected-breacrumbs'
 import { default as Sidebar } from './components/sidebar'
@@ -11,8 +11,9 @@ import { default as SidebarMenu } from './components/sidebar-menu'
 import { default as SidebarWidget } from './components/sidebar-widget'
 import { default as GoogleMap } from './components/gmap/google-map'
 import { default as Pagination } from './components/pagination'
+import { default as SideBarToggleStart } from './components/sidebar-toggle-start'
 
-module.exports = {
+export {
     RenderDelay,
     Title,
     PageArticle,
@@ -24,5 +25,6 @@ module.exports = {
     SidebarMenu,
     SidebarWidget,
     GoogleMap,
-    Pagination
+    Pagination,
+    SideBarToggleStart
 }

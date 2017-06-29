@@ -1,231 +1,149 @@
-const { bindActionCreators } = require('redux');
-const { connect } = require('react-redux')
+
 import _ from 'underscore'
 import { Route, Switch } from 'react-router'
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
+
+//Actions
+import { setMapValue, setMapMarkers, showMarkerBalloon } from '../shared/reducers/google-map'
+
+//Global Components
+import { default as BasePage } from '../shared/_layout/main/base-page'
 import { Container, Row, Col } from 'reactstrap'
-import BasePage from '../shared/_layout/main/base-page'
 import { Sidebar, SidebarMenu, Image, CategoryMenu, PageItem } from '../shared/components'
 
-import { refreshRoutePath } from '../routes'
-
-import { default as BigMap } from './components/big-map'
-import { default as Category } from './components/category'
+//Local Components
 import { default as SearchByArea } from './components/search-area';
 import { default as SearchByCity } from './components/sreach-city';
 import { default as SmallMap } from './components/small-map';
-import { setMapValue, setMapMarkers, showMarkerBalloon } from '../shared/reducers/google-map'
-import { dataRequest } from '../shared/ultilities'
 
-const pageConfigure = {
-    pageName: 'du-an',
-    taxonomyTypeId: 20003,
-    showBreadcrumb: true
-}
+//Views
+import { default as BigMap } from './views/big-map'
+import { default as DefaultView } from './views/default-view'
 
-const smallMapId = require('./page-configure.js').smallMapId
-const bigMapId = require('./page-configure.js').bigMapId
+//Helper and utilities
+import {
+    createCategoryUrlFromRoutePathAndCategoryName,
+    fetchEntities, fetchPage, fetchTaxonomiesByTaxonomyTypeId,
+    getCategoryByNameFromCatogires,
+    generateEntityDetailUrl,
+} from '../shared/utilities'
 
-const defaultMap = {
-    center: [ 15.866913899999986, 104.1218629 ],
-    zoom: 5,
-}
+//Page configures
+const pageConfigure = require('./configuration.js')
 
 class PageComponent extends React.Component {
     static defaultProps = {
-        map: defaultMap,
+        map: {
+            center: [ 15.866913899999986, 104.1218629 ],
+            zoom: 5,
+        },
         items: []
     }
 
     constructor() {
         super()
         this.renderSidebar = this.renderSidebar.bind(this)
-        this.fecthData = this.fecthData.bind(this)
+        this.renderRoutes = this.renderRoutes.bind(this)
         this.getCurrentChildRoute = this.getCurrentChildRoute.bind(this)
-        this.getItemsWithPath = this.getItemsWithPath.bind(this)
     }
 
     componentWillMount() {
-        const { onError, onDataFetch, refreshRoutePath, categories, page, items } = this.props
+        const { onError, onDataFetch, refreshRoutePath, categories, pageContent } = this.props
 
-        if (!page)
-            $.get(`/page/getsingle?entityName=${pageConfigure.pageName}`, function (response) {
-                onDataFetch({ page: response.details }, 50);
+        if (!pageContent)
+            fetchPage(pageConfigure.page).then((response) => {
+                onDataFetch({ pageContent: response.details }, 50);
+
             })
+
         if (!categories)
-            $.get('/TaxonomyUI/GetTaxonomies', { taxonomyTypeId: pageConfigure.taxonomyTypeId }, function (response) {
-                onDataFetch({ categories: response }, 50)
+            fetchTaxonomiesByTaxonomyTypeId(pageConfigure.TAXONOMY_TYPE_ID_CATEGORY).then((responseCategories) => {
+                responseCategories.unshift({
+                    name: localizationString.getString('tat-ca'),
+                    title: localizationString.getString("Tất cả")
+                })
+                onDataFetch({ categories: responseCategories }, 50)
             })
-
-        refreshRoutePath(pageConfigure.pageName)
     }
 
     onSearchByArea(from, to) {
         var searchArea = { from, to }
-
         if (from === -1 || to === -1)
             searchArea = null
-
         this.props.onDataFetch({ searchArea }, 0)
     }
 
     onSearchByCity(city, map) {
-        const { setMapValue, searchArea } = this.props;
+        const { setMapValue, searchArea, onDataFetch } = this.props;
 
-        this.props.onDataFetch({ searchCity: city }, 0)
+        onDataFetch({ searchCity: city }, 0)
 
-        const currentChildRoute = this.getCurrentChildRoute()
-        const mapId = currentChildRoute === "/ban-do" ? bigMapId : smallMapId
-
-        setMapValue(mapId, map || defaultMap)
-    }
-
-    getItemsWithPath(items) {
-        const { match } = this.props
-        const itemsWithPath = items.map((item) => {
-            const itemWithPath = $.extend(true, {}, item, { path: `${match.path}/${item.name}` })
-            return itemWithPath
-        })
-        return itemsWithPath
-    }
-
-    onCategoryFetchComplete(items) {
-        const { setMapMarkers, match, onDataFetch } = this.props
-
-        const currentChildRoute = this.getCurrentChildRoute()
-        const mapId = currentChildRoute === "/ban-do" ? bigMapId : smallMapId
-
-        const markers = items.map(({ id, name, thumbnailUrl, moreDetailts: { mapLongitude, mapLatitude }, title }) => {
-            return {
-                id,
-                lat: mapLatitude,
-                lng: mapLongitude,
-                title,
-                thumbnailUrl: `/${thumbnailUrl}`,
-                redirect: `${match.path}/chi-tiet/${name}`,
-                height: (mapId === bigMapId) && 280,
-                path: `${match.path}/${name}`
-            }
-        })
-
-        const itemsWithPath = this.getItemsWithPath(items)
-
-        onDataFetch({ items: itemsWithPath }, 0)
-
-        setMapMarkers(mapId, markers)
-    }
-
-    onItemHover(isHover, item) {
-        const { showMarkerBalloon } = this.props
-        var markerId = isHover ? item.id : null
-
-        const currentChildRoute = this.getCurrentChildRoute()
-        const mapId = currentChildRoute === "/ban-do" ? bigMapId : smallMapId
-
-        showMarkerBalloon(mapId, markerId)
-    }
-
-    fecthData(category, searchArea, searchCity) {
-        var filter = []
-
-        if (searchArea)
-            filter.push(
-                {
-                    id: 'area',
-                    value: searchArea.from,
-                    operator: '>='
-                },
-                {
-                    id: 'area',
-                    value: searchArea.to,
-                    operator: '<='
-                }
-            )
-
-        if (searchCity)
-            filter.push({
-                id: 'city',
-                value: searchCity,
-                operator: '=='
-            })
-        const additionalFields = [ 'mapLongitude', 'mapLatitude' ]
-        dataRequest('/project/gettabledata', 9, 1, null, filter, category && { [ pageConfigure.taxonomyTypeId ]: category.id }, additionalFields, this.onCategoryFetchComplete.bind(this))
-    }
-
-    getCurrentChildRoute() {
-        const { match, location } = this.props;
-        return String(location.pathname).startsWith(`${match.path}/ban-do`) ? '/ban-do' : ''
+        setMapValue(pageConfigure.smallMapId, map || defaultMap)
     }
 
     renderSidebar() {
-        const { categories, currentCategory, match, location } = this.props;
+        const { categories, currentCategory, match: { path, url }, location } = this.props;
 
-        const mapPage = this.getCurrentChildRoute()
-        const page = mapPage ? '' : '/1'
-
-        const categoryMenuItems = categories && categories.map((category) => {
-            return { path: `${match.path}${mapPage}/${category.name}${page}`, title: category.title, id: category.id }
+        const categoryMenuItems = categories.map(({ name, title }) => {
+            return { path: createCategoryUrlFromRoutePathAndCategoryName(path, name), title }
         })
-
-        categoryMenuItems.unshift({ path: `${match.path}${mapPage}/${localizationString.getString('tat-ca')}${page}`, title: localizationString.getString("Tất cả") })
 
         return (
             <Sidebar>
                 <SidebarMenu title={ localizationString.getString('loại công trình') }
                     items={ categoryMenuItems }
-                    currentUrl={ match.url }
                 />
                 <SearchByArea onSearch={ this.onSearchByArea.bind(this) } />
                 <SearchByCity onCityChange={ this.onSearchByCity.bind(this) } />
+
                 <SmallMap map={ this.props.map }
-                    linkToBigMap={ `${match.path}/ban-do/${currentCategory ? currentCategory.name : localizationString.getString('tat-ca')}` }
-                    hiddenBigMapLink={ mapPage != '' }
+                    linkToBigMap={ `/${pageConfigure.page}/ban-do/${currentCategory ? currentCategory.name : localizationString.getString('tat-ca')}` }
+                    hiddenBigMapLink={ false }
                 />
             </Sidebar>
+        )
+    }
+
+    renderRoutes() {
+        const { match: { path }, onDataFetch, setMapMarkers, showMarkerBalloon } = this.props;
+        const commonProps = {
+            onDataFetch,
+            setMapMarkers,
+            showMarkerBalloon
+        }
+
+        return (
+            <Switch>
+                <Route exact={ true } path={ '/' + pageConfigure.page + '/ban-do/:category' } render={ (route) => <BigMap {...route}
+                    onDataFetch={ onDataFetch } {...commonProps} /> } />
+
+                <Route exact={ true } path={ path } render={ (route) =>
+                    <DefaultView {...route} {...commonProps} /> }
+                />
+
+                <Route path={ path + '/:page' } render={ (route) =>
+                    (<DefaultView {...route} onDataFetch={ onDataFetch } {...commonProps} />) }
+                />
+
+            </Switch>
         )
     }
 
     render() {
         if (this.props.dataFetchProgress != 100)
             return null;
-        console.log(this.state)
 
-        const { match, page: { thumbnail }, categories, currentCategory, searchArea, searchCity, items } = this.props
-
-        const commonRouteProps = {
-            items: items,
-            searchArea: searchArea,
-            searchCity: searchCity,
-            categories: categories,
-            basePath: match.path,
-            fecthData: this.fecthData
-        }
+        console.log(this.props)
 
         return (
-            <Container id={ pageConfigure.pageName }>
+            <Container id={ pageConfigure.page }>
                 <Row>
                     <Col lg="3">
                         { this.renderSidebar() }
                     </Col>
                     <Col xs="12" lg="9">
-                        <Switch>
-                            <Route exact={ false } path={ `${match.url}/ban-do/:category` } render={ (route) => {
-                                return (
-                                    <BigMap {...route}
-                                        {...commonRouteProps}
-                                        getItemsWithPath={this.getItemsWithPath}
-                                    />
-                                )
-                            } } />
-                            <Route path={ `${match.url}/:category/:page` } render={ (route) => {
-                                return (
-                                    <Category match={ route.match }
-                                        pageCoverImage={ thumbnail }
-                                        onItemHover={ this.onItemHover.bind(this) }
-                                        {...commonRouteProps}
-                                    />
-                                )
-                            } } />
-                        </Switch>
+                        { this.renderRoutes() }
                     </Col>
                 </Row>
             </Container>
@@ -238,9 +156,9 @@ const stateToProps = (state) => ({
 })
 
 const dispathToProps = (dispath) => (
-    bindActionCreators({ refreshRoutePath, setMapValue, setMapMarkers, showMarkerBalloon }, dispath)
+    bindActionCreators({ setMapValue, setMapMarkers, showMarkerBalloon }, dispath)
 )
 
 const ConnectedPageComponent = connect(stateToProps, dispathToProps)(PageComponent)
 
-module.exports = BasePage({ page: pageConfigure.pageName, showBreadcrumbs: pageConfigure.showBreadcrumb })(ConnectedPageComponent);
+module.exports = BasePage({ page: pageConfigure.page, showBreadcrumbs: pageConfigure.showBreadcrumb })(ConnectedPageComponent);

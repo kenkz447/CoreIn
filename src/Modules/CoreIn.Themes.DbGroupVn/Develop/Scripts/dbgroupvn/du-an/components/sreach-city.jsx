@@ -12,8 +12,8 @@ const cities = {
         zoom: 11
     },
     'Hồ Chí Minh': {
-        center: [ 10.6917996, 106.6503763 ],
-        zoom: 9
+        center: [ 10.7687085, 106.7204141 ],
+        zoom: 10
     }
 }
 

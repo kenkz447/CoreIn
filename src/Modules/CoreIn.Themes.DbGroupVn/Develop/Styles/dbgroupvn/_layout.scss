@@ -9,7 +9,6 @@
 .perspective {
     height: 100%;
     width: 100%;
-
     &.modalview {
         position: fixed;
         -webkit-perspective: 1500px;
@@ -21,10 +20,10 @@
     background: #fff;
     min-height: 100%;
     position: relative;
-    outline: 1px solid rgba(0,0,0,0);
+    outline: 1px solid rgba(0, 0, 0, 0);
     z-index: 10;
-    -webkit-transform: translateZ(0) translateX(0) rotateY(0deg);
-    transform: translateZ(0) translateX(0) rotateY(0deg);
+    //-webkit-transform: translateZ(0) translateX(0) rotateY(0deg);
+    //transform: translateZ(0) translateX(0) rotateY(0deg);
 }
 
 .modalview .wrapper {
@@ -65,7 +64,7 @@ $perspective-animate-transform: translateZ(-500px) translateX(30%) rotateY(-45de
     width: 100%;
     height: 0px;
     opacity: 0;
-    background: rgba(0,0,0,0.05);
+    background: rgba(0, 0, 0, 0.05);
     -webkit-transition: opacity 0.4s, height 0s 0.4s;
     transition: opacity 0.4s, height 0s 0.4s;
     z-index: 99999;

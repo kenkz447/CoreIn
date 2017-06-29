@@ -6,8 +6,8 @@ const ConnectedBreadcrumbs = (props) => {
     const { routes, params } = props;
     if (routes)
         return (
-            <Container className="d-none d-lg-block mb-lg-4">
-                <div className="breadcrumbs">
+            <Container className="mb-lg-4">
+                <div id="breadcrumbs" className="breadcrumbs">
                     {
                         routes.map((route, index) => {
                             const isLast = (route.path === routes[ routes.length -1 ].path)

@@ -45,7 +45,13 @@ class PagingItemContainer extends Component {
                 <Row className="paging-item-container">
                     {
                         items.map((item, index) => {
-                            return <PagingItemWrapper key={index} className={classNames("paging-item-wrapper", itemWrapperClassName)} {...layout} item={ item } renderItem={ renderItem } />
+                            var itemLayout = layout;
+                            if(Array.isArray(layout))
+                                itemLayout = itemLayout.filter((layout) => {
+                                    return (layout.at - 1) === index
+                                })[0]
+
+                            return <PagingItemWrapper key={index} className={classNames("paging-item-wrapper", itemWrapperClassName)} {...itemLayout} item={ item } renderItem={ renderItem } />
                         })
                     }
                 </Row>

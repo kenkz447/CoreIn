@@ -3,7 +3,6 @@
 ﻿global.Homeclick = {
     project: require('./homeclick/project'),
     collection: require('./homeclick/collection'),
-    post: require('./homeclick/post'),
     optionGroup: require('./homeclick/option-group'),
     construction: require('./homeclick/construction'),
     page: require('./homeclick/page'),
@@ -11,7 +10,7 @@
 }
 
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./homeclick/album":2,"./homeclick/collection":7,"./homeclick/construction":12,"./homeclick/option-group":17,"./homeclick/page":22,"./homeclick/post":27,"./homeclick/project":32}],2:[function(require,module,exports){
+},{"./homeclick/album":2,"./homeclick/collection":7,"./homeclick/construction":12,"./homeclick/option-group":17,"./homeclick/page":22,"./homeclick/project":27}],2:[function(require,module,exports){
 const index = require('./album/index');
 const create = require('./album/create');
 const update = require('./album/update');
@@ -143,42 +142,44 @@ module.exports = (props) => {
 };
 
 },{"./shared":10,"jquery":"XpFelZ"}],9:[function(require,module,exports){
-const Index = Corein.pageTemplates.index;
-const { create, index: { dataUrl, deleteUrl, tableColumns } } = require('./shared');
+const $ = require('jquery');
+const Page = Corein.pageTemplates.index;
+const { index: { dataUrl, deleteUrl, tableColumns } } = require('./shared');
 
 module.exports = (props) => {
-    const { title } = props;
+    const pageProps = $.extend(true, {
+        dataUrl,
+        deleteUrl,
+        tableColumns
+    }, props);
 
     return (
-        React.createElement(Index, {title: title, createNewUrl: create.url, dataUrl: dataUrl, deleteUrl: deleteUrl, tableColumns: tableColumns})            
+        React.createElement(Page, React.__spread({},  pageProps))            
     );
 };
 
-},{"./shared":10}],10:[function(require,module,exports){
-const $ = require('jquery');
-
+},{"./shared":10,"jquery":"XpFelZ"}],10:[function(require,module,exports){
 const mvcController = 'collection';
 
 module.exports = {
     index: {
-        url: `/${mvcController}`,
         dataUrl: `/${mvcController}/GetTableData`,
         deleteUrl: `/${mvcController}/delete`,
         tableColumns: [{
-            header: "Thumbnail",
-            accessor: 'thumbnail',
-            render: row => (React.createElement("div", null, React.createElement("img", {className: "table-thumbnail", src: row.value}))),
-            width: 160,
+            Header: "Thumbnail",
+            accessor: 'thumbnailUrl',
+            Cell: props => (React.createElement("div", {className: "image-fill table-thumbnail", style: { backgroundImage: `url(${props.value})`}})),
+            width: 85,
             sortable: false,
-            hideFilter: true
+            filterable: false
         }, {
-            header: "Title",
+            Header: "Title",
             accessor: 'title',
-            render: row => (React.createElement("div", null, React.createElement("a", {href: `/${mvcController}/update/${row.rowValues.id}`, target: "blank"}, row.value))),
+            Cell: props => (React.createElement("div", null, React.createElement("a", {href: `/${mvcController}/update/${props.row.id}`}, props.value))),
+            filterable: true,
         }]
     },
     create: {
-        url: `/${mvcController}/create`,
         formUrl: `/${mvcController}/GetForm`,
         formSubmitData: {
             url: `/${mvcController}/create`,
@@ -203,7 +204,7 @@ module.exports = {
     }
 }
 
-},{"jquery":"XpFelZ"}],11:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 const $ = require('jquery');
 const Page = Corein.pageTemplates.update;
 
@@ -533,114 +534,6 @@ module.exports = (props) => {
 };
 
 },{"./shared":25,"jquery":"XpFelZ"}],27:[function(require,module,exports){
-const index = require('./post/index');
-const create = require('./post/create');
-const update = require('./post/update');
-
-module.exports = {
-    index,
-    create,
-    update
-}
-
-},{"./post/create":28,"./post/index":29,"./post/update":31}],28:[function(require,module,exports){
-const $ = require('jquery');
-
-const { index, create: {formUrl, formSubmitData}} = require('./shared');
-
-const Page = Corein.pageTemplates.create;
-
-module.exports = (props) => {
-    const pageProps = $.extend(true, { formUrl, formSubmitData, indexUrl: index.url }, props);
-
-    return (
-        React.createElement(Page, React.__spread({},  pageProps))
-    );
-};
-
-},{"./shared":30,"jquery":"XpFelZ"}],29:[function(require,module,exports){
-const Index = Corein.pageTemplates.index;
-const { create, index: { dataUrl, deleteUrl, tableColumns } } = require('./shared');
-
-const Create = require('./create');
-
-module.exports = (props) => {
-    const { title } = props;
-
-    return (
-        React.createElement(Index, {title: title, createNewUrl: create.url, dataUrl: dataUrl, deleteUrl: deleteUrl, tableColumns: tableColumns})            
-    );
-};
-
-},{"./create":28,"./shared":30}],30:[function(require,module,exports){
-const $ = require('jquery');
-
-const mvcController = 'post';
-
-module.exports = {
-    index: {
-        url: `/${mvcController}`,
-        dataUrl: `/${mvcController}/GetTableData`,
-        deleteUrl: `/${mvcController}/delete`,
-        tableColumns: [{
-            header: "Thumbnail",
-            accessor: 'thumbnail',
-            render: row => (React.createElement("div", null, React.createElement("img", {className: "table-thumbnail", src: row.value}))),
-            width: 160,
-            sortable: false,
-            hideFilter: true
-        }, {
-            header: "Title",
-            accessor: 'title',
-            render: row => (React.createElement("div", null, React.createElement("a", {href: `/${mvcController}/update/${row.rowValues.id}`, target: "blank"}, row.value))),
-        }]
-    },
-    create: {
-        url: `/${mvcController}/create`,
-        formUrl: `/${mvcController}/GetForm`,
-        formSubmitData: {
-            url: `/${mvcController}/create`,
-            method: 'POST',
-            successAction: (respo) => {
-                window.location.href = respo.result;
-            }
-        }
-    },
-    update: {
-        url: `/${mvcController}/update`,
-        formUrl: `/${mvcController}/GetForm`,
-        formSubmitData: {
-            url: `/${mvcController}/update`,
-            method: 'PUT',
-            successAction: (response, props) => {
-                const { alertPush } = props;
-                alertPush("success", response.message);
-                $("html, body").stop().animate({ scrollTop: 0 }, 500, 'swing');
-            },
-        }
-    }
-}
-
-},{"jquery":"XpFelZ"}],31:[function(require,module,exports){
-const $ = require('jquery');
-const Page = Corein.pageTemplates.update;
-
-const { create, index, update: {formUrl, formSubmitData}} = require('./shared');
-
-module.exports = (props) => {
-    const pageProps = $.extend(true, {
-        createNewUrl: create.url,
-        indexUrl: index.url,
-        formUrl,
-        formSubmitData
-    }, props);
-
-    return (
-        React.createElement(Page, React.__spread({},  pageProps))
-    );
-};
-
-},{"./shared":30,"jquery":"XpFelZ"}],32:[function(require,module,exports){
 const index = require('./project/index');
 const create = require('./project/create');
 const update = require('./project/update');
@@ -651,7 +544,7 @@ module.exports = {
     update
 }
 
-},{"./project/create":33,"./project/index":34,"./project/update":40}],33:[function(require,module,exports){
+},{"./project/create":28,"./project/index":29,"./project/update":35}],28:[function(require,module,exports){
 const $ = require('jquery');
 const { combineReducers, createStore, bindActionCreators } = require('redux');
 const {connect, Provider} = require('react-redux');
@@ -700,7 +593,7 @@ module.exports = (props) => {
     );
 };
 
-},{"./shared":35,"./shared/redux/reducer":39,"jquery":"XpFelZ","react-redux":"MzQWgz","reactstrap":"jldOQ7","redux":"czVV+t"}],34:[function(require,module,exports){
+},{"./shared":30,"./shared/redux/reducer":34,"jquery":"XpFelZ","react-redux":"MzQWgz","reactstrap":"jldOQ7","redux":"czVV+t"}],29:[function(require,module,exports){
 const $ = require('jquery');
 const Page = Corein.pageTemplates.index;
 const { index: { dataUrl, deleteUrl, tableColumns } } = require('./shared');
@@ -717,7 +610,7 @@ module.exports = (props) => {
     );
 };
 
-},{"./shared":35,"jquery":"XpFelZ"}],35:[function(require,module,exports){
+},{"./shared":30,"jquery":"XpFelZ"}],30:[function(require,module,exports){
 const $ = require('jquery');
 
 const mvcController = 'project';
@@ -780,7 +673,7 @@ module.exports = {
     }
 }
 
-},{"jquery":"XpFelZ"}],36:[function(require,module,exports){
+},{"jquery":"XpFelZ"}],31:[function(require,module,exports){
 const $ = require('jquery');
 const { connect } = require('react-redux');
 const { bindActionCreators } = require('redux');
@@ -891,7 +784,7 @@ module.exports = {
     reducer
 };
 
-},{"./layout-modal":37,"jquery":"XpFelZ","react-redux":"MzQWgz","redux":"czVV+t","redux-form":"LVfYvK"}],37:[function(require,module,exports){
+},{"./layout-modal":32,"jquery":"XpFelZ","react-redux":"MzQWgz","redux":"czVV+t","redux-form":"LVfYvK"}],32:[function(require,module,exports){
 const $ = require('jquery');
 const { connect } = require('react-redux');
 const { bindActionCreators } = require('redux');
@@ -1135,11 +1028,11 @@ module.exports = {
     actions
 }
 
-},{"jquery":"XpFelZ","rc-slider":"6pHinT","react-redux":"MzQWgz","reactstrap":"jldOQ7","redux":"czVV+t"}],38:[function(require,module,exports){
+},{"jquery":"XpFelZ","rc-slider":"6pHinT","react-redux":"MzQWgz","reactstrap":"jldOQ7","redux":"czVV+t"}],33:[function(require,module,exports){
 module.exports = {
 };
 
-},{}],39:[function(require,module,exports){
+},{}],34:[function(require,module,exports){
 const $ = require('jquery');
 const keys = require('./keys');
 const { combineReducers } = require('redux');
@@ -1161,7 +1054,7 @@ module.exports = combineReducers({
     layoutModal: require('../components/layout-modal').reducer
 });
 
-},{"../components/layout-modal":37,"./keys":38,"jquery":"XpFelZ","redux":"czVV+t","redux-form":"LVfYvK"}],40:[function(require,module,exports){
+},{"../components/layout-modal":32,"./keys":33,"jquery":"XpFelZ","redux":"czVV+t","redux-form":"LVfYvK"}],35:[function(require,module,exports){
 const $ = require('jquery');
 const { combineReducers, createStore, bindActionCreators } = require('redux');
 const { connect, Provider } = require('react-redux');
@@ -1221,6 +1114,6 @@ module.exports = (props) => {
     );
 };
 
-},{"./shared":35,"./shared/components/form":36,"./shared/redux/reducer":39,"jquery":"XpFelZ","react-redux":"MzQWgz","reactstrap":"jldOQ7","redux":"czVV+t"}]},{},[1])
+},{"./shared":30,"./shared/components/form":31,"./shared/redux/reducer":34,"jquery":"XpFelZ","react-redux":"MzQWgz","reactstrap":"jldOQ7","redux":"czVV+t"}]},{},[1])
 
 //# sourceMappingURL=homeclick.js.map

@@ -14,21 +14,21 @@ using CoreIn.Commons.ViewModels;
 
 namespace CoreIn.App
 {
-    public class EntityControllerWithTaxonomy<TEntity, TEntityDetail, TEntityTaxonomy, TLocalizer, TFormDetailViewModel> : 
+    public class EntityControllerWithTaxonomy<TEntity, TEntityDetail, TEntityTaxonomy, TLocalizer, TFormDetailViewModel> :
         EntityController<TEntity, TEntityDetail, TLocalizer, TFormDetailViewModel>
-        where TEntity: BaseEntity, IEntityWithDetails<TEntityDetail>, IEntityWithTaxonomies<TEntityTaxonomy>, new()
-        where TEntityDetail: BaseEntityDetail, new()
-        where TEntityTaxonomy: BaseEntityTaxonomy, new()
-        where TFormDetailViewModel: class, new()
+        where TEntity : BaseEntity, IEntityWithDetails<TEntityDetail>, IEntityWithTaxonomies<TEntityTaxonomy>, new()
+        where TEntityDetail : BaseEntityDetail, new()
+        where TEntityTaxonomy : BaseEntityTaxonomy, new()
+        where TFormDetailViewModel : class, new()
     {
         public ITaxonomyHelper TaxonomyHelper { get; }
 
-        public EntityControllerWithTaxonomy(CoreInDbContext dbContext, 
-            IEntityHelper<TEntity, TEntityDetail> fieldEntityHelper, 
+        public EntityControllerWithTaxonomy(CoreInDbContext dbContext,
+            IEntityHelper<TEntity, TEntityDetail> fieldEntityHelper,
             IMediaHelper mediaHelper,
             IStringLocalizer<TLocalizer> localizer,
             IOptions<RequestLocalizationOptions> localizationOptions,
-            ITaxonomyHelper taxonomyHelper) 
+            ITaxonomyHelper taxonomyHelper)
             : base(dbContext, fieldEntityHelper, mediaHelper, localizer, localizationOptions)
         {
             TaxonomyHelper = taxonomyHelper;
@@ -53,32 +53,47 @@ namespace CoreIn.App
 
         public int Update(long entityId, IEnumerable<TEntityDetail> details, Dictionary<long, long[]> taxonomyTypeIdTaxonomyIds = null, User user = null)
         {
-            BaseEntityController.Update<TEntity,TEntityDetail,TEntityTaxonomy>(EntityHelper, TaxonomyHelper, entityId, details, taxonomyTypeIdTaxonomyIds, user);
+            BaseEntityController.Update<TEntity, TEntityDetail, TEntityTaxonomy>(EntityHelper, TaxonomyHelper, entityId, details, taxonomyTypeIdTaxonomyIds, user);
             return Save();
         }
 
-        public override IEnumerable<TEntity> GetEntities(DataRequest dataRequest)
+        internal new EntitiesResult<TEntity> GetEntities(DataRequest dataRequest)
         {
             var entities = base.GetEntities(dataRequest).ToList();
-            if (dataRequest.Taxonomies == null)
-                return entities;
+
 
             var filteredEntities = new List<TEntity>();
 
-            entities.ForEach(entity =>
-            {
-                foreach (var kv in dataRequest.Taxonomies)
+            if (dataRequest.Taxonomies != null)
+                foreach (var entity in entities)
                 {
-                    var taxonomies = TaxonomyHelper.GetTaxonomiesForEntity<TEntityTaxonomy>(entity.Id, kv.Key).Select(o => o.TaxonomyId);
-                    if (taxonomies.Contains(kv.Value))
+                    foreach (var kv in dataRequest.Taxonomies)
                     {
-                        filteredEntities.Add(entity);
-                        break;
+                        var taxonomies = TaxonomyHelper.GetTaxonomiesForEntity<TEntityTaxonomy>(entity.Id, kv.Key).Select(o => o.TaxonomyId);
+                        if (taxonomies.Contains(kv.Value))
+                        {
+                            filteredEntities.Add(entity);
+                            break;
+                        }
                     }
                 }
-            });
+            else
+                filteredEntities = entities;
 
-            return filteredEntities;
+            var entityResult = new EntitiesResult<TEntity>
+            {
+                TotalCount = filteredEntities.Count
+            };
+
+            if(dataRequest.Page != 0)
+                filteredEntities = filteredEntities.Skip((dataRequest.Page - 1) * dataRequest.PageSize).ToList();
+
+            if(dataRequest.PageSize != 0)
+                filteredEntities = filteredEntities.Take(dataRequest.PageSize).ToList();
+
+            entityResult.Entities = ToViewModels(filteredEntities, dataRequest.AdditionalFields);
+
+            return entityResult;
         }
 
         public override IEnumerable<BaseEntityViewModel> ToViewModels(IEnumerable<TEntity> entities, string[] moreFields = null)

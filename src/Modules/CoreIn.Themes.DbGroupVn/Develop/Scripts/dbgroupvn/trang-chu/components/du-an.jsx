@@ -1,34 +1,53 @@
+import { connect } from 'react-redux'
+
 const { Row, Col } = require('reactstrap');
 const { Link } = require('react-router-dom');
 
-const SectionTitle = require('../../shared/components/section-title');
+import { Title } from '../../shared/components'
 
 const DuAnItem = require('../../shared/components/du-an/du-an');
 
-const { dataRequest } = require('../../shared/ultilities');
+const { fetchEntities } = require('../../shared/utilities');
+
+import projectPageConfigure from '../../du-an/configuration'
+import { renderItem } from '../../du-an/helper/render-items'
 
 class DuAn extends React.Component {
+    static defaultProps = {
+        projectItems: []
+    }
+
     constructor(props) {
         super(props);
-        this.state = {
-            projects: []
-        }
-
-        dataRequest("/project/GetTableData", 7, 1, null, null, null, null, (response) => {
-            this.setState({ projects: response });
-        });
     }
+
+    componentWillMount() {
+        const { onDataFetch } = this.props
+
+        const postParams = {
+            page: 1,
+            pageSize: 7,
+        }
+        const baseItemPath = `/${projectPageConfigure.page}/${projectPageConfigure.detailPath}`
+
+        fetchEntities(projectPageConfigure.mvcController, postParams, baseItemPath, (projectItems) => {
+            onDataFetch({ projectItems }, 0)
+        })
+    }
+
+
     render() {
+        const { projectItems, className } = this.props
+
         return (
-            <section className={ this.props.className }>
-                <SectionTitle>{ localizationString.getString('Dự án') }</SectionTitle>
+            <section className={ className }>
+                <Title>{ localizationString.getString('Dự án') }</Title>
                 <Row className="pt-3">
                     {
-                        this.state.projects.length &&
-                        this.state.projects.map((project, index) => {
+                        projectItems.map((project, index) => {
                             return (
                                 <Col key={ project.id } xs="6" md="4" lg="3" className="page-item">
-                                    <DuAnItem data={ project } />
+                                    { renderItem(project) }
                                 </Col>
                             );
                         })
@@ -59,4 +78,12 @@ class DuAn extends React.Component {
     }
 }
 
-module.exports = DuAn;
+const mapStateToProps = (state, ownProps) => {
+    const { projectItems } = state.connectedBasePage.pages[ 'trang-chu' ]
+
+    return {
+        projectItems
+    }
+}
+
+module.exports = connect(mapStateToProps)(DuAn);

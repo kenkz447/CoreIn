@@ -124,7 +124,7 @@ export default class MapMarker extends Component {
 
     // no optimizations at all
     render() {
-        let scale = this.props.$hover || this.props.showBallon ? K_SCALE_HOVER :K_SCALE_NORMAL
+        let scale = this.props.$hover || this.props.showBallon ? K_SCALE_HOVER : K_SCALE_NORMAL
         scale = this.props.hoveredAtTable ? K_SCALE_TABLE_HOVER : scale;
 
         const markerHolderStyle = getMarkerHolderStyle(this.props.size, this.props.origin);
@@ -162,9 +162,8 @@ export default class MapMarker extends Component {
 
         // css hints library https://github.com/istarkov/html-hint
         return (
-            <div
-                style={ markerHolderStyle }
-                className={ cx('map-marker hint hint--html',
+            <div style={ markerHolderStyle }
+                    className={ cx('map-marker hint hint--html',
                     this.props.hintType,
                     hintBalloonBottomOffsetClass,
                     noTransClass, noTransBalloonClass, hintBaloonVerticalPosClass,
@@ -183,23 +182,6 @@ export default class MapMarker extends Component {
                 <div style={ hintBaloonHorizontalPosStyle } className={ cx('hint__content map-marker-hint', this.props.showBallon ? '' : 'noevents') }
                     onMouseEnter={ this._onMouseEnterContent }
                     onMouseLeave={ this._onMouseLeaveContent }>
-                    {/*<div className="balloon">
-                        <div onClick={ this._onCloseClick } className={ cx('map-marker-hint__close-button', this.props.showBallon ? 'map-marker-hint__close-button--visible' : '') }>
-                            x
-                        </div>
-
-                        <div className="map-marker-hint__title">
-                            <strong>{ this.props.marker.title }</strong>
-                        </div>
-                        <div className="map-marker-hint__address">
-                            { this.props.marker.address }
-                        </div>
-
-                        <div className={ cx('map-marker-hint__content', this.props.showBallon ? 'map-marker-hint__content--visible' : '') }>
-                            { this.props.marker.description }
-                        </div>
-                    </div>*/}
-
                     { this.props.renderMarkerContent(this.props.marker) }
                 </div>
             </div>

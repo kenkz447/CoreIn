@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace CoreIn.Commons
 {
@@ -15,6 +13,10 @@ namespace CoreIn.Commons
         public string Id { get; set; }
         public string PivotId { get; set; }
         public string Value { get; set; }
+
+        /// <summary>
+        /// Follow: <, <=, ==, >=, >
+        /// </summary>
         public string Operator { get; set; }
     }
 
@@ -24,7 +26,15 @@ namespace CoreIn.Commons
         public int PageSize { get; set; }
         public DataSort[] Sorted { get; set; }
         public List<DataFilter> Filtering { get; set; }
+
+        public long EntityTypeId { get; set; }
+
+        /// <summary>
+        /// Key: TaxonomyTypeId
+        /// Value: TaxonomyId
+        /// </summary>
         public Dictionary<long, long> Taxonomies { get; set; }
+
         public string[] AdditionalFields { get; set; }
     }
 }

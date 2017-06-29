@@ -1,9 +1,10 @@
 ﻿const { Container, Row, Col } = require('reactstrap');
 
+import { default as Menu } from './header/menu'
+
 const LanguageSelect = require('./header/language-select');
 const Search = require('./header/search');
 const Logo = require('./header/logo');
-const Menu = require('./header/menu').default;
 const MobileHeader = require('./header/header-mobile');
 const classNames = require('classnames');
 

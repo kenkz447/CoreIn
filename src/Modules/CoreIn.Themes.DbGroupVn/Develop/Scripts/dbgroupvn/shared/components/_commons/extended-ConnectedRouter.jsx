@@ -9,15 +9,18 @@ const renderRoute = (route) => {
 
     if (redirectToChild != null || redirectToChild != undefined)
         return (
-            <Switch key={name}>
+            <Switch key={ name }>
                 {
                     childRoutes.map((child, index) => {
-                        
-                        if(String(child.path).startsWith('/:'))
+                        if (!child.defaultLabel)
+                            child.defaultLabel = route.defaultLabel
+
+                        if (String(child.path).startsWith('/:'))
                             child.path = path + child.path
-                            
-                        if(!child.component)
+
+                        if (!child.component)
                             child.component = component
+                            
                         return renderRoute(child)
                     })
                 }
@@ -25,7 +28,7 @@ const renderRoute = (route) => {
             </Switch>
         )
 
-    return <Route key={name} {...route}/>
+    return <Route key={ name } {...route} />
 }
 
 const renderRoutes = ({ path, exact, component, childRoutes }) => {

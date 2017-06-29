@@ -87,7 +87,7 @@ namespace CoreIn.Modules.Homeclick
                                             new MenuDetail { Field = "title", Value = "Tất cả bộ sưu tập", Language="vi-VN"},
                                             new MenuDetail { Field = "controller", Value = "collection"},
                                             new MenuDetail { Field = "action", Value = "index"},
-                                            new MenuDetail { Field = "url", Value = $"/collection?entityTypeId={entityTypeManager.Project.Id}"},
+                                            new MenuDetail { Field = "url", Value = $"/collection?entityTypeId={entityTypeManager.Collection.Id}"},
                                         },
                                         supperUser, false
                                     ),

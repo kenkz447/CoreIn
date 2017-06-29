@@ -21,6 +21,7 @@
     <ProjectReference Include="..\..\Libraries\CoreIn.Modular\CoreIn.Modular.csproj" />
     <ProjectReference Include="..\..\Libraries\CoreIn.Package\CoreIn.Package.csproj" />
     <ProjectReference Include="..\..\Libraries\CoreIn.Resources\CoreIn.Resources.csproj" />
+    <ProjectReference Include="..\CoreIn.Modules.Homeclick\CoreIn.Modules.Homeclick.csproj" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Update="Localization\Strings.vi-VN.resx">

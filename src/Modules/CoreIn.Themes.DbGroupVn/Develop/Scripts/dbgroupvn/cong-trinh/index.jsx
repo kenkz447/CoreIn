@@ -1,96 +1,115 @@
-const { bindActionCreators } = require('redux');
-const { connect } = require('react-redux')
+//React/Redux
+import React, { Component } from 'react'
+import { Route, Switch } from 'react-router'
+import { bindActionCreators } from 'redux'
+import { connect } from 'react-redux'
 
+//Convert flat category array to category trees
+import listToTree from 'list-to-tree'
+
+//Actions
+
+//Components
+import { default as BasePage } from '../shared/_layout/main/base-page'
+
+import { Sidebar, SidebarMenu } from '../shared/components'
 import { Container, Row, Col } from 'reactstrap'
-import BasePage from '../shared/_layout/main/base-page'
-import { refreshRoutePath } from '../routes'
 
-import { Sidebar, Image, CategoryMenu } from '../shared/components'
+//Routes component
+import { default as DefaultView } from './views/default-view'
 
-import { dataRequest } from '../shared/ultilities'
-import PageItem from './components/page-item'
+//Page configuration
+const pageConfigure = require('./configuration.js')
 
-class PageComponent extends React.Component {
-    constructor() {
-        super();
+import { createCategoryUrlFromRoutePathAndCategoryName } from '../shared/utilities'
+
+class PageComponent extends Component {
+    static defaultProps = {
+        categories: []
+    }
+
+    constructor(props) {
+        super(props);
         this.renderSidebar = this.renderSidebar.bind(this)
-        this.fetchData = this.fetchData.bind(this)
     }
 
     componentWillMount() {
-        const { onError, onDataFetch, refreshRoutePath, categories, page, items, currentCategory  } = this.props
+        const { match, onError, onDataFetch, refreshRoutePath, categories, pageContent, items } = this.props
 
-        if (!page)
-            $.get('/page/getsingle?entityName=cong-trinh', function (response) {
-                onDataFetch({ page: response.details }, 50);
-            })
-        if (!categories)
-            $.get('/TaxonomyUI/GetTaxonomies', { taxonomyTypeId: 10003 }, function (response) {
-                onDataFetch({ categories: response }, 50)
+        if (!pageContent)
+            $.get(`/page/getsingle?entityName=${pageConfigure.page}`, function (response) {
+                onDataFetch({ pageContent: response.details }, 50);
             })
 
-        if (!items)
-            this.fetchData(currentCategory)
+        if (!categories.length)
+            $.get('/TaxonomyUI/GetTaxonomies', { taxonomyTypeId: pageConfigure.TAXONOMY_TYPE_ID_CATEGORY }, function (responseCategories) {
 
-        refreshRoutePath('cong-trinh')
-    }
+                const ltt = new listToTree(responseCategories, { key_parent: 'parentId', key_child: 'children' })
+                const categories = ltt.GetTree()
 
-    fetchData(currentCategory) {
-                const { onDataFetch } = this.props
+                categories.unshift({
+                    name: localizationString.getString('tat-ca'),
+                    title: localizationString.getString("Tất cả")
+                })
 
-            dataRequest('/construction/gettabledata', 9, 1, null, null, currentCategory && { 10003: currentCategory.id }, null, function (response) {
-                onDataFetch({ items: response }, 0)
+                onDataFetch({ categories }, 50)
             })
-    }
-
-    componentWillReceiveProps(nextProps){
-        const {currentCategory} = this.props;
-        if(currentCategory && nextProps.currentCategory && currentCategory.id != nextProps.currentCategory.id)
-        this.fetchData(nextProps.currentCategory)
     }
 
     renderSidebar() {
-        const { categories, onDataFetch, currentCategory } = this.props;
+        const { categories, match: { path, url } } = this.props;
 
         return (
             <Sidebar>
-                { categories && <CategoryMenu currentCategory={currentCategory} categories={ categories } onDataFetch={onDataFetch}/> }
+                {
+                    categories && categories.map((categoryTree) => {
+
+                        const categoryMenuItems = categoryTree.children && categoryTree.children.map(({ name, title }) => {
+                            return { path: createCategoryUrlFromRoutePathAndCategoryName(path, name), title }
+                        })
+
+                        return (
+                            <SidebarMenu key={categoryTree.name} title={ categoryTree.title }
+                                titleLink={ createCategoryUrlFromRoutePathAndCategoryName(path, categoryTree.name)}
+                                items={ categoryMenuItems }
+                            />
+                        )
+                    })
+                }
             </Sidebar>
         )
     }
 
-    render() {
-        
-        if (this.props.dataFetchProgress != 100)
-            return null;
-
-        const { page: { thumbnail }, categories, items , currentCategory} = this.props;
+    renderRoutes() {
+        const { match: { path }, onDataFetch } = this.props;
 
         return (
-            <Container id="construction"> 
+            <Switch>
+                <Route exact={ true } path={ path } render={ (route) => <DefaultView {...route} onDataFetch={ onDataFetch } /> } />
+                <Route path={ path + '/:page' } render={ (route) => <DefaultView {...route} onDataFetch={ onDataFetch } /> } />
+            </Switch>
+        )
+    }
+
+    render() {
+        const { dataFetchProgress, match } = this.props
+
+        if(dataFetchProgress != 100)
+            return null
+
+        if (__DEV__) {
+            console.log(pageConfigure.page + ' props: ')
+            console.log(this.props)
+        }
+
+        return (
+            <Container id="thu-vien">
                 <Row>
-                    <Col lg="3">
+                    <Col xs="12" lg="4" xl="3">
                         { this.renderSidebar() }
                     </Col>
-                    <Col xs="12" lg="9">
-                        <Image {...thumbnail} />
-                        <div className="page-titles mt-4 mb-3">
-                            <span className="page-title">{localizationString.getString("Bộ sưu tập")}</span>
-                            <span>|</span>
-                            <span className="page-title">{currentCategory ? currentCategory.title :localizationString.getString("Tất cả") }</span>
-                        </div>
-                        <Row>
-                            {
-                                items.length &&
-                                items.map((item, index) => {
-                                    return (
-                                        <Col key={ item.id } xs="6" lg="4" className="page-item">
-                                            <PageItem data={ item } />
-                                        </Col>
-                                    );
-                                })
-                            }
-                        </Row>
+                    <Col xs="12" lg="8" xl="9">
+                        { this.renderRoutes() }
                     </Col>
                 </Row>
             </Container>
@@ -98,14 +117,15 @@ class PageComponent extends React.Component {
     }
 }
 
-const stateToProps = (state) => ({
+const mapStateToProps = (state, ownProps) => {
+    return {
+    }
+}
 
+const mapDispatchToProps = (dispatch) => ({
+    ...bindActionCreators({  }, dispatch),
 })
 
-const dispathToProps = (dispath) => (
-    bindActionCreators({ refreshRoutePath }, dispath)
-)
+const ConnectedPageComponent = connect(mapStateToProps, mapDispatchToProps)(PageComponent);
 
-const ConnectedPageComponent = connect(stateToProps, dispathToProps)(PageComponent)
-
-module.exports = BasePage({ page: 'cong-trinh', showBreadcrumbs: true })(ConnectedPageComponent);
+module.exports = BasePage({ page: pageConfigure.page, showBreadcrumbs: pageConfigure.showBreadcrumbs })(ConnectedPageComponent);

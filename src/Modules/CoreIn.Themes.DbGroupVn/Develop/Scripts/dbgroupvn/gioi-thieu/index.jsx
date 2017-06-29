@@ -4,7 +4,7 @@ const { Container, Row } = require('reactstrap');
 const { Image,  Title, PageArticle } = require('../shared/components');
 const QuyTrinh = require('./components/quy-trinh');
 
-const BasePage = require('../shared/_layout/main/base-page');
+import { default as BasePage } from '../shared/_layout/main/base-page'
 
 class PageComponent extends React.Component {
     constructor() {

@@ -5,21 +5,19 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 
 //Actions
-import { refreshRoutePath } from '../routes'
 
 //Components
-import BasePage from '../shared/_layout/main/base-page'
-
+import { default as BasePage } from '../shared/_layout/main/base-page'
 import { Sidebar, SidebarMenu } from '../shared/components'
-import { Container, Row, Col } from 'reactstrap'
+import { Container,  Row, Col} from 'reactstrap'
 
 //Routes component
-import { default as DefaultView } from './components/default-view'
+import { default as DefaultView } from './views/default-view'
 
 //Page configuration
 const pageConfigure = require('./configuration.js')
-const { getCategoryUrl, getCurrentCategory } = require('./helper/functions')
 
+import { createCategoryUrlFromRoutePathAndCategoryName } from '../shared/utilities'
 
 class ThuVien extends Component {
     static defaultProps = {
@@ -43,50 +41,59 @@ class ThuVien extends Component {
             $.get('/TaxonomyUI/GetTaxonomies', { taxonomyTypeId: pageConfigure.TAXONOMY_TYPE_ID_CATEGORY }, function (responseCategories) {
                 responseCategories.unshift({
                     name: localizationString.getString('tat-ca'),
-                    path: getCategoryUrl(match, localizationString.getString('tat-ca'), 1),
+                    path: createCategoryUrlFromRoutePathAndCategoryName(match.path, localizationString.getString('tat-ca')),
                     title: localizationString.getString("Tất cả")
                 })
                 onDataFetch({ categories: responseCategories }, 50)
             })
-
-        refreshRoutePath(pageConfigure.page)
     }
 
     renderSidebar() {
-        const { categories, match } = this.props;
+        const { categories, match: { path, url } } = this.props;
 
         const categoryMenuItems = categories.map(({ name, title }) => {
-            return { path: getCategoryUrl(match, name, 1), title }
+            return { path: createCategoryUrlFromRoutePathAndCategoryName(path, name), title }
         })
 
         return (
             <Sidebar title={ localizationString.getString("Danh mục") }>
                 <SidebarMenu noBorder title={ localizationString.getString('loại công trình') }
                     items={ categoryMenuItems }
-                    currentUrl={ match.url }
+                    currentUrl={ url }
                 />
             </Sidebar>
         )
     }
 
     renderRoutes() {
-        const { match, categories, onDataFetch } = this.props;
+        const { match: { path }, categories, onDataFetch } = this.props;
 
         return (
             <Switch>
-                <Route path={ match.path } render={ (route) => <DefaultView {...route} onDataFetch={ onDataFetch } /> } />
+                <Route exact={ true } path={ path } render={ (route) => <DefaultView {...route} onDataFetch={ onDataFetch } /> } />
+                <Route path={ path + '/:page' } render={ (route) => <DefaultView {...route} onDataFetch={ onDataFetch } /> } />
             </Switch>
         )
     }
 
     render() {
+        const { dataFetchProgress, match } = this.props
+
+        if (__DEV__) {
+            console.log(pageConfigure.page + ' props: ')
+            console.log(this.props)
+        }
+
+        if(dataFetchProgress != 100)
+            return null
+
         return (
             <Container id="thu-vien">
                 <Row>
-                    <Col xl="12" lg="4" xl="3">
+                    <Col xs="12" lg="4" xl="3">
                         { this.renderSidebar() }
                     </Col>
-                    <Col xl="12" lg="8" xl="9">
+                    <Col xs="12" lg="8" xl="9">
                         { this.renderRoutes() }
                     </Col>
                 </Row>
@@ -101,7 +108,7 @@ const mapStateToProps = (state, ownProps) => {
 }
 
 const mapDispatchToProps = (dispatch) => ({
-    ...bindActionCreators({ refreshRoutePath }, dispatch),
+    ...bindActionCreators({ }, dispatch),
 })
 
 const ConnectedThuVien = connect(mapStateToProps, mapDispatchToProps)(ThuVien);

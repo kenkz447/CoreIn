@@ -1,62 +1,43 @@
-﻿const { render } = require('react-dom');
-const { createStore, applyMiddleware } = require('redux');
-const { routerMiddleware, push } = require('react-router-redux');
+﻿
+import { render } from 'react-dom'
+import { createStore, applyMiddleware } from 'redux'
+import { routerMiddleware, push } from 'react-router-redux'
 
-const { history, Root } = require('./dbgroupvn/root.jsx');
-const updateLayout = require('./dbgroupvn/shared/_layout').updateLayout;
+import { default as LocalizationString } from './dbgroupvn/shared/_localization'
+global.localizationString = new LocalizationString()
 
-const reducer = require('./dbgroupvn/shared/reducer');
-const middleware = routerMiddleware(history)
+//Keys and action
+import { actions as localizationAction } from './dbgroupvn/shared/reducers/localization'
 
-const store = createStore(reducer, applyMiddleware(middleware, updateLayout));
+//Components and middleware
+import { history, Root } from './dbgroupvn/root'
+import { updateLayoutMiddleware } from './dbgroupvn/shared/_layout'
 
-const initLocalization = require('./dbgroupvn/shared/reducers/localization').actions.init;
-const initMenu = require('./dbgroupvn/shared/_layout/header/menu').actions.init;
-
-import { INIT_ROUTES } from './dbgroupvn/routes';
-
-global.localizationString = require('./dbgroupvn/shared/_localization');
+import reducer from './dbgroupvn/shared/reducer'
 
 $(document).ready(function () {
-    $.ajax({ 
+
+
+    const historyMiddleware = routerMiddleware(history)
+    const store = createStore(reducer, applyMiddleware(historyMiddleware, updateLayoutMiddleware));
+
+    $.ajax({
         url: "/DbGroupVn/GetSiteInitData",
         success: (response) => {
 
-            store.dispatch(initLocalization(response.localization))
             global.localizationString.setLanguage(response.localization.currentLanguage)
+            store.dispatch(localizationAction.init(response.localization))
 
+            const { INIT_ROUTES } = require('./dbgroupvn/shared/reducers/app-routes')
+            const routes = require('./dbgroupvn/routes').default
+            
             //Routes
-            store.dispatch({type: INIT_ROUTES})
-
-            //Khởi tạo giá trị mặc định cho components     
-            store.dispatch(initMenu(response.menu))
+            store.dispatch({ type: INIT_ROUTES, routes })
 
             render(
-                <Root store={store} />,
+                <Root store={ store } />,
                 document.getElementById('root')
             );
         }
     });
 });
-
-function onElementHeightChange(elm, callback) {
-    var lastHeight = elm.clientHeight, newHeight;
-    (function run() {
-        newHeight = elm.clientHeight;
-        if (lastHeight != newHeight)
-            callback();
-        lastHeight = newHeight;
-
-        if (elm.onElementHeightChangeTimer)
-            clearTimeout(elm.onElementHeightChangeTimer);
-
-        elm.onElementHeightChangeTimer = setTimeout(run, 200);
-    })();
-}
-
-//Nếu height của body thay đổi thì refresh AOS
-onElementHeightChange(document.body, function () {
-    AOS.refresh();
-});
-
-global.__DEV__ = true;

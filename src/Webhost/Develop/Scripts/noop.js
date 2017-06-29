@@ -33,36 +33,38 @@ jQuery.grayLightest = '#f8f9fa';
 * MAIN NAVIGATION
 */
 jQuery(document).ready(function ($) {
-
-    jQuery.navigation.find('li[data-base-url]').each(function () {
-        var $li = jQuery(this);
-        var baseUrl = $li.data('base-url');
-        if (String(window.location).includes(baseUrl)) {
-            $li.addClass('open current');
-        }
-    });
+    jQuery.getParameterByName = function(name, url) {
+        if (!url) url = window.location.href;
+        name = name.replace(/[\[\]]/g, "\\$&");
+        var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+            results = regex.exec(url);
+        if (!results) return null;
+        if (!results[2]) return '';
+        return decodeURIComponent(results[2].replace(/\+/g, " "));
+    }
 
     // Add class .active to current link
     jQuery.navigation.find('a').each(function () {
+         //Compare a href and windows href
         var aUrl = jQuery(jQuery(this))[0].href;
 
-        var cUrl = String(window.location).split('?')[0];
+        //get url before hash
+        var currentUrl = String(window.location).split('?')[0];
         aUrl = String(aUrl).split('?')[0];
 
-        if (cUrl.substr(cUrl.length - 1) === '#') {
-            cUrl = cUrl.slice(0, -1);
-        }
+        //Remove hash from url
+        currentUrl = (currentUrl.substr(currentUrl.length - 1) === '#') ? currentUrl.slice(0, -1) : currentUrl;
+        aUrl = (aUrl.substr(currentUrl.length - 1) === '#') ? aUrl = aUrl.slice(0, -1) : aUrl;
 
-        if (aUrl.substr(cUrl.length - 1) === '#') {
-            aUrl = aUrl.slice(0, -1);
-        }
+        if (aUrl === currentUrl) {
+            var aEntityTypeId = jQuery.getParameterByName('entityTypeId', jQuery(jQuery(this))[0].href)
+            if (aEntityTypeId === jQuery.getParameterByName('entityTypeId', window.location)) {
+                jQuery(this).addClass('active');
 
-        if (aUrl === cUrl) {
-            jQuery(this).addClass('active');
-
-            jQuery(this).parents('ul').add(this).each(function () {
-                jQuery(this).parent().addClass('open');
-            });
+                jQuery(this).parents('ul').each(function () {
+                    jQuery(this).parent('li').addClass('open current');
+                });
+            }
         }
     });
 

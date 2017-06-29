@@ -1,16 +1,19 @@
-﻿const $ = require('jquery');
-const { NavLink } = require('react-router-dom');
-const { connect } = require('react-redux');
-const { bindActionCreators } = require('redux');
-const PropTypes = require('prop-types');
+﻿import $ from 'jquery'
+import { NavLink } from'react-router-dom'
+import { connect } from'react-redux'
+import { bindActionCreators } from'redux'
+import { default as PropTypes} from 'prop-types'
+
+import { DEFAULT_MENU } from '../../reducers/app-routes'
 
 const keys = {
     init: "MENU_INIT"
 }
 
 const actions = {
-    //initState:
-    // - menuItems: flat array
+    /**
+     * {menuItems: flat array}
+     */
     init: (initState) => ({
         type: keys.init,
         initState
@@ -27,28 +30,34 @@ const reducer = (state = {}, action) => {
     }
 }
 
-const stateToProps = (state) => ({
-    menuItems: state.menu.menuItems,
-});
-
-const dispathToProps = (dispatch) => (
-    bindActionCreators({  }, dispatch)
-);
-
+const stateToProps = (state) => {
+    return ({
+        menuItems: state.appRouter.menus[ DEFAULT_MENU ]
+    })
+}
 
 class Menu extends React.Component {
+    static propTypes = {
+        menuItems: PropTypes.array.isRequired
+    }
+
+    static defaultProps = {
+        menuItems: []
+    }
+
     render() {
         const { menuItems } = this.props;
         return (
             <ul className="menu text-uppercase pl-0 mb-0">
                 {
-                    menuItems.map((menuItem, index) => {
+                    menuItems.map(({ exact, url, label }, index) => {
                         return (
-                            <li key={index} className="menu-item d-inline-block">
-                                <NavLink exact={ menuItem.url == '/'} to={menuItem.url} activeClassName="current">
-                                    <span>{menuItem.title}</span>
+                            <li key={ index } className="menu-item d-inline-block">
+                                <NavLink exact={ exact } to={ url } activeClassName="current">
+                                    <span>{ label }</span>
                                 </NavLink>
-                            </li>)
+                            </li>
+                        )
                     })
                 }
             </ul>
@@ -56,12 +65,9 @@ class Menu extends React.Component {
     }
 }
 
-Menu.propTypes = {
-    menuItems: PropTypes.array.isRequired
+export {
+    actions,
+    reducer
 }
 
-module.exports ={
-    actions,
-    reducer,
-    default: connect(stateToProps, dispathToProps, null, { pure: false })(Menu)
-}
+export default connect(stateToProps, null, null, { pure: false })(Menu)

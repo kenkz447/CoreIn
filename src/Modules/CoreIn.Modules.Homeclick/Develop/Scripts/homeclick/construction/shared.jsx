@@ -9,7 +9,7 @@ module.exports = {
         tableColumns: [{
             Header: "Thumbnail",
             accessor: 'thumbnailUrl',
-            Cell: props => (<div className="image-fill table-thumbnail" style={{ backgroundImage: `url(${props.value})`}}></div>),
+            Cell: props => (<div className="image-fill table-thumbnail" style={{ backgroundImage: `url(${props.value})` }}></div>),
             width: 85,
             sortable: false,
             filterable: false

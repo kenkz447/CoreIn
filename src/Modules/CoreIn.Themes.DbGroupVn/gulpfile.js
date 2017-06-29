@@ -93,7 +93,31 @@ gulp.task('vendor', function() {
         .pipe(gulp.dest('wwwroot/js'))
 });
 
-gulp.task('vendor-min', function() {
+gulp.task('jsx:min', function() {
+    browserify({
+            entries: './develop/scripts/dbgroupvn.jsx',
+            extensions: ['.jsx'],
+            debug: true
+        })
+        .transform(babelify, {
+            'presets': ['es2015', 'react'],
+            'plugins': ['transform-decorators-legacy',
+                'babel-plugin-transform-class-properties',
+                'babel-plugin-transform-object-rest-spread'
+            ]
+        })
+        .external(libs)
+        .bundle()
+        .on('error', onError)
+        .pipe(source(`${pkg.name}.min.js`))
+        .pipe(buffer())
+        .pipe(sourcemaps.init({ loadMaps: true }))
+        .pipe(uglify())
+        .pipe(sourcemaps.write('./'))
+        .pipe(gulp.dest('wwwroot/js'))
+})
+
+gulp.task('vendor:min', function() {
     var stream = gulp.src('wwwroot/js/dbgroupvn.vendor.js')
         .pipe(uglify()).pipe(rename('dbgroupvn.vendor.min.js'))
         .pipe(gulp.dest('wwwroot/js'));

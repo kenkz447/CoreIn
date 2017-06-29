@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc.Filters;
+using CoreIn.Models;
 
 namespace CoreIn.App
 {
@@ -58,9 +59,11 @@ namespace CoreIn.App
             var entityTypeId = long.Parse(HttpContext.Request.Query["entityTypeId"][0]);
 
             var form = _entityController.GetForm(id, lang);
+
+            //form.InitialValues.Meta.Add("entityTypeId", entityTypeId.ToString());
+
             var taxonomyTypesViewModels = _entityController.TaxonomyHelper.GetTaxonomiesTypeViewModels(entityTypeId, true);
             form.TaxonomyTypes = taxonomyTypesViewModels.Select(o => new FormTaxonomyType(o));
-            form.InitialValues.Meta.Add("entityTypeId", entityTypeId.ToString());
 
             if (id != null)
             {
@@ -110,7 +113,7 @@ namespace CoreIn.App
                 {
                     { "entityTypeId", entity.EntityTypeId },
                     { "id", id},
-                    { "lang", lang}
+                    { "lang", lang }
                 });
 
             return View(actionViewModel);
@@ -131,13 +134,29 @@ namespace CoreIn.App
         public override JsonResult GetTableData(DataRequest dataRequest)
         {
             var filterResult = _entityController.GetEntities(dataRequest);
-            var result = _entityController.ToViewModels(filterResult.ToList(), dataRequest.AdditionalFields);
-            return Json(result);
+            return Json(filterResult);
         }
 
-        public JsonResult GetData()
+
+        public override JsonResult GetSingle(string entityName)
         {
-            return Json(null);
+            var result = _entityController.GetEntityValues(entityName, GetCurrentLanguage());
+
+            var entityTypeId = long.Parse(result.Meta["entityTypeId"]);
+            var entityId = long.Parse(result.Meta["id"]);
+
+            var taxonomyTypeViewModels = _entityController.TaxonomyHelper.GetTaxonomiesTypeViewModels(entityTypeId, true);
+
+            foreach (var taxonomyTypeViewModel in taxonomyTypeViewModels)
+            {
+                var relateTaxonomies = _entityController.TaxonomyHelper.GetTaxonomiesForEntity<TTaxonomy>(entityId, taxonomyTypeViewModel.Id).Select(o => o.TaxonomyId);
+                var taxonomyViewModels = taxonomyTypeViewModel.Taxonomies.Where(o => relateTaxonomies.Contains(o.Id));
+                taxonomyTypeViewModel.Taxonomies = taxonomyViewModels;
+            }
+
+            result.TaxonomyTypeViewModels = taxonomyTypeViewModels;
+
+            return Json(result);
         }
     }
 }

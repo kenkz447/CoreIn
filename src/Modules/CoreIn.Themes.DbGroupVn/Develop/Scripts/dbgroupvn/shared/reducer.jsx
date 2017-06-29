@@ -1,23 +1,23 @@
-﻿const { combineReducers } = require('redux');
-const { routerReducer } = require('react-router-redux');
+﻿import { combineReducers } from 'redux'
+import { routerReducer as router } from 'react-router-redux'
 
-//reducers
+//Reducers
+import { googleMapReducer as googleMap } from './reducers/google-map'
+import { reducer as appRouter } from './reducers/app-routes'
+
 const localization = require('./reducers/localization').reducer;
 const menu = require('./_layout/header/menu').reducer;
 const layout = require('./_layout').reducer;
 const connectedBasePage = require('./_layout/main/connected-base-page').reducer;
-
-import { googleMapReducer } from './reducers/google-map'
-import { reducer as appRouter } from '../routes'
 
 const reducer = combineReducers({
     layout,
     localization,
     menu,
     connectedBasePage,
-    router: routerReducer,
+    router,
     appRouter,
-    googleMap: googleMapReducer
+    googleMap
 })
 
 module.exports = reducer;

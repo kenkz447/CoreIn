@@ -2,7 +2,9 @@
 using CoreIn.Commons.Form.Attributes;
 using CoreIn.Commons.ViewModels;
 using CoreIn.Media;
+using CoreIn.Modules.Homeclick.ViewModels;
 using Newtonsoft.Json;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace CoreIn.Modules.Post.ViewModels
@@ -16,11 +18,25 @@ namespace CoreIn.Modules.Post.ViewModels
         [FormFieldDisplay(Title: "Excerpt")]
         public string Excerpt { get; set; }
 
-        [FormFieldDisplay(Title: "Description", Type: "textarea")]
-        public string Description { get; set; }
+        [FormFieldDisplay(Title: "Content", RenderType: (int)FieldRenderType.Editor)]
+        public string Content { get; set; }
 
-        [Required]
         [FormFieldDisplay(RenderType: (int)FieldRenderType.Image, Title: "Thumbnail image")]
         public ImageViewModel Thumbnail { get; set; }
+
+        [FormFieldDisplay(Placeholder: "Writer")]
+        public string Writer { get; set; }
+
+        [FormFieldDisplay(Placeholder: "Facebook")]
+        public string Facebook { get; set; }
+
+        [FormFieldDisplay(Placeholder: "Twitter")]
+        public string Twitter { get; set; }
+
+        [FormFieldDisplay(Placeholder: "Instagram")]
+        public string Instagram { get; set; }
+
+        [FormFieldDisplay(Title: "Cover photos")]
+        public IEnumerable<AlbumImageViewModel> CoverPhotos { get; set; }
     }
 }

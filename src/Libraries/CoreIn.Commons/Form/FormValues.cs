@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using CoreIn.Models;
+using Newtonsoft.Json;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -52,6 +53,9 @@ namespace CoreIn.Commons.Form
 
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public Dictionary<long, Dictionary<long, bool>> TaxonomyTypes { get; set; } = new Dictionary<long, Dictionary<long, bool>>();
+
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+        public IEnumerable<TaxonomyTypeViewModel> TaxonomyTypeViewModels { get; set; }
 
         public string GetMetaValue(string metaKey)
         {

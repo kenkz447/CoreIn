@@ -1,4 +1,4 @@
-module.exports = {
+export default {
     'Tìm kiếm': "Search",
     'Công trình': "Construction",
     'Dự án': "Project",

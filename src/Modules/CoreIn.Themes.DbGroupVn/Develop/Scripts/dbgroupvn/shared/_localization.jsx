@@ -1,23 +1,21 @@
-const enUS = require('./_localization/en-us');
+import { default as enUS } from './_localization/en-us'
 
-var strings = {
+const strings = {
     'vi-VN': {
     },
     'en-US': enUS
 };
 
-class localization {
-    constructor(){
+export default class {
+    constructor() {
         this.strings = strings;
     }
 
-    setLanguage(language){
+    setLanguage(language) {
         this.language = language;
     }
 
-    getString(string){
-        return this.strings[this.language][string] || string;
+    getString(string) {
+        return this.strings[ this.language ][ string ] || string;
     }
 }
-
-module.exports = new localization();

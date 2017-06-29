@@ -163,7 +163,7 @@ var _routes = require('../routes');
 
 var _components = require('../shared/components');
 
-var _ultilities = require('../shared/ultilities');
+var _utilities = require('../shared/utilities');
 
 var _pageItem = require('./components/page-item');
 
@@ -226,7 +226,7 @@ var PageComponent = function (_React$Component) {
             var onDataFetch = this.props.onDataFetch;
 
 
-            (0, _ultilities.dataRequest)('/collection/gettabledata', 9, 1, null, null, currentCategory && { 30003: currentCategory.id }, function (response) {
+            (0, _utilities.dataRequest)('/collection/gettabledata', 9, 1, null, null, currentCategory && { 30003: currentCategory.id }, function (response) {
                 onDataFetch({ items: response }, 0);
             });
         }
@@ -331,7 +331,7 @@ var ConnectedPageComponent = connect(stateToProps, dispathToProps)(PageComponent
 
 module.exports = (0, _basePage2.default)({ page: 'bo-suu-tap', showBreadcrumbs: true })(ConnectedPageComponent);
 
-},{"../routes":9,"../shared/_layout/main/base-page":21,"../shared/components":27,"../shared/ultilities":40,"./components/page-item":2,"react-redux":"react-redux","reactstrap":"reactstrap","redux":"redux"}],4:[function(require,module,exports){
+},{"../routes":9,"../shared/_layout/main/base-page":21,"../shared/components":27,"../shared/utilities":40,"./components/page-item":2,"react-redux":"react-redux","reactstrap":"reactstrap","redux":"redux"}],4:[function(require,module,exports){
 "use strict";
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -423,7 +423,7 @@ var _routes = require('../routes');
 
 var _components = require('../shared/components');
 
-var _ultilities = require('../shared/ultilities');
+var _utilities = require('../shared/utilities');
 
 var _pageItem = require('./components/page-item');
 
@@ -486,7 +486,7 @@ var PageComponent = function (_React$Component) {
             var onDataFetch = this.props.onDataFetch;
 
 
-            (0, _ultilities.dataRequest)('/construction/gettabledata', 9, 1, null, null, currentCategory && { 10003: currentCategory.id }, function (response) {
+            (0, _utilities.dataRequest)('/construction/gettabledata', 9, 1, null, null, currentCategory && { 10003: currentCategory.id }, function (response) {
                 onDataFetch({ items: response }, 0);
             });
         }
@@ -591,7 +591,7 @@ var ConnectedPageComponent = connect(stateToProps, dispathToProps)(PageComponent
 
 module.exports = (0, _basePage2.default)({ page: 'cong-trinh', showBreadcrumbs: true })(ConnectedPageComponent);
 
-},{"../routes":9,"../shared/_layout/main/base-page":21,"../shared/components":27,"../shared/ultilities":40,"./components/page-item":4,"react-redux":"react-redux","reactstrap":"reactstrap","redux":"redux"}],6:[function(require,module,exports){
+},{"../routes":9,"../shared/_layout/main/base-page":21,"../shared/components":27,"../shared/utilities":40,"./components/page-item":4,"react-redux":"react-redux","reactstrap":"reactstrap","redux":"redux"}],6:[function(require,module,exports){
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -3320,7 +3320,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.dataRequest = undefined;
 
-var _requestData = require('./ultilities/requestData');
+var _requestData = require('./utilities/requestData');
 
 var _requestData2 = _interopRequireDefault(_requestData);
 
@@ -3328,7 +3328,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 exports.dataRequest = _requestData2.default;
 
-},{"./ultilities/requestData":41}],41:[function(require,module,exports){
+},{"./utilities/requestData":41}],41:[function(require,module,exports){
 "use strict";
 
 var requestData = function requestData(url, pageSize, page, sorted, filtering, taxonomies, callback) {
@@ -3471,7 +3471,7 @@ var SectionTitle = require('../../shared/components/section-title');
 
 var DuAnItem = require('../../shared/components/du-an/du-an');
 
-var _require3 = require('../../shared/ultilities'),
+var _require3 = require('../../shared/utilities'),
     dataRequest = _require3.dataRequest;
 
 var DuAn = function (_React$Component) {
@@ -3564,7 +3564,7 @@ var DuAn = function (_React$Component) {
 
 module.exports = DuAn;
 
-},{"../../shared/components/du-an/du-an":33,"../../shared/components/section-title":36,"../../shared/ultilities":40,"react-router-dom":"react-router-dom","reactstrap":"reactstrap"}],44:[function(require,module,exports){
+},{"../../shared/components/du-an/du-an":33,"../../shared/components/section-title":36,"../../shared/utilities":40,"react-router-dom":"react-router-dom","reactstrap":"reactstrap"}],44:[function(require,module,exports){
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();

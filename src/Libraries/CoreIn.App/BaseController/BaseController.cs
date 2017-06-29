@@ -113,14 +113,24 @@ namespace CoreIn.App
         public virtual JsonResult GetTableData(DataRequest dataRequest)
         {
             var filterResult = _entityController.GetEntities(dataRequest);
-            var results = _entityController.ToViewModels(filterResult.ToList());
-            return Json(results);
+            var totalCountBeforeSkipAndTake = filterResult.Count();
+
+            filterResult = filterResult.Skip((dataRequest.Page - 1) * dataRequest.PageSize);
+            filterResult = filterResult.Take(dataRequest.PageSize);
+
+            var result = new EntitiesResult<TEntity>
+            {
+                Entities = _entityController.ToViewModels(filterResult.ToList()),
+                TotalCount = totalCountBeforeSkipAndTake
+            };
+
+            return Json(result);
         }
-		
-		[AllowAnonymous]
-		public int GetTotalEntitiesCount()
-			=> _entityController.EntityHelper.Entities().Count();
-		
+
+        [AllowAnonymous]
+        public int GetTotalEntitiesCount()
+            => _entityController.EntityHelper.Entities().Count();
+
         [AllowAnonymous]
         public JsonResult GetRandomEntity(int count)
         {
@@ -130,7 +140,7 @@ namespace CoreIn.App
         }
 
         [AllowAnonymous]
-        public JsonResult GetSingle(string entityName)
+        public virtual JsonResult GetSingle(string entityName)
         {
             var result = _entityController.GetEntityValues(entityName, GetCurrentLanguage());
             return Json(result);

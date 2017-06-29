@@ -4,7 +4,7 @@ import _ from 'underscore'
 import { default as classNames } from 'classnames'
 
 class Pager extends React.Component {
-    
+
     static propTypes = {
         onItemsChange: PropTypes.func.isRequired,
         initialPage: PropTypes.number
@@ -15,15 +15,26 @@ class Pager extends React.Component {
         this.state = { pager: {} };
         this.renderPage = this.renderPage.bind(this)
         this.renderPageLink = this.renderPageLink.bind(this)
+        this.getPageUrl = this.getPageUrl.bind(this)
+    }
+
+    getPageUrl(pageNumber) {
+        var templatePath = String(this.props.templatePath)
+        const paramKey = String(this.props.paramKey || ':page')
+
+        if (templatePath.indexOf(paramKey) >= 1)
+            return templatePath.replace(paramKey, pageNumber)
+
+        return templatePath += `/${pageNumber}`
     }
 
     renderPageLink(page, label) {
         const { getPageUrl } = this.props
-        return (<Link className="page-link" to={ getPageUrl(page) } dangerouslySetInnerHTML={{__html: label || page }}/>)
+        return (<Link className="page-link" to={ this.getPageUrl(page) } dangerouslySetInnerHTML={ { __html: label || page } } />)
     }
 
     renderPage() {
-        const { currentPage, totalPages, basePath, getPageUrl } = this.props
+        const { currentPage, totalPages, basePath } = this.props
         const pageComonents = []
 
         for (var page = 1; page <= totalPages; page++) {
@@ -38,16 +49,15 @@ class Pager extends React.Component {
     }
 
     render() {
-        const { totalPages, currentPage, getPageUrl } = this.props
+        const { totalPages, currentPage } = this.props
 
         if (!totalPages || totalPages <= 1) {
-            // don't display pager if there is only 1 page
             return null;
         }
 
         return (
             <div className={ classNames("pager", this.props.className) }>
-                <ul className="pagination">
+                <ul className="pagination m-0">
                     <li className={ classNames("page-item", { disabled: currentPage === 1 }) }>
                         { this.renderPageLink(1, '<i class="fa fa-angle-left" aria-hidden="true"></i>') }
                     </li>

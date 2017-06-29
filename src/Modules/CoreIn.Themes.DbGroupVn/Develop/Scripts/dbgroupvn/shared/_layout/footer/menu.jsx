@@ -6,8 +6,10 @@ const { connect } = require('react-redux');
 const PropTypes = require('prop-types');
 const classNames = require('classnames');
 
+import { DEFAULT_MENU } from '../../reducers/app-routes'
+
 const stateToProps = (state) => ({
-    menuItems: state.menu.menuItems,
+    menuItems: state.appRouter.menus[ DEFAULT_MENU ]
 });
 
 class Menu extends React.Component {

@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux'
-import { push } from 'react-router-redux'
 import { default as PropTypes } from 'prop-types'
 
 import controllable from 'react-controllables';
@@ -75,10 +74,8 @@ class MainMapBlock extends Component {
         const markerId = childProps.marker.id;
         const index = this.props.markers.findIndex(m => m.id === markerId);
         var currentMarker = this.props.markers[ index ];
-        if (currentMarker.redirect)
-            this.props.dispatch(push(currentMarker.redirect))
-        else
-            this.setState({ openBallonIndex: index })
+        
+        this.props.onMarkerClick(currentMarker)
     }
 
     _onChildMouseEnter = (key, childProps) => {
@@ -104,10 +101,8 @@ class MainMapBlock extends Component {
     _distanceToMouse = customDistanceToMouse;
 
     render() {
-        const { rowFrom, rowTo } = getRealFromTo(this.props.visibleRowFirst, this.props.visibleRowLast, this.props.maxVisibleRows, this.props.markers.length);
 
         const Markers = this.props.markers &&
-            //this.props.markers.filter((m, index) => index >= rowFrom && index <= rowTo)
             this.props.markers.map((marker, index) => (
                 <Marker
                     // required props
@@ -118,8 +113,8 @@ class MainMapBlock extends Component {
                     showBallon={ marker.id === this.props.showBalloonForMarker }
                     onCloseClick={ this._onBalloonCloseClick }
                     renderMarkerContent={ this.props.renderMarkerContent }
-                    //hoveredAtTable={ index + rowFrom === this.props.hoveredRowIndex }
-                    scale={ getScale(index + rowFrom, this.props.visibleRowFirst, this.props.visibleRowLast, K_SCALE_NORMAL) }
+
+                    scale={  K_SCALE_NORMAL }
                     {...markerDescriptions[ 0 ]}
                     marker={ marker } />
             ));
@@ -145,4 +140,4 @@ class MainMapBlock extends Component {
 }
 
 
-export default connect()(MainMapBlock)
+export default MainMapBlock

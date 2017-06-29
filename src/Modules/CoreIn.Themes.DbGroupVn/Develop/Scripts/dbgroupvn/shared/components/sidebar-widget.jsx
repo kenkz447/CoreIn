@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
-import { Link } from 'react-router-dom'
+import { NavLink } from 'react-router-dom'
 import { Collapse } from 'reactstrap'
 
 class SidebarWidget extends Component {
@@ -51,9 +51,9 @@ class SidebarWidget extends Component {
                 <div className="widget-item-header">
                     {
                         link ? (
-                            <Link to={ link } className={ this.titleClassName }>
+                            <NavLink to={ link } className={ this.titleClassName } activeClassName="current">
                                 { title }
-                            </Link>
+                            </NavLink>
                         ) :
                             <span href="#" className={ this.titleClassName }>
                                 { title }

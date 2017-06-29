@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.AspNetCore.Mvc.Routing;
 using React.AspNet;
+using Microsoft.AspNetCore.Mvc.Cors.Internal;
 
 namespace Webhost
 {
@@ -39,21 +40,29 @@ namespace Webhost
         {
             var builder = new ContainerBuilder();
 
+			services.AddCors(options => options.AddPolicy("AllowAll", b => {
+                b.AllowAnyOrigin()
+                .AllowAnyHeader()
+                .AllowAnyMethod()
+                .AllowCredentials();
+            }));
+            
             var mvc = services
                 .AddLanguageLocalization()
                 .AddMvc()
                 .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix);
+
+            services.Configure<MvcOptions>(options =>
+            {
+                options.Filters.Add(new CorsAuthorizationFilterFactory("AllowAll"));
+            });
+
 
             services.AddSingleton(provider => Configuration);
 
             services.AddModularConfigureServices();
 
             services.AddDataProviderServices();
-
-            if (_hostingEnvironment.IsProduction())
-            {
-
-            }
 
             services.SeedDb().Wait();
 
@@ -78,12 +87,10 @@ namespace Webhost
             app.UseDeveloperExceptionPage();
 
             if (env.IsDevelopment())
-            {
                 app.UseBrowserLink();
-            }
             else
                 app.UseExceptionHandler("/Home/Error");
-
+			
             app.UseLanguageLocalization();
 
             app.UseReact(configure => { });

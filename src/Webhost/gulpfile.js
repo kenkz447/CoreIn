@@ -51,13 +51,12 @@ gulp.task('default', function () {
 
 gulp.task('vendor', function () {
 
-    var b = browserify({
-        debug: false,
-        transform: [["babelify", { "presets": ["es2015"] }]]
-    });
-
     var stream = gulp.src('develop/scripts/noop.js', { read: false })
-        .pipe(b)
+        .pipe(browserify({
+            debug: !production,
+            transform: ['reactify'],
+            extensions: ['.jsx']
+        }))
         .on('prebundle', function (bundle) {
             libs.forEach(function (lib) {
                 bundle.require(lib);

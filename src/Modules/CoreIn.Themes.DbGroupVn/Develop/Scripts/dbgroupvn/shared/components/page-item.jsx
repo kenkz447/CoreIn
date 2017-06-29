@@ -1,4 +1,5 @@
 const { Link } = require('react-router-dom');
+const Image = require('./image')
 
 class PageItem extends React.Component {
     constructor(props) {
@@ -19,7 +20,7 @@ class PageItem extends React.Component {
         return (
             <div className="page-item-wrapper">
                 <div className="page-item-thumbnail">
-                    <img className="w-100" src={ `/${thumbnailUrl}` } />
+                    <Image className="w-100" url={ thumbnailUrl } description={ title } />
                     <div className="overlay" />
                     { this.renderLink(localizationString.getString("Chi tiết")) }
                 </div>

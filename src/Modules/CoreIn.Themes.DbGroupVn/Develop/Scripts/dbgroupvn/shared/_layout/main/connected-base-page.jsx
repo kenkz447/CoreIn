@@ -1,12 +1,13 @@
-const { connect } = require('react-redux');
-const { bindActionCreators } = require('redux');
-const { Swipeable, defineSwipe } = require('react-touch');
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
+import { Swipeable, defineSwipe } from 'react-touch'
 
-const layoutActions = require('../../_layout').actions;
+//Actions
+import { togglePageLoading, updateLayout } from '../actions'
 
-const DelayRender = require('../../components/_commons/delay-render');
-
-import { ConnectedBreacrumbs } from '../../components'
+//Components
+import { ConnectedBreacrumbs, RenderDelay } from '../../components'
+import { refreshRoutePath } from '../../reducers/app-routes'
 
 const keys = {
   createNewPage: "CREATE_NEW_PAGE",
@@ -65,7 +66,7 @@ class BasePage extends React.Component {
     this.swipeLeft = this.swipeLeft.bind(this);
     this.onDataFetch = this.onDataFetch.bind(this);
 
-    this.ElementWithDelayRender = DelayRender({
+    this.ElementWithDelayRender = RenderDelay({
       delay: this.baseDelay,
       onRender: this.onPageComponentRender.bind(this)
     })(component);
@@ -73,7 +74,7 @@ class BasePage extends React.Component {
 
   componentWillUnmount() {
     const { togglePageLoading, updateLayout } = this.props;
-    updateLayout();
+    //updateLayout();
     togglePageLoading(true);
   }
 
@@ -95,12 +96,14 @@ class BasePage extends React.Component {
   }
 
   componentWillMount() {
-    const { createNewPage,
+    const { refreshRoutePath, createNewPage,
       pages,
       page } = this.props;
     const pageData = pages[ page ];
     if (!pageData)
       createNewPage(page);
+      
+    refreshRoutePath(page)
   }
 
   render() {
@@ -119,9 +122,9 @@ class BasePage extends React.Component {
           <div className="swipeable" />
         </Swipeable>
         {
-          showBreadcrumbs && <ConnectedBreacrumbs routes={routes} params={match.params} />
+          showBreadcrumbs && <ConnectedBreacrumbs routes={ routes } params={ match.params } />
         }
-        <this.ElementWithDelayRender {...pageData} location={location} match={match} onDataFetch={ this.onDataFetch } />
+        <this.ElementWithDelayRender {...pageData} location={ location } match={ match } onDataFetch={ this.onDataFetch } />
       </div>
     );
   }
@@ -136,15 +139,14 @@ const stateToProps = (state) => ({
 
 const dispathToProps = (dispath) => (
   bindActionCreators({
-    togglePageLoading: layoutActions.togglePageLoading,
-    updateLayout: layoutActions.updateLayout,
+    togglePageLoading,
+    updateLayout,
     createNewPage: actions.createNewPage,
-    onDataFetch: actions.onDataFetch
+    onDataFetch: actions.onDataFetch,
+    refreshRoutePath
   }, dispath)
 );
 
-module.exports = {
-  actions,
-  reducer,
-  default: connect(stateToProps, dispathToProps)(BasePage)
-}
+export { actions, reducer }
+
+export default connect(stateToProps, dispathToProps)(BasePage)

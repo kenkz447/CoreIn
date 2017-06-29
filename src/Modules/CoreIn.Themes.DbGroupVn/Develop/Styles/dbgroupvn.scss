@@ -2,6 +2,7 @@
 $text-dark: #5D5E5E;
 @import "dbgroupvn/font";
 @import "bootstrap/bootstrap";
+@import "dbgroupvn/bootstrap_utilities";
 @import "dbgroupvn/layout";
 @import "dbgroupvn/owl-theme";
 @import "dbgroupvn/mobile/header";
@@ -14,30 +15,30 @@ $text-dark: #5D5E5E;
 @import "dbgroupvn/map-marker";
 //Variables
 html {
-    font-size: 13px;
+    font-size: 14px;
 }
 
 @include media-breakpoint-up(sm) {
     html {
-        font-size: 13px;
+        font-size: 14px;
     }
 }
 
 @include media-breakpoint-up(md) {
     html {
-        font-size: 14px;
+        font-size: 15px;
     }
 }
 
 @include media-breakpoint-up(lg) {
     html {
-        font-size: 14px;
+        font-size: 16px;
     }
 }
 
 @include media-breakpoint-up(xl) {
     html {
-        font-size: 15px;
+        font-size: 16px;
     }
 }
 
@@ -45,6 +46,10 @@ html,
 body,
 #root {
     min-height: 100%;
+}
+
+body,
+#root {
     overflow-y: auto!important;
 }
 
@@ -71,7 +76,7 @@ body,
         .menu-item {
             font-size: 1.1rem;
             &:not(:last-child) {
-                margin-right: 1.8rem;
+                margin-right: 3.2rem;
             }
             a {
                 color: #5D5E5E;
@@ -315,6 +320,7 @@ body,
 .page-titles {
     font-size: 1.5rem;
     text-transform: uppercase;
+    font-weight: normal;
     .page-title {
         &:first-child {
             margin-right: 1rem;
@@ -333,10 +339,9 @@ body,
     .gmnoprint {
         opacity: 0;
     }
-}
-
-.big-g-map {
-    height: 70%
+    &.g-map-big {
+        position: relative
+    }
 }
 
 .map_icon_text_red {
@@ -358,5 +363,110 @@ body,
     }
     .disabled {
         display: none;
+    }
+}
+
+.hoi-dap-item {
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+        margin-bottom: 2rem;
+        &:not(:first-child) {
+            margin-top: 2rem
+        }
+    }
+}
+
+.contact {
+    &-title {
+        line-height: 1.5
+    }
+    &-body {
+        color: #fff;
+        * {
+            color: inherit;
+        }
+        &-content {
+            background-size: cover!important;
+        }
+        .icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            margin-right: .5rem;
+            font-weight: bold;
+            width: 2.2rem;
+            height: 2.2rem;
+            background: #878787;
+        }
+        .form-control {
+            outline: none;
+            background: transparent;
+            border: 1px solid #808080;
+        }
+        textarea {
+            height: 100px
+        }
+        .send {
+            background: #878787;
+            border: none;
+            height: 40px;
+            width: 40px;
+            border-radius: 50%;
+            padding-left: 2px;
+            margin: 0;
+            outline: none;
+            img {
+                max-width: 25px
+            }
+            &:hover {
+                background: #408eba
+            }
+        }
+    }
+    .contact-map-container {
+        position: relative;
+        height: 500px;
+        width: 100%;
+        .contact-map {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+    }
+}
+
+.transition-basic {
+    -webkit-transition: all .2s ease-in-out;
+    -moz-transition: all .2s ease-in-out;
+    -ms-transition: all .2s ease-in-out;
+    -o-transition: all .2s ease-in-out;
+    transition: all .2s ease-in-out;
+}
+
+.transition-advance {
+    -webkit-transition: all .5s ease-in-out;
+    -moz-transition: all .5s ease-in-out;
+    -ms-transition: all .5s ease-in-out;
+    -o-transition: all .5s ease-in-out;
+    transition: all .5s ease-in-out
+}
+
+.liblary-item {
+    .read-more {
+        line-height: 1.5rem;
+    }
+    .page-item:not(:last-child) & {
+        @include media-breakpoint-down(lg) {
+            border-bottom: 1px dashed lightgray;
+        }
+    }
+    .page-item:last-child & {
+        margin-bottom: 0!important;
+        padding-bottom: 0!important;
     }
 }

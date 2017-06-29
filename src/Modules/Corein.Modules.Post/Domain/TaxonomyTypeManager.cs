@@ -10,6 +10,7 @@ namespace CoreIn.Modules.Post
     public class TaxonomyTypeManager
     {
         public TaxonomyType PostCategory { get; private set; }
+        public TaxonomyType FAQCategory { get; private set; }
 
         public TaxonomyTypeManager(EntityTypeManager entityTypeManager, ITaxonomyHelper taxonomyManager, UserManager<User> userManager)
         {
@@ -29,6 +30,14 @@ namespace CoreIn.Modules.Post
                 new Dictionary<string, string>
                 {
                     {"title", "Tag" },
+                }, supperUser);
+
+            FAQCategory = taxonomyManager.RegisterTaxonomyType(
+                entityTypeManager.Liblary,
+                "faq-category",
+                new Dictionary<string, string>
+                {
+                    {"title", "Category" },
                 }, supperUser);
         }
     }

@@ -33,7 +33,7 @@ namespace CoreIn.Commons.ViewModels
 
         //cung cấp thêm detail nếu đc yêu cầu
         [JsonProperty]
-        private Dictionary<string, object> MoreDetailts { get; set; }
+        private Dictionary<string, object> MoreDetails { get; set; }
 
         public void SetThumbnail(string thumbnailUrl) => ThumbnailUrl = thumbnailUrl;
 
@@ -41,9 +41,9 @@ namespace CoreIn.Commons.ViewModels
 
         public void SetMoreDetail(string field, object value)
         {
-            if (MoreDetailts == null)
-                MoreDetailts = new Dictionary<string, object>();
-            MoreDetailts.Add(field, value);
+            if (MoreDetails == null)
+                MoreDetails = new Dictionary<string, object>();
+            MoreDetails.Add(field, value);
         }
     }
 }

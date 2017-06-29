@@ -33,24 +33,27 @@ class componentName extends Component {
     }
 
     render() {
-        const { className, items, itemPerPage, layout, renderItem, itemWrapperClassName, getPageUrl, currentPage, totalPages } = this.props
+        const { className,
+            items, layout, itemWrapperClassName, renderItem,
+            itemPerPage, currentPage, templatePath, totalPages
+        } = this.props
 
         //ItemContainer will render current page item
+        //Ajax pager render page list only
         return (
-            <div className={ classNames(className, "pagination-container") }>
-
+            <div className={ classNames(className, "pagination-container clearfix") }>
                 <ItemContainer className={ "mb-4" }
                     items={ this.state.pageItems || items }
                     layout={ layout }
                     renderItem={ renderItem }
                     itemWrapperClassName={ itemWrapperClassName } />
                 {
-                    getPageUrl ?
+                    templatePath ?
                         <PagerAjax className="float-right"
                             currentPage={ currentPage }
                             totalPages={ totalPages }
                             itemPerPage={ itemPerPage }
-                            getPageUrl={ getPageUrl }
+                            templatePath={ templatePath }
                             onItemsChange={ this.onItemsChange }
                         /> :
                         <Pager className="float-right"

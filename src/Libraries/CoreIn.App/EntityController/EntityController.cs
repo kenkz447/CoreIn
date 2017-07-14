@@ -11,7 +11,9 @@ using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
+using Unidecode.NET;
 
 namespace CoreIn.App
 {
@@ -62,7 +64,7 @@ namespace CoreIn.App
             var result = new FormValues<TFormDetailViewModel>();
             var entity = EntityHelper.Entity(entityId);
 
-            var details = EntityHelper.GetDetails(entity, language).ToList();
+            var details = EntityHelper.GetDetails(entity, language, _localizationOptions.Value.DefaultRequestCulture.Culture.Name).ToList();
             var localizationFieldNames = details.Where(o => o.Language != null).Select(o => o.Field);
             var localizationFilteredDetails = details.AsEnumerable().Where(o => !(localizationFieldNames.Contains(o.Field) && o.Language == null)).ToList();
 
@@ -89,6 +91,7 @@ namespace CoreIn.App
 
             result.Meta = new Dictionary<string, string>() {
                 { "id", entityId.ToString() },
+                { "name", entity.Name.ToString() },
                 { "entityTypeId", entity.EntityTypeId?.ToString() }
             };
             result.Details = FormUtitities.EntityDetailsToFieldValues<TEntityDetail, TFormDetailViewModel>(localizationFilteredDetails);
@@ -172,6 +175,14 @@ namespace CoreIn.App
                             }
                         }
                     }
+                    else if(filtering.Method != null)
+                    {
+                        var values =  filtering.Value;
+                        if (filtering.Method == "contains")
+                            filterResult = filterResult.Where(o => o.Details.FirstOrDefault(e => e.Field == filtering.Id && e.Value != null && e.Value.Contains(values)) != null);
+                        else
+                            continue;
+                    }
                     else
                         filterResult = filterResult.Where(o => o.Details.FirstOrDefault(e => e.Field == filtering.Id && e.Value.Contains(filtering.Value)) != null);
                 }
@@ -238,7 +249,8 @@ namespace CoreIn.App
                 viewModel.SetName(entity.Name);
                 var thumnailUrl = details.FirstOrDefault(o => o.Field == "thumbnail" && o.Suffix == AppKey.FileUrlPropertyName)?.Value;
 
-                if (!thumnailUrl.StartsWith("/") && (!thumnailUrl.StartsWith("https://") || !thumnailUrl.StartsWith("http://")))
+
+                if (thumnailUrl != null && !thumnailUrl.StartsWith("/") && (!thumnailUrl.StartsWith("https://") || !thumnailUrl.StartsWith("http://")))
                     thumnailUrl = "/" + thumnailUrl;
 
                 viewModel.SetThumbnail(thumnailUrl);

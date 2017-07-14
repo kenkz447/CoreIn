@@ -137,10 +137,9 @@ namespace CoreIn.App
             return Json(filterResult);
         }
 
-
-        public override JsonResult GetSingle(string entityName)
+        private FormValues<TFormDetailViewModel> GetViewModelOfSingle(TEntity entity)
         {
-            var result = _entityController.GetEntityValues(entityName, GetCurrentLanguage());
+            var result = _entityController.GetEntityValues(entity.Id, GetCurrentLanguage());
 
             var entityTypeId = long.Parse(result.Meta["entityTypeId"]);
             var entityId = long.Parse(result.Meta["id"]);
@@ -156,7 +155,68 @@ namespace CoreIn.App
 
             result.TaxonomyTypeViewModels = taxonomyTypeViewModels;
 
+            return result;
+        }
+
+        public override JsonResult GetSingle(string entityName)
+        {
+            var entity = _entityController.EntityHelper.Entity(entityName);
+
+            if (entity == null)
+                return Json(null);
+
+            var result = GetViewModelOfSingle(entity);
+
             return Json(result);
+        }
+            
+
+        public override JsonResult GetNextAndPreEntity(long currentEntityId)
+        {
+            var entity = _entityController.EntityHelper.Entity(currentEntityId);
+
+            if (entity != null)
+            {
+                var nextEntity = _entityController.EntityHelper.Entities().Where(o => o.EntityTypeId == entity.EntityTypeId && o.Created > entity.Created).OrderBy(o => o.Created).FirstOrDefault();
+                var preEntity = _entityController.EntityHelper.Entities().Where(o => o.EntityTypeId == entity.EntityTypeId && o.Created < entity.Created).OrderByDescending(o => o.Created).FirstOrDefault();
+                var currentLanguage = GetCurrentLanguage();
+
+                var result = new
+                {
+                    next = nextEntity != null ? GetViewModelOfSingle(nextEntity) : null,
+                    pre = preEntity != null ? GetViewModelOfSingle(preEntity): null
+                };
+                return Json(result);
+            }
+            return Json(null);
+        }
+
+        public JsonResult GetNextAndPreEntityByTaxonomies(long currentEntityId, long[] taxonomies)
+        {
+            var entity = _entityController.EntityHelper.Entity(currentEntityId);
+
+            if (entity != null)
+            {
+                var nextEntity = _entityController.EntityHelper.Entities().Where(o => 
+                        o.EntityTypeId == entity.EntityTypeId && o.Created > entity.Created && 
+                        o.Taxonomies.FirstOrDefault(t => taxonomies.Contains(t.TaxonomyId)) != null
+                    ).OrderBy(o => o.Created).FirstOrDefault();
+
+                var preEntity = _entityController.EntityHelper.Entities().Where(o => 
+                        o.EntityTypeId == entity.EntityTypeId && o.Created < entity.Created && 
+                        o.Taxonomies.FirstOrDefault(t => taxonomies.Contains(t.TaxonomyId)) != null
+                    ).OrderByDescending(o => o.Created).FirstOrDefault();
+
+                var currentLanguage = GetCurrentLanguage();
+
+                var result = new
+                {
+                    next = nextEntity != null ? GetViewModelOfSingle(nextEntity) : null,
+                    pre = preEntity != null ? GetViewModelOfSingle(preEntity) : null
+                };
+                return Json(result);
+            }
+            return Json(null);
         }
     }
 }

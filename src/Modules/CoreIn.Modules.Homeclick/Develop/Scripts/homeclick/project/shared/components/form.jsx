@@ -47,13 +47,24 @@ class ProjectForm extends React.Component {
         return {
             SET_LAYOUT: (formValues, fieldData) => {
                 const { openLayoutModal } = this.props;
-                var roomName = fieldData.input.name.split('.')[1];
+                var roomsPath = fieldData.input.name.split('.')
 
-                const roomArrayIndex = /\[([^]+)\]/.exec(roomName)[1];
-                const room = formValues.details['rooms'][roomArrayIndex];
-                const layoutImage = room.layoutimage;
-                if (layoutImage)
-                    openLayoutModal(layoutImage, fieldData.input.value, fieldData.input.onChange, fieldData.fileManagerModalToggle);
+                var select = null
+                for (var i in roomsPath) {
+                    var currentPart = roomsPath[i]
+                    if (currentPart.indexOf('[') != -1) {
+                        var currentPathProperty = currentPart.split('[')[0];
+                        var indexOfCurrentPath = /\[([^]+)\]/.exec(currentPart)[1];
+                    }
+
+                    select = !select ? formValues[currentPart] : select[currentPathProperty][indexOfCurrentPath]
+                    if (String(currentPart).startsWith('rooms')) {
+                        const layoutImage = select.layoutImage;
+                        if (layoutImage)
+                            openLayoutModal(layoutImage, fieldData.input.value, fieldData.input.onChange, fieldData.fileManagerModalToggle);
+                        break
+                    }
+                }
             }
         };
     }

@@ -382,9 +382,10 @@ module.exports = {
         dataUrl: `/${mvcController}/GetTableData`,
         deleteUrl: `/${mvcController}/delete`,
         tableColumns: [{
-            header: "Title",
+            Header: "Title",
             accessor: 'title',
-            render: row => (React.createElement("div", null, React.createElement("a", {href: `/${mvcController}/update/${row.rowValues.id}`, target: "blank"}, row.value))),
+            Cell: props => (React.createElement("div", null, React.createElement("a", {href: `/${mvcController}/update/${props.row.id}`}, props.value))),
+            filterable: true,
         }]
     },
     create: {
@@ -483,9 +484,10 @@ module.exports = {
         dataUrl: `/${mvcController}/GetTableData`,
         deleteUrl: `/${mvcController}/delete`,
         tableColumns: [{
-            header: "Title",
+            Header: "Title",
             accessor: 'title',
-            render: row => (React.createElement("div", null, React.createElement("a", {href: `/${mvcController}/update/${row.rowValues.id}`, target: "blank"}, row.value))),
+            Cell: props => (React.createElement("div", null, React.createElement("a", {href: `/${mvcController}/update/${props.row.id}`}, props.value))),
+            filterable: true,
         }]
     },
     create: {
@@ -723,13 +725,24 @@ class ProjectForm extends React.Component {
         return {
             SET_LAYOUT: (formValues, fieldData) => {
                 const { openLayoutModal } = this.props;
-                var roomName = fieldData.input.name.split('.')[1];
+                var roomsPath = fieldData.input.name.split('.')
 
-                const roomArrayIndex = /\[([^]+)\]/.exec(roomName)[1];
-                const room = formValues.details['rooms'][roomArrayIndex];
-                const layoutImage = room.layoutimage;
-                if (layoutImage)
-                    openLayoutModal(layoutImage, fieldData.input.value, fieldData.input.onChange, fieldData.fileManagerModalToggle);
+                var select = null
+                for (var i in roomsPath) {
+                    var currentPart = roomsPath[i]
+                    if (currentPart.indexOf('[') != -1) {
+                        var currentPathProperty = currentPart.split('[')[0];
+                        var indexOfCurrentPath = /\[([^]+)\]/.exec(currentPart)[1];
+                    }
+
+                    select = !select ? formValues[currentPart] : select[currentPathProperty][indexOfCurrentPath]
+                    if (String(currentPart).startsWith('rooms')) {
+                        const layoutImage = select.layoutImage;
+                        if (layoutImage)
+                            openLayoutModal(layoutImage, fieldData.input.value, fieldData.input.onChange, fieldData.fileManagerModalToggle);
+                        break
+                    }
+                }
             }
         };
     }
@@ -933,7 +946,7 @@ class LayoutModal extends React.Component {
                 return;
 
             const selectedValue = values[selectedIndex];
-            selectedValue.image = file.meta.src;
+            selectedValue.image = file.url;
             updateValue(selectedValue);
         });
     }
@@ -957,14 +970,14 @@ class LayoutModal extends React.Component {
         const {selectedIndex, values, layoutImage, toggle, isOpen, selectValueIndex, updateValue} = this.props;
 
         var selectedValue = values[selectedIndex];
-
+        var image = layoutImage && (String(layoutImage.url).startsWith('/') ? layoutImage.url : `/${layoutImage.url}`)
         return (
             React.createElement(Modal, {className: "modal-lg", isOpen: isOpen, toggle: toggle}, 
                 React.createElement(ModalHeader, {toggle: toggle}, "Modal title"), 
                 React.createElement(ModalBody, null, 
                     React.createElement("div", {className: "layout-modal"}, 
                         React.createElement("div", {className: "arrow-container"}, 
-                            React.createElement("img", {src: layoutImage, className: "w-100", onClick: this.imageClick}), 
+                            React.createElement("img", {src: image, className: "w-100", onClick: this.imageClick}), 
                             
                                 values.map((data, index) => {
                                     const divStyle = {
@@ -1081,14 +1094,12 @@ var PageContent = (props) => {
                     React.createElement("a", {className: "btn btn-outline-primary", href: createNewUrl || urls.create}, "Create new")
                 )
             ), 
-            React.createElement(Card, null, 
-                React.createElement(CardBlock, null, 
+            React.createElement("div", null, 
                     React.createElement(Form, {formName: "update", 
                         formUrl: formUrl, 
                         formUrlData: parameters, 
                         formSubmitData: formSubmitData}
                     )
-                )
             )
         )
     );

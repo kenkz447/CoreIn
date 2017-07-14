@@ -78,6 +78,7 @@ class FileItem extends React.Component {
             _form.details = _.sortBy(form.details, (o) => o.group);
 
             const ReduxDynamicForm = reduxForm({
+                layout: 1,
                 form: formId,
                 validate,
                 initialValues: form.initialValues,

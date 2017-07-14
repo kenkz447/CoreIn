@@ -40,7 +40,8 @@ var libs = [
     'history',
     'react-owl-carousel2',
     'react-localization',
-    'react-touch'
+    'react-touch',
+    'react-codemirror'
 ];
 
 var production = (process.env.NODE_ENV === 'production');
@@ -66,7 +67,7 @@ gulp.task('vendor', function () {
     if (production)
         stream.pipe(uglify());
 
-    stream.pipe(rename('vendor' + (production ? '.min' : '') + '.js'))
+    stream.pipe(rename('vendor.admin.js'))
         .pipe(gulp.dest('wwwroot/js'));
 
     return stream;
@@ -83,5 +84,6 @@ gulp.task('style', function () {
         .pipe(sass())
         //.pipe(concat('style.css'))
         .pipe(sourcemaps.write('.'))
+        .pipe(rename('style.admin.css'))
         .pipe(gulp.dest('wwwroot/css'));
 })

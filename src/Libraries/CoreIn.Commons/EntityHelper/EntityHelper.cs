@@ -58,7 +58,7 @@ namespace CoreIn.Commons.EntityHelper
 
         public string GenerateEntityName(string name, long? entityId = null)
         {
-            var entityName = StringUtility.UnidecodeEntityNaname(name);
+            var entityName = StringUtility.UnidecodeEntityName(name);
             if (CheckEntityNameExits(entityName))
                 entityName = TryGenerateEntityName(entityName);
 
@@ -151,17 +151,25 @@ namespace CoreIn.Commons.EntityHelper
         }
 
         public IQueryable<TDetail> GetDetails(TEntity entity, CultureInfo cultureInfo = null)
-        {
-            var result = _detailRepository.Query(o => o.EntityId == entity.Id);
-            if (cultureInfo != null)
-                result = result.Where(o => o.Language == cultureInfo.Name || o.Language == null);
-            return result;
-        }
+            => GetDetails(entity, cultureInfo?.Name);
 
-        public IQueryable<TDetail> GetDetails(TEntity entity, string cultureName)
+        public IQueryable<TDetail> GetDetails(TEntity entity, string cultureName, string defaultCultureName = null)
         {
             var result = _detailRepository.Query(o => o.EntityId == entity.Id);
-            result = result.Where(o => o.Language == cultureName || o.Language == null);
+
+            var hasLanguage = result.Where(o => o.Language != null && o.Prefix == null).OrderBy(o => o.Language == cultureName);
+            var selectedFiels = new List<string>();
+            foreach (var item in hasLanguage)
+            {
+                if (selectedFiels.Contains(item.Field))
+                {
+                    result = result.Where(o => o.Id != item.Id);
+                    continue;
+                }
+
+                selectedFiels.Add(item.Field);
+            }
+
             return result;
         }
 
@@ -206,7 +214,8 @@ namespace CoreIn.Commons.EntityHelper
                  {
                     if (currentDetail.Field == detail.Field && currentDetail.Language != detail.Language)
                         updatedDetails.Add(currentDetail);
-                    else if (currentDetail.Field == detail.Field 
+                    else if (currentDetail.Field == detail.Field
+                        && currentDetail.TempId == detail.TempId
                         && currentDetail.Language == detail.Language
                         && currentDetail.Group == detail.Group
                         && currentDetail.Suffix == detail.Suffix

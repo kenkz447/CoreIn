@@ -40,23 +40,23 @@ namespace Webhost
         {
             var builder = new ContainerBuilder();
 
-			services.AddCors(options => options.AddPolicy("AllowAll", b => {
-                b.AllowAnyOrigin()
-                .AllowAnyHeader()
-                .AllowAnyMethod()
-                .AllowCredentials();
-            }));
+            if(_hostingEnvironment.IsDevelopment())
+			    services.AddCors(options => options.AddPolicy("AllowAll", b => {
+                    b.AllowAnyOrigin()
+                    .AllowAnyHeader()
+                    .AllowAnyMethod()
+                    .AllowCredentials();
+                }));
             
             var mvc = services
                 .AddLanguageLocalization()
                 .AddMvc()
                 .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix);
 
-            services.Configure<MvcOptions>(options =>
-            {
-                options.Filters.Add(new CorsAuthorizationFilterFactory("AllowAll"));
-            });
-
+            if (_hostingEnvironment.IsDevelopment())
+                services.Configure<MvcOptions>(options => {
+                    options.Filters.Add(new CorsAuthorizationFilterFactory("AllowAll"));
+                });
 
             services.AddSingleton(provider => Configuration);
 

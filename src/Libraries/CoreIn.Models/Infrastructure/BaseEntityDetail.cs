@@ -1,17 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Threading.Tasks;
 using CoreIn.Models.Authentication;
 
 namespace CoreIn.Models.Infrastructure
 {
     public abstract class BaseEntityDetail : EntityWithTypedId<long>
     {
+        public string TempId { get; set; }
+
         public string Prefix { get; set; }
 
-        public string Suffix {get;set;}
+        public string Suffix { get; set; }
 
         public string Group { get; set; }
 

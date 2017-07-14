@@ -22,6 +22,8 @@
     <Content Include="Develop\Styles\vendors\react_ui_tree\_react_ui_tree.scss">
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
+    <Content Include="wwwroot\css\style.admin.css" />
+    <Content Include="wwwroot\css\style.admin.css.map" />
     <Content Include="wwwroot\fonts\Simple-Line-Icons.eot">
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
@@ -285,6 +287,8 @@
     <Content Include="wwwroot\img\flags\Zimbabwe.png" />
     <Content Include="wwwroot\img\logo.png" />
     <Content Include="wwwroot\img\_logo.png" />
+    <Content Include="wwwroot\js\vendor.admin.js" />
+    <Content Include="wwwroot\js\vendor.admin.min.js" />
     <Content Include="wwwroot\js\vendor.js" />
     <Content Include="wwwroot\js\vendor.min.js" />
     <Content Include="wwwroot\lib\jquery.filer\assets\fonts\jquery.filer-icons\jquery-filer-preview.html" />
@@ -299,7 +303,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="wwwroot\css\" />
     <Folder Include="wwwroot\uploads\2\" />
   </ItemGroup>
   <ItemGroup>

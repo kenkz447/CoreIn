@@ -16,6 +16,8 @@ const keys = {
     setTaxonomyTypes: "SET_TAXONOMYTYPE"
 };
 
+const ON_PAGE_SIZE_CHANGE = "TABLE@ON_PAGE_SIZE_CHANGE"
+
 // Actions
 const actions = {
     init: (initValue) => ({
@@ -46,6 +48,10 @@ const actions = {
     setTaxonomyTypes: (taxonomyTypes) => ({
         type: keys.setTaxonomyTypes,
         taxonomyTypes
+    }),
+    onPageSizeChange: (pageSize) => ({
+        type: ON_PAGE_SIZE_CHANGE,
+        pageSize
     })
 }
 
@@ -71,7 +77,7 @@ const reducer = (state = initialState, action) => {
             break;
         case keys.loaded:
             newState.data = action.data.entities;
-            newState.pages = parseInt(newState.data.length / newState.defaultPageSize);
+            newState.pages = Math.ceil(action.data.totalCount / (newState.pageSize || newState.defaultPageSize));
             if ((newState.data.length % newState.defaultPageSize) !== 0)
                 newState.pages++;
             newState.loading = false;
@@ -95,6 +101,9 @@ const reducer = (state = initialState, action) => {
             break;
         case keys.setTaxonomyTypes:
             newState.taxonomyTypes = action.taxonomyTypes;
+            break;
+        case ON_PAGE_SIZE_CHANGE:
+            newState.pageSize = action.pageSize
             break;
         default:
             return state;
@@ -156,7 +165,7 @@ class Table extends React.Component {
 
         const entityTypeId = this.state.entityTypeId;
 
-        dataRequest(dataUrl, state.pageSize, state.page, state.sorted, filtered, taxonomyFiltering, entityTypeId, dataLoad);
+        dataRequest(dataUrl, state.pageSize, state.page + 1, state.sorted, filtered, taxonomyFiltering, entityTypeId, dataLoad);
 
         this.ReactTableState = state;
         this.ReactTableInstance = instance;
@@ -177,6 +186,7 @@ class Table extends React.Component {
                                 onClick={() => {
                                     selectRow(props.index);
                                 }} checked={checked} />
+                            <span/>
                         </div>
                     )
                 },
@@ -320,13 +330,12 @@ class Table extends React.Component {
                     </div>
                 </div>
                 <div className="table-wrap">
-                    <ReactTable
+                    <ReactTable manual
                         className='-striped -highlight'
                         columns={columns}
                         data={data}
                         defaultPageSize={defaultPageSize}
                         loading={loading}
-                        manual
                         onFetchData={this.fetchData.bind(this)}
                         pages={pages}
                     />
@@ -350,42 +359,3 @@ module.exports = {
     actions,
     dataRequest
 }
-
-
-//renderTaxonomyFilter() {
-//    const { taxonomyTypes, setTaxonomyTypes } = this.props;
-
-//    if (!taxonomyTypes.length) {
-//        $.get(this.state.taxonomyTypesProviderUrl, { entityTypeId: this.state.entityTypeId }, setTaxonomyTypes);
-//        return null;
-//    }
-
-//    return (
-//        <div className="pull-right clearfix mr-1">
-//            {
-//                taxonomyTypes && taxonomyTypes.map((taxonomyType) => {
-
-//                    return (
-//                        <Input key={taxonomyType.id} type="select" className="mr-q" onChange={(e) => {
-//                            var value = e.target.value;
-
-//                            if (!value)
-//                                delete this.taxonomyFiltering[taxonomyType.id];
-//                            else
-//                                this.taxonomyFiltering[taxonomyType.id] = +e.target.value;
-
-//                            this.fetchData();
-//                        }}>
-//                            <option value="">{taxonomyType.title}</option>
-//                            {
-//                                taxonomyType.taxonomies && taxonomyType.taxonomies.map(taxonomy => {
-//                                    return <option key={taxonomy.id} value={taxonomy.id}>{taxonomy.title}</option>
-//                                })
-//                            }
-//                        </Input>
-//                    );
-//                })
-//            }
-//        </div>
-//    );
-//}

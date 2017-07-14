@@ -36,6 +36,9 @@ namespace CoreIn.Modules.Homeclick.ViewModels
         [FormFieldDisplay(RenderType: (int)FieldRenderType.Image, Title: "Thumbnail")]
         public ImageViewModel Thumbnail { get; set; }
 
+        [FormFieldDisplay(Placeholder: "Status", Prompt: "0: Concept, 1: Under construction, 2: finish", Type: "number")]
+        public string Status { get; set; }
+
         [FormFieldDisplay(Placeholder: "Client")]
         public string Client { get; set; }
 
@@ -51,8 +54,5 @@ namespace CoreIn.Modules.Homeclick.ViewModels
         [Required]
         [FormFieldDisplay(Title: "Covers")]
         public IEnumerable<AlbumImageViewModel> CoverPhotos { get; set; }
-
-        [FormFieldDisplay(Title: "Photos")]
-        public IEnumerable<ConstructionPhotoViewModel> Photos { get; set; }
     }
 }

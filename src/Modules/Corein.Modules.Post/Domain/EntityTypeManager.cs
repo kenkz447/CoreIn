@@ -9,7 +9,6 @@ namespace CoreIn.Modules.Post
     public class EntityTypeManager
     {
         public EntityType Liblary { get; private set; }
-        public EntityType FAQ { get; private set; }
 
         public EntityTypeManager(IEntityTypeManager entityTypeManager, UserManager<User> userManager)
         {
@@ -23,15 +22,6 @@ namespace CoreIn.Modules.Post
 
                     new EntityTypeDetail{ Field ="group", Value = "Liblary", Language = "en-US"},
                 }, supperUser, false);
-
-            FAQ = entityTypeManager.RegisterEntityType(
-                new EntityType { Name = "faq" },
-                new EntityTypeDetail[] {
-                    new EntityTypeDetail{ Field ="title", Value = "Frequently asked questions", Language = "en-US"},
-                    new EntityTypeDetail{ Field ="title", Value = "Hỏi đáp", Language = "vi-VN"},
-                    new EntityTypeDetail{ Field ="group", Value = "FAQ"},
-                }, supperUser);
-
         }
     }
 }

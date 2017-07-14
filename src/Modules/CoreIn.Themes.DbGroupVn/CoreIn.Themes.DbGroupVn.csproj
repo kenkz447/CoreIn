@@ -5,35 +5,50 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="wwwroot\js\**" />
+    <Content Remove="wwwroot\js\**" />
+    <EmbeddedResource Remove="wwwroot\js\**" />
+    <None Remove="wwwroot\js\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Remove="wwwroot/js\dbgroupvn.vendor.min.js" />
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="wwwroot\font\UTM AvoBold.eot" />
-    <Content Include="wwwroot\font\UTM AvoBold.otf" />
-    <Content Include="wwwroot\font\UTM AvoBold.svg" />
-    <Content Include="wwwroot\font\UTM AvoBold.ttf" />
-    <Content Include="wwwroot\font\UTMAvoBold.otf" />
-    <Content Include="wwwroot\font\UTMAvoBold.svg" />
-    <Content Include="wwwroot\font\UTMAvoBold.ttf" />
-    <Content Include="wwwroot\font\UTMAvoBold.woff" />
-    <Content Include="wwwroot\font\UTMAvo.eot" />
-    <Content Include="wwwroot\font\UTMAvo.woff2" />
-    <Content Include="wwwroot\font\UTMAvo.svg" />
-    <Content Include="wwwroot\font\UTMAvo.ttf" />
-    <Content Include="wwwroot\font\UTMAvo.woff" />
-    <Content Include="wwwroot\font\UTMAvoBold.eot" />
+    <Content Include="wwwroot\bundle.js" />
+    <Content Include="wwwroot\css\style.css" />
+    <Content Include="wwwroot\fonts\fontawesome-webfont.eot" />
+    <Content Include="wwwroot\fonts\fontawesome-webfont.svg" />
+    <Content Include="wwwroot\fonts\fontawesome-webfont.ttf" />
+    <Content Include="wwwroot\fonts\fontawesome-webfont.woff" />
+    <Content Include="wwwroot\fonts\fontawesome-webfont.woff2" />
+    <Content Include="wwwroot\fonts\FontAwesome.otf" />
+    <Content Include="wwwroot\fonts\UTMAvo.eot" />
+    <Content Include="wwwroot\fonts\UTMAvo.svg" />
+    <Content Include="wwwroot\fonts\UTMAvo.ttf" />
+    <Content Include="wwwroot\fonts\UTMAvo.woff" />
+    <Content Include="wwwroot\fonts\UTMAvo.woff2" />
+    <Content Include="wwwroot\fonts\UTMAvoBold.eot" />
+    <Content Include="wwwroot\fonts\UTMAvoBold.otf" />
+    <Content Include="wwwroot\fonts\UTMAvoBold.svg" />
+    <Content Include="wwwroot\fonts\UTMAvoBold.ttf" />
+    <Content Include="wwwroot\fonts\UTMAvoBold.woff" />
+    <Content Include="wwwroot\fonts\UTM AvoBold.eot" />
+    <Content Include="wwwroot\fonts\UTM AvoBold.otf" />
+    <Content Include="wwwroot\fonts\UTM AvoBold.svg" />
+    <Content Include="wwwroot\fonts\UTM AvoBold.ttf" />
     <Content Include="wwwroot\img\can-ho-cover.jpg" />
     <Content Include="wwwroot\img\can-ho-covwr.jpg" />
     <Content Include="wwwroot\img\can-ho.jpg" />
     <Content Include="wwwroot\img\can-ho.png" />
+    <Content Include="wwwroot\img\icon-close.png" />
     <Content Include="wwwroot\img\khach-san-cover.jpg" />
     <Content Include="wwwroot\img\khach-san.png" />
     <Content Include="wwwroot\img\logo.png" />
     <Content Include="wwwroot\img\nha-o-cover.jpg" />
-    <Content Include="wwwroot\js\dbgroupvn.js" />
-    <Content Include="wwwroot\js\dbgroupvn.js.map" />
-    <Content Include="wwwroot\js\dbgroupvn.vendor.js" />
+    <Content Include="wwwroot\index.html" />
+    <Content Include="wwwroot\vendor.bundle.js" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore" Version="1.1.1" />

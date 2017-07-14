@@ -13,7 +13,7 @@ namespace CoreIn.Commons
             return regex.Replace(str, @" ");
         }
 
-        public static string UnidecodeEntityNaname(string name)
+        public static string UnidecodeEntityName(string name)
         {
             var result = name.TrimSpacesBetweenString();
             result = result.Unidecode();

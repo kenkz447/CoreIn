@@ -24,15 +24,13 @@ var PageContent = (props) => {
                     <a className="btn btn-outline-primary" href={createNewUrl || urls.create}>Create new</a>
                 </div>
             </div>
-            <Card>
-                <CardBlock>
+            <div>
                     <Form formName="update"
                         formUrl={formUrl}
                         formUrlData={parameters}
                         formSubmitData={formSubmitData}
                     />
-                </CardBlock>
-            </Card>
+            </div>
         </div>
     );
 };

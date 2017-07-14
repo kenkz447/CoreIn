@@ -8,9 +8,10 @@ module.exports = {
         dataUrl: `/${mvcController}/GetTableData`,
         deleteUrl: `/${mvcController}/delete`,
         tableColumns: [{
-            header: "Title",
+            Header: "Title",
             accessor: 'title',
-            render: row => (<div><a href={`/${mvcController}/update/${row.rowValues.id}`} target="blank">{row.value}</a></div>),
+            Cell: props => (<div><a href={`/${mvcController}/update/${props.row.id}`}>{props.value}</a></div>),
+            filterable: true,
         }]
     },
     create: {

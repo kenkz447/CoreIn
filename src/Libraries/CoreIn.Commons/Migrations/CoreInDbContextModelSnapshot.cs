@@ -149,6 +149,8 @@ namespace CoreIn.Commons.Migrations
 
                     b.Property<string>("Suffix");
 
+                    b.Property<string>("TempId");
+
                     b.Property<string>("Value");
 
                     b.HasKey("Id");
@@ -211,6 +213,8 @@ namespace CoreIn.Commons.Migrations
                     b.Property<string>("Prefix");
 
                     b.Property<string>("Suffix");
+
+                    b.Property<string>("TempId");
 
                     b.Property<string>("Value");
 
@@ -291,6 +295,8 @@ namespace CoreIn.Commons.Migrations
 
                     b.Property<string>("Suffix");
 
+                    b.Property<string>("TempId");
+
                     b.Property<string>("Value");
 
                     b.HasKey("Id");
@@ -356,6 +362,8 @@ namespace CoreIn.Commons.Migrations
 
                     b.Property<string>("Suffix");
 
+                    b.Property<string>("TempId");
+
                     b.Property<string>("Value");
 
                     b.HasKey("Id");
@@ -419,6 +427,8 @@ namespace CoreIn.Commons.Migrations
 
                     b.Property<string>("Suffix");
 
+                    b.Property<string>("TempId");
+
                     b.Property<string>("Value");
 
                     b.HasKey("Id");
@@ -478,6 +488,8 @@ namespace CoreIn.Commons.Migrations
 
                     b.Property<string>("Suffix");
 
+                    b.Property<string>("TempId");
+
                     b.Property<string>("Value");
 
                     b.HasKey("Id");
@@ -536,6 +548,8 @@ namespace CoreIn.Commons.Migrations
                     b.Property<string>("Prefix");
 
                     b.Property<string>("Suffix");
+
+                    b.Property<string>("TempId");
 
                     b.Property<string>("Value");
 
@@ -614,6 +628,8 @@ namespace CoreIn.Commons.Migrations
 
                     b.Property<string>("Suffix");
 
+                    b.Property<string>("TempId");
+
                     b.Property<string>("Value");
 
                     b.HasKey("Id");
@@ -690,6 +706,8 @@ namespace CoreIn.Commons.Migrations
                     b.Property<string>("Prefix");
 
                     b.Property<string>("Suffix");
+
+                    b.Property<string>("TempId");
 
                     b.Property<string>("Value");
 
@@ -768,6 +786,8 @@ namespace CoreIn.Commons.Migrations
 
                     b.Property<string>("Suffix");
 
+                    b.Property<string>("TempId");
+
                     b.Property<string>("Value");
 
                     b.HasKey("Id");
@@ -827,6 +847,8 @@ namespace CoreIn.Commons.Migrations
 
                     b.Property<string>("Suffix");
 
+                    b.Property<string>("TempId");
+
                     b.Property<string>("Value");
 
                     b.HasKey("Id");
@@ -885,6 +907,8 @@ namespace CoreIn.Commons.Migrations
                     b.Property<string>("Prefix");
 
                     b.Property<string>("Suffix");
+
+                    b.Property<string>("TempId");
 
                     b.Property<string>("Value");
 
@@ -994,6 +1018,8 @@ namespace CoreIn.Commons.Migrations
                     b.Property<string>("Prefix");
 
                     b.Property<string>("Suffix");
+
+                    b.Property<string>("TempId");
 
                     b.Property<string>("Value");
 

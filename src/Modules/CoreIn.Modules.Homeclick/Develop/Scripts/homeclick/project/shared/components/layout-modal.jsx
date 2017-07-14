@@ -146,7 +146,7 @@ class LayoutModal extends React.Component {
                 return;
 
             const selectedValue = values[selectedIndex];
-            selectedValue.image = file.meta.src;
+            selectedValue.image = file.url;
             updateValue(selectedValue);
         });
     }
@@ -170,14 +170,14 @@ class LayoutModal extends React.Component {
         const {selectedIndex, values, layoutImage, toggle, isOpen, selectValueIndex, updateValue} = this.props;
 
         var selectedValue = values[selectedIndex];
-
+        var image = layoutImage && (String(layoutImage.url).startsWith('/') ? layoutImage.url : `/${layoutImage.url}`)
         return (
             <Modal className="modal-lg" isOpen={isOpen} toggle={toggle}>
                 <ModalHeader toggle={toggle}>Modal title</ModalHeader>
                 <ModalBody>
                     <div className="layout-modal">
                         <div className="arrow-container">
-                            <img src={layoutImage} className="w-100" onClick={this.imageClick} />
+                            <img src={image} className="w-100" onClick={this.imageClick} />
                             {
                                 values.map((data, index) => {
                                     const divStyle = {

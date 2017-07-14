@@ -37,6 +37,7 @@ var libs = [
     'sift',
     'tether',
     'underscore',
+    'react-codemirror'
 ];
 
 var production = (process.env.NODE_ENV === 'production');

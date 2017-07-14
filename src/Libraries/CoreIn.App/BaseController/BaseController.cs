@@ -13,6 +13,7 @@ using System.Linq;
 
 namespace CoreIn.App
 {
+    [Authorize]
     public abstract class BaseController<TEntity, TEntityDetail, TLocalizer, TFormDetailViewModel> : Controller
         where TEntity : BaseEntity, IEntityWithDetails<TEntityDetail>, new()
         where TEntityDetail : BaseEntityDetail, new()
@@ -144,6 +145,39 @@ namespace CoreIn.App
         {
             var result = _entityController.GetEntityValues(entityName, GetCurrentLanguage());
             return Json(result);
+        }
+
+        [AllowAnonymous]
+        public virtual JsonResult GetMulti(long[] entityIds)
+        {
+            var entities = _entityController.EntityHelper.Entities().Where(o => entityIds.Contains(o.Id)).ToList();
+            var result = new List<object>();
+
+            foreach (var entity in entities)
+                result.Add(_entityController.GetEntityValues(entity.Name, GetCurrentLanguage()));
+
+            return Json(result);
+        }
+
+        [AllowAnonymous]
+        public virtual JsonResult GetNextAndPreEntity(long currentEntityId)
+        {
+            var entity = _entityController.EntityHelper.Entity(currentEntityId);
+
+            if (entity != null)
+            {
+                var nextEntity = _entityController.EntityHelper.Entities().Where(o => o.EntityTypeId == entity.EntityTypeId && o.Created > entity.Created).OrderBy(o => o.Created).FirstOrDefault();
+                var preEntity = _entityController.EntityHelper.Entities().Where(o => o.EntityTypeId == entity.EntityTypeId && o.Created < entity.Created).OrderByDescending(o => o.Created).FirstOrDefault();
+                var currentLanguage = GetCurrentLanguage();
+
+                var result = new
+                {
+                    next = nextEntity != null ? _entityController.GetEntityValues(nextEntity.Id, currentLanguage) : null,
+                    pre = preEntity != null ? _entityController.GetEntityValues(preEntity.Id, currentLanguage) : null
+                };
+                return Json(result);
+            }
+            return Json(null);
         }
     }
 }

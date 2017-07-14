@@ -117,8 +117,12 @@ a {
 
 //Form
 
-.form-member:last-child {
-    margin-bottom: 0;
+.form-member {
+    margin-bottom: 1rem;
+
+    &:last-child {
+        margin-bottom: 0;
+    }
 }
 
 .image-fill {

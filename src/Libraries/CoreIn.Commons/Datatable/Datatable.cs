@@ -18,6 +18,8 @@ namespace CoreIn.Commons
         /// Follow: <, <=, ==, >=, >
         /// </summary>
         public string Operator { get; set; }
+
+        public string Method { get; set; }
     }
 
     public class DataRequest

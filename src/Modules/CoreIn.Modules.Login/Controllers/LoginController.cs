@@ -72,6 +72,14 @@ namespace CoreIn.Modules.Login.Controllers
 
         public IActionResult Index(string returnUrl = null, string username = null, string @ref = null)
         {
+            if (User.Identity.IsAuthenticated)
+            {
+                if (returnUrl != null)
+                    return Redirect(returnUrl);
+
+                return RedirectToAction("Index", "Dashboard", null);
+            }
+
             var pageViewModel = GetPageViewModel(viewName: "index", viewData: new { username, returnUrl });
             ViewBag.Title = pageViewModel.Title;
 
@@ -105,7 +113,7 @@ namespace CoreIn.Modules.Login.Controllers
             }
             catch(Exception ex)
             {
-                throw;
+                throw ex;
             }
         }
     }

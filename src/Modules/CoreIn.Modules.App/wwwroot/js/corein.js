@@ -869,6 +869,7 @@ module.exports = connect(stateToProps, dispatchToProps)(FileManagerModal);
 
 },{"./fm-actions":4,"./fm-ajaxs":5,"./fm-fileList":7,"./fm-filer.jsx":8,"./fm-sidePanel":11,"./modal-single-file":12,"classnames":"4z/pR8","jquery":"XpFelZ","react-redux":"MzQWgz","reactstrap":"jldOQ7","redux":"czVV+t","underscore":"vBgcj5"}],14:[function(require,module,exports){
 const $ = require('jquery');
+const classNames = require('classnames')
 const {Card, CardBlock, CardHeader, Input, InputGroup, InputGroupAddon, FormFeedback, FormGroup, FormText, Label, Button, Modal, ModalHeader, ModalBody, ModalFooter} = require('reactstrap');
 
 const renderFieldType = require('./render-field-type');
@@ -880,7 +881,7 @@ module.exports = (props) => {
 
     return (
         React.createElement("div", {className: "form-member"}, 
-            React.createElement("div", null, 
+            React.createElement("div", {className: classNames({ "mb-1": prompt != undefined })}, 
                 React.createElement("label", null, title), 
                 prompt && React.createElement(FormText, {color: "muted"}, prompt)
             ), 
@@ -892,7 +893,7 @@ module.exports = (props) => {
                             React.createElement(Card, {key: index, className: "form-array-item"}, 
                                 React.createElement("span", {className: "dot"}), 
                                 React.createElement(CardHeader, null, 
-                                    "Member #", index + 1, 
+                                    "Member #", index + 1, " ", 
                                     React.createElement("div", {className: "card-actions"}, 
                                         React.createElement("a", {className: "btn-close", onClick: 
                                             (e) => {
@@ -930,7 +931,7 @@ module.exports = (props) => {
     )
 }
 
-},{"./render-field-type":27,"jquery":"XpFelZ","reactstrap":"jldOQ7"}],15:[function(require,module,exports){
+},{"./render-field-type":27,"classnames":"4z/pR8","jquery":"XpFelZ","reactstrap":"jldOQ7"}],15:[function(require,module,exports){
 const $ = require('jquery');
 const _ = require('underscore');
 
@@ -1037,7 +1038,8 @@ module.exports = function(props) {
         React.createElement(FormGroup, {check: true}, 
             React.createElement(Label, {check: true}, 
                 React.createElement(Input, React.__spread({},  input, {id: id, type: "checkbox", checked: input.value})), 
-                React.createElement("span", null, ' ' + title)
+                React.createElement("span", null), 
+                ' ' + title
             )
         )
     );
@@ -1179,7 +1181,7 @@ class FormInput extends React.Component {
         var validationState = fieldValidate && touched ? (error ? 'danger' : (warning && 'warning')) : null;
 
         return (
-            React.createElement("div", null, 
+            React.createElement("div", {className: "form-member"}, 
                 React.createElement(Nav, {tabs: true}, 
                     React.createElement(NavItem, null, 
                         React.createElement(NavLink, {className: classnames({ active: this.state.activeTab === '1' }), onClick: () => { this.toggle('1'); }}, 

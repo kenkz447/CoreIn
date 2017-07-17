@@ -285,7 +285,6 @@
     <Content Include="wwwroot\img\flags\Yemen.png" />
     <Content Include="wwwroot\img\flags\Zambia.png" />
     <Content Include="wwwroot\img\flags\Zimbabwe.png" />
-    <Content Include="wwwroot\img\logo.png" />
     <Content Include="wwwroot\img\_logo.png" />
     <Content Include="wwwroot\js\vendor.admin.js" />
     <Content Include="wwwroot\js\vendor.admin.min.js" />

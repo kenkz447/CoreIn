@@ -8,44 +8,34 @@ using System.ComponentModel.DataAnnotations;
 
 namespace CoreIn.Modules.Homeclick.ViewModels
 {
-    public class CollectionPhotoViewModel
-    {
-        [Required]
-        [FormFieldDisplay(RenderType: (int)FieldRenderType.Image, Title: "Image")]
-        public ImageViewModel PhotoImage { get; set; }
-
-        [FormFieldDisplay(Title: "Html class")]
-        public string HtmlClasss { get; set; }
-    }
-
     public class CollectionProductViewModel
     {
         [Required]
-        [FormFieldDisplay(Placeholder: "Title")]
+        [FormFieldDisplay(Placeholder: "Title", Prompt:"Product's name, example: 'Chiển Console'")]
         public string Title { get;set;}
 
         [Required]
-        [FormFieldDisplay(Placeholder: "Code")]
+        [FormFieldDisplay(Placeholder: "Code", Prompt: "Code of products, example: 'C-C02'")]
         public string Code { get; set; }
 
         [Required]
-        [FormFieldDisplay(Placeholder: "Price")]
+        [FormFieldDisplay(Placeholder: "Price", Prompt: "In Vietnamese format, example: 4.500.000")]
         public string Price { get; set; }
 
         [Required]
-        [FormFieldDisplay(Placeholder: "Size")]
+        [FormFieldDisplay(Placeholder: "Size", Prompt: "Example: W1500 D820 H520")]
         public string Size { get; set; }
 
         [Required]
-        [FormFieldDisplay(Placeholder: "Quantity", Type:"number")]
+        [FormFieldDisplay(Placeholder: "Quantity", Type:"number", Prompt: "Quantity of product in current set")]
         public string Quantity { get; set; }
 
         [Required]
-        [FormFieldDisplay(Placeholder: "Description", Type: "textarea")]
+        [FormFieldDisplay(Placeholder: "Description", Type: "textarea", Prompt: "A short text describing this product")]
         public string Description { get; set; }
 
         [Required]
-        [FormFieldDisplay(RenderType: (int)FieldRenderType.Image, Title: "Thumbnail")]
+        [FormFieldDisplay(RenderType: (int)FieldRenderType.Image, Title: "Thumbnail", Prompt: "Size (Width x Height): 720x540")]
         public ImageViewModel Thumbnail { get; set; }
     }
 
@@ -75,7 +65,7 @@ namespace CoreIn.Modules.Homeclick.ViewModels
         public string Instagram { get; set; }
 
         [Required]
-        [FormFieldDisplay(Title: "Covers")]
+        [FormFieldDisplay(Title: "Covers", Prompt: "Pictures will display on top and bottom of article. All need the same ratio (16:9 recommended)")]
         public IEnumerable<AlbumImageViewModel> CoverPhotos { get; set; }
 
         [FormFieldDisplay(Title: "Products")]

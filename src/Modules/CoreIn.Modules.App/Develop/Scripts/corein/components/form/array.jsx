@@ -1,4 +1,5 @@
 ﻿const $ = require('jquery');
+const classNames = require('classnames')
 const {Card, CardBlock, CardHeader, Input, InputGroup, InputGroupAddon, FormFeedback, FormGroup, FormText, Label, Button, Modal, ModalHeader, ModalBody, ModalFooter} = require('reactstrap');
 
 const renderFieldType = require('./render-field-type');
@@ -10,7 +11,7 @@ module.exports = (props) => {
 
     return (
         <div className="form-member">
-            <div >
+            <div className={classNames({ "mb-1": prompt != undefined })} >
                 <label>{title}</label>
                 {prompt && <FormText color="muted">{prompt}</FormText>}
             </div>
@@ -22,7 +23,7 @@ module.exports = (props) => {
                             <Card key={index} className="form-array-item">
                                 <span className="dot"/>
                                 <CardHeader>
-                                    Member #{index + 1}
+                                    Member #{index + 1} { }
                                     <div className="card-actions">
                                         <a className="btn-close" onClick={
                                             (e) => {

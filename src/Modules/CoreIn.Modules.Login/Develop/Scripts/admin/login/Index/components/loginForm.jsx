@@ -31,12 +31,13 @@ const RenderInputGroup = (props) => {
 const RenderCheckBox = (props) => {
     const {input, display: {id, placeholder}} = props;
     return (
-        React.createElement(FormGroup, { check: true },
-            React.createElement(Label, { check: true },
-                React.createElement(Input, React.__spread({}, input, { id: id, type: "checkbox" })),
-                ' ' + placeholder
-            )
-        )
+        <FormGroup check>
+            <Label check>
+                <Input {...input} id={id} type="checkbox" checked={input.value} />
+                <span></span>
+                {' Remember me'}
+            </Label>
+        </FormGroup>
     );
 }
 

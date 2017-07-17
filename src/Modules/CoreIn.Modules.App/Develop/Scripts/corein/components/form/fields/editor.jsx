@@ -71,7 +71,7 @@ class FormInput extends React.Component {
         var validationState = fieldValidate && touched ? (error ? 'danger' : (warning && 'warning')) : null;
 
         return (
-            <div>
+            <div className="form-member">
                 <Nav tabs>
                     <NavItem>
                         <NavLink className={classnames({ active: this.state.activeTab === '1' })} onClick={() => { this.toggle('1'); }} >

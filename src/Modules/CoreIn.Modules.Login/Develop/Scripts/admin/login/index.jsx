@@ -91,19 +91,10 @@ module.exports = (props) => {
         <Provider store={store}>
             <div className="container">
                 <div className="row">
-                    <div className="col-md-7 mx-auto mt-2 pull-xs-none vamiddle">
+                    <div className="col-12 col-md-4 mx-auto mt-2 pull-xs-none vamiddle">
                         <div className="card-group">
                             <div className="card p-a-2">
                                 <ReduxLoginForm/>
-                            </div>
-                            <div className="card bg-transparent no-border no-shadow">
-                                <div className="card-block text-xs-center">
-                                    <div>
-                                        <h2>{resources.register}</h2>
-                                        <p>{resources.registerDescription}</p>
-                                        <a href={resources.registerUrl} className="btn btn-primary active">{resources.registerLinkLabel}</a>
-                                    </div>
-                                </div>
                             </div>
                         </div>
                     </div>

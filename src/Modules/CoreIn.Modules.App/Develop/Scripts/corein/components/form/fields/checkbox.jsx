@@ -6,7 +6,8 @@ module.exports = function(props) {
         <FormGroup check>
             <Label check>
                 <Input {...input} id={id} type="checkbox" checked={input.value} />
-                <span>{' ' + title}</span>
+                <span></span>
+                {' ' + title}
             </Label>
         </FormGroup>
     );

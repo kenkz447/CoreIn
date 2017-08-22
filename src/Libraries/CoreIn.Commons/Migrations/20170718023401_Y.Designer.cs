@@ -8,9 +8,10 @@ using CoreIn.Commons;
 namespace CoreIn.Commons.Migrations
 {
     [DbContext(typeof(CoreInDbContext))]
-    partial class CoreInDbContextModelSnapshot : ModelSnapshot
+    [Migration("20170718023401_Y")]
+    partial class Y
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.1.1")

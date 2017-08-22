@@ -8,7 +8,8 @@ namespace CoreIn.Modules.Post
     {
         public void Build(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<PostEntity>().HasAlternateKey(o => o.Name);
+            modelBuilder.Entity<PostEntity>()
+                .HasAlternateKey(o => o.Name);
         }
     }
 }

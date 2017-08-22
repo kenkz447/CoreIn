@@ -77,7 +77,8 @@ const ActionTabControl = (props) => {
                 form: 'newTaxonomy',
                 validate, formData: formResult,
                 _initialValues,
-                onSubmit: submit
+                onSubmit: submit,
+                layout: 1
             };
 
             tabAdd('new-tax', `New ${currentTaxonomyType.title}`, React.createElement(form.default, React.__spread({},  formProps)));

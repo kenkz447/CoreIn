@@ -54,19 +54,30 @@ namespace CoreIn.App
             return View(actionViewModel);
         }
 
+        /// <summary>
+        /// Lấy form data của một entity đã có hoặc để tạo mới entity
+        /// </summary>
+        /// <param name="id">Enity's Id, nếu null thì tạo mới, ngược lại là update</param>
+        /// <param name="lang">Ngôn ngữ(hặc culture) ở phía client, nếu bằng null thì nhận giá trị là ngôn ngữ mặc định</param>
+        /// <returns></returns>
         public override JsonResult GetForm(long? id, string lang = null)
         {
-            var entityTypeId = long.Parse(HttpContext.Request.Query["entityTypeId"][0]);
-
             var form = _entityController.GetForm(id, lang);
 
-            //form.InitialValues.Meta.Add("entityTypeId", entityTypeId.ToString());
+            var entityTypeId = long.Parse(HttpContext.Request.Query["entityTypeId"][0]);
 
+            // "entityTypeId" đã đc thêm vào meta nếu hàm GetForm được gọi bởi Update Action
+            // Còn nếu là Create thì cần thêm key "entityTypeId"
+            if (!form.InitialValues.Meta.ContainsKey("entityTypeId"))
+                form.InitialValues.Meta.Add("entityTypeId", entityTypeId.ToString());
+
+            // Liệt kê toàn bộ Category Type/Cateogries dưới dạng view model
             var taxonomyTypesViewModels = _entityController.TaxonomyHelper.GetTaxonomiesTypeViewModels(entityTypeId, true);
             form.TaxonomyTypes = taxonomyTypesViewModels.Select(o => new FormTaxonomyType(o));
 
             if (id != null)
             {
+                // Lặp  mỗi Taxonomy_Type để lấy các taxonomy có liên quan đến entity
                 foreach (var taxonomyTypeViewModel in taxonomyTypesViewModels)
                 {
                     var relateTaxonomies = _entityController.TaxonomyHelper.GetTaxonomiesForEntity<TTaxonomy>(id ?? 0, taxonomyTypeViewModel.Id);

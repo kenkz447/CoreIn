@@ -8,11 +8,17 @@ namespace CoreIn.Modules.Homeclick
     {
         public void Build(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Project>();
-            modelBuilder.Entity<Collection>();
-            modelBuilder.Entity<Page>();
-            modelBuilder.Entity<DesignTemplate>();
-            modelBuilder.Entity<Album>();
+            modelBuilder.Entity<Project>()
+                .HasAlternateKey(o => o.Name);
+
+            modelBuilder.Entity<Collection>()
+                .HasAlternateKey(o => o.Name);
+
+            modelBuilder.Entity<Page>()
+                .HasAlternateKey(o => o.Name);
+
+            modelBuilder.Entity<Album>()
+                .HasAlternateKey(o => o.Name);
         }
     }
 }

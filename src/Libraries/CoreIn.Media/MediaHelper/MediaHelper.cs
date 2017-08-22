@@ -28,6 +28,7 @@ namespace CoreIn.Media
         private readonly ITaxonomyHelper _taxonomyHelper;
         private readonly IEntityTaxonomyRelationHelper<FileEntityTaxonomy> _entityTaxonomyRelationHelper;
         private readonly IEntityTypeManager _entityTypeManager;
+        private readonly IHttpContextAccessor _context;
 
         private EntityType TypeImage { get; set; }
         private EntityType TypeOther { get; set; }
@@ -38,7 +39,8 @@ namespace CoreIn.Media
             IEntityHelper<FileEntity, FileEntityDetail> entityHelper, 
             IHostingEnvironment environment, IStringLocalizer<Language> stringLocalizer,
             IEntityTypeManager entityTypeManager,
-            IEntityTaxonomyRelationHelper<FileEntityTaxonomy> entityTaxonomyRelationHelper
+            IEntityTaxonomyRelationHelper<FileEntityTaxonomy> entityTaxonomyRelationHelper,
+            IHttpContextAccessor context
             )
         {
             _dbContext = dbContext;
@@ -54,6 +56,7 @@ namespace CoreIn.Media
             _stringLocalizer = stringLocalizer;
 
             _entityTaxonomyRelationHelper = entityTaxonomyRelationHelper;
+            _context = context;
         }
 
         public Size GetImageDimension(string imagePath)
@@ -283,9 +286,21 @@ namespace CoreIn.Media
             {
                 {"id", entity.Id.ToString() }
             };
+            formValues.Details = new Dictionary<string, string>();
+
+            var host = $"{_context.HttpContext.Request.Scheme}://{_context.HttpContext.Request.Host}";
 
             var entityDetails = _entityHelper.GetDetails(entity);
-            formValues.Details = entityDetails.ToDictionary(o => o.Field, o => o.Value);
+            var details = entityDetails.ToDictionary(o => o.Field, o => o.Value);
+            foreach (var detail in details)
+            {
+                var value = detail.Value;
+
+                if (detail.Key.StartsWith("url"))
+                    value = $"{host}/{detail.Value}";
+
+                formValues.Details.Add(detail.Key, value);
+            }
 
             formValues.TaxonomyTypes = new Dictionary<long, Dictionary<long, bool>>();
             var taxonomyTypesViewModels = _taxonomyHelper.GetTaxonomiesTypeViewModels(entity.EntityTypeId, true);

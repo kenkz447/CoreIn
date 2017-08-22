@@ -8486,6 +8486,9 @@ input:checked + .fancy-checkbox-img + img {
 .public-DraftStyleDefault-depth4.public-DraftStyleDefault-reset {
   counter-reset: ol4; }
 
+.DraftEditor-root * {
+  max-width: 100%; }
+
 /*# sourceMappingURL=react-draft-wysiwyg.css.map*/
 .ReactCodeMirror {
   border: 1px solid #ccc; }

@@ -212,9 +212,7 @@ namespace CoreIn.Commons.EntityHelper
 
                 foreach (var currentDetail in currentEntityDetails)
                  {
-                    if (currentDetail.Field == detail.Field && currentDetail.Language != detail.Language)
-                        updatedDetails.Add(currentDetail);
-                    else if (currentDetail.Field == detail.Field
+                    if (currentDetail.Field == detail.Field
                         && currentDetail.TempId == detail.TempId
                         && currentDetail.Language == detail.Language
                         && currentDetail.Group == detail.Group

@@ -8,16 +8,6 @@ using System.ComponentModel.DataAnnotations;
 
 namespace CoreIn.Modules.Homeclick.ViewModels
 {
-    public class ConstructionPhotoViewModel
-    {
-        [Required]
-        [FormFieldDisplay(RenderType: (int)FieldRenderType.Image, Title: "Image")]
-        public ImageViewModel PhotoImage { get; set; }
-
-        [FormFieldDisplay(Title: "Html class")]
-        public string HtmlClasss { get; set; }
-    }
-
     public class ConstructionViewModel : BaseEntityViewModel
     {
         [Required]
@@ -33,10 +23,10 @@ namespace CoreIn.Modules.Homeclick.ViewModels
         public string Area { get; set; }
 
         [Required]
-        [FormFieldDisplay(RenderType: (int)FieldRenderType.Image, Title: "Thumbnail")]
+        [FormFieldDisplay(RenderType: (int)FieldRenderType.Image, Title: "Thumbnail", Prompt: "Size (Width x Height): 720x540")]
         public ImageViewModel Thumbnail { get; set; }
 
-        [FormFieldDisplay(Placeholder: "Status", Prompt: "0: Concept, 1: Under construction, 2: finish", Type: "number")]
+        [FormFieldDisplay(Placeholder: "Status", Type: "number", Prompt: "0: Concept, 1: Under construction, 2: finish")]
         public string Status { get; set; }
 
         [FormFieldDisplay(Placeholder: "Client")]
@@ -52,7 +42,7 @@ namespace CoreIn.Modules.Homeclick.ViewModels
         public string Instagram { get; set; }
 
         [Required]
-        [FormFieldDisplay(Title: "Covers")]
+        [FormFieldDisplay(Title: "Covers", Prompt: "Pictures will display on top and bottom of article. All need the same ratio (16:9 recommended)")]
         public IEnumerable<AlbumImageViewModel> CoverPhotos { get; set; }
     }
 }

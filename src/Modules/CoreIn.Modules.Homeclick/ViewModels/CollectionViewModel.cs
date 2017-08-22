@@ -49,7 +49,7 @@ namespace CoreIn.Modules.Homeclick.ViewModels
         public string Content { get; set; }
 
         [Required]
-        [FormFieldDisplay(RenderType: (int)FieldRenderType.Image, Title: "Thumbnail")]
+        [FormFieldDisplay(RenderType: (int)FieldRenderType.Image, Title: "Thumbnail", Prompt: "Size (Width x Height): 720x540")]
         public ImageViewModel Thumbnail { get; set; }
 
         [FormFieldDisplay(Placeholder: "Writer")]

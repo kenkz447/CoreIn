@@ -31,9 +31,9 @@ namespace CoreIn.Commons.EntityHelper
 
         TDetail GetDetail(TEntity entity, string name);
 
-        IQueryable<TDetail> GetDetails(TEntity entity, CultureInfo cultureInfo = null);
+        IEnumerable<TDetail> GetDetails(TEntity entity, CultureInfo cultureInfo = null);
 
-        IQueryable<TDetail> GetDetails(TEntity entity, string cultureName, string defaultCultureName);
+        IEnumerable<TDetail> GetDetails(TEntity entity, string cultureName, string defaultCultureName);
 
         TDetail CreateDetail(TEntity entity, string field, object value, string group, string prefix, string suffix, User owner, DateTime? dateTime = null);
 

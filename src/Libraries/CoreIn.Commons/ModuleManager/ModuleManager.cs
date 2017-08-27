@@ -56,7 +56,7 @@ namespace CoreIn.Commons
             {
                 System.Diagnostics.Debug.WriteLine(library.Name);
 
-                if (library.Name == (assemblyName) || library.Dependencies.Any(d => d.Name.StartsWith(assemblyName)))
+                if (library.Name == (assemblyName))
                 {
                     var assembly = Assembly.Load(new AssemblyName(library.Name));
                     assemblies.Add(assembly);
@@ -74,7 +74,7 @@ namespace CoreIn.Commons
             {
                 try
                 {
-                    var assembly = GetReferencingAssemblies(module.ToLower()).FirstOrDefault();
+                    var assembly = GetReferencingAssemblies(module).FirstOrDefault();
                     modules.Add(
                         new ModuleInfo
                         {

@@ -1,7 +1,7 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using System;
+﻿using System;
 using System.ComponentModel.DataAnnotations.Schema;
 using CoreIn.Models.Infrastructure;
+using Microsoft.AspNetCore.Identity;
 
 namespace CoreIn.Models.Authentication
 {

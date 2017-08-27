@@ -90,7 +90,7 @@ namespace Webhost
                 app.UseBrowserLink();
             else
                 app.UseExceptionHandler("/Home/Error");
-			
+
             app.UseLanguageLocalization();
 
             app.UseReact(configure => { });

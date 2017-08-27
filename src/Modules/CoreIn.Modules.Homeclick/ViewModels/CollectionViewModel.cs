@@ -55,14 +55,8 @@ namespace CoreIn.Modules.Homeclick.ViewModels
         [FormFieldDisplay(Placeholder: "Writer")]
         public string Writer { get; set; }
 
-        [FormFieldDisplay(Placeholder: "Facebook")]
-        public string Facebook { get; set; }
-
-        [FormFieldDisplay(Placeholder: "Twitter")]
-        public string Twitter { get; set; }
-
-        [FormFieldDisplay(Placeholder: "Instagram")]
-        public string Instagram { get; set; }
+        [FormFieldDisplay(Placeholder: "Date")]
+        public string Date { get; set; }
 
         [Required]
         [FormFieldDisplay(Title: "Covers", Prompt: "Pictures will display on top and bottom of article. All need the same ratio (16:9 recommended)")]

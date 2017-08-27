@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore;
 
 namespace Webhost
 {
@@ -11,15 +12,26 @@ namespace Webhost
     {
         public static void Main(string[] args)
         {
-            var host = new WebHostBuilder()
-                .UseKestrel()
-                .UseContentRoot(Directory.GetCurrentDirectory())
-                .UseIISIntegration()
+            BuildWebHost(args).Run();
+        }
+
+        public static IWebHost BuildWebHost(string[] args) =>
+            WebHost.CreateDefaultBuilder(args)
                 .UseStartup<Startup>()
-				.UseUrls("http://localhost:51579/")
+                .UseUrls("http://localhost:51579/")
                 .Build();
 
-            host.Run();
-        }
+    //    public static void Main(string[] args)
+    //    {
+    //        var host = new WebHostBuilder()
+    //            .UseKestrel()
+    //            .UseContentRoot(Directory.GetCurrentDirectory())
+    //            .UseIISIntegration()
+    //            .UseStartup<Startup>()
+				//.UseUrls("http://localhost:51579/")
+    //            .Build();
+
+    //        host.Run();
+    //    }
     }
 }

@@ -26,12 +26,15 @@ namespace CoreIn.DataProviver
                 options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"));
             });
 
-            services.AddIdentity<User, Role>(options =>
+            services.AddAuthentication("MyCookieAuthenticationScheme")
+                .AddCookie(options =>
                 {
-                    options.Cookies.ApplicationCookie.LoginPath = "/login";
-                    options.Cookies.ApplicationCookie.LogoutPath = "/logout";
-                })
-                .AddEntityFrameworkStores<CoreInDbContext, long>()
+                    options.LoginPath = "/login";
+                    options.LogoutPath = "/logout";
+                });
+
+            services.AddIdentity<User, Role>()
+                .AddEntityFrameworkStores<CoreInDbContext>()
                 .AddDefaultTokenProviders();
 
             services.AddTransient(typeof(IRepository<>), typeof(Repository<>));

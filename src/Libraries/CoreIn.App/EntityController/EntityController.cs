@@ -218,7 +218,7 @@ namespace CoreIn.App
         public int Update(long entityId, IEnumerable<TEntityDetail> details, User user = null)
         {
             var entity = EntityHelper.Entity(entityId);
-            entity.Name = EntityHelper.GenerateEntityName(details.FirstOrDefault(o => o.Field == "title")?.Value, entity.Id);
+            //entity.Name = EntityHelper.GenerateEntityName(details.FirstOrDefault(o => o.Field == "title")?.Value, entity.Id);
 
             EntityHelper.UpdateDetails(entity, details, user);
 

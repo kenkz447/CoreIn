@@ -19,9 +19,6 @@ namespace CoreIn.Modules.Homeclick.ViewModels
         [FormFieldDisplay(Placeholder: "Content", RenderType:(int)FieldRenderType.Editor)]
         public string Content { get; set; }
 
-        [FormFieldDisplay(Placeholder: "Area")]
-        public string Area { get; set; }
-
         [Required]
         [FormFieldDisplay(RenderType: (int)FieldRenderType.Image, Title: "Thumbnail", Prompt: "Size (Width x Height): 720x540")]
         public ImageViewModel Thumbnail { get; set; }
@@ -32,14 +29,11 @@ namespace CoreIn.Modules.Homeclick.ViewModels
         [FormFieldDisplay(Placeholder: "Client")]
         public string Client { get; set; }
 
-        [FormFieldDisplay(Placeholder: "Facebook")]
-        public string Facebook { get; set; }
+        [FormFieldDisplay(Placeholder: "Date")]
+        public string Date { get; set; }
 
-        [FormFieldDisplay(Placeholder: "Twitter")]
-        public string Twitter { get; set; }
-
-        [FormFieldDisplay(Placeholder: "Instagram")]
-        public string Instagram { get; set; }
+        [FormFieldDisplay(Placeholder: "Area")]
+        public string Area { get; set; }
 
         [Required]
         [FormFieldDisplay(Title: "Covers", Prompt: "Pictures will display on top and bottom of article. All need the same ratio (16:9 recommended)")]

@@ -82,7 +82,7 @@ namespace CoreIn.Media
                 if (fileLength == 0)
                     return new FileEntityResult(JsonResultState.Failed, file.FileName, _stringLocalizer["The uploaded file lenght is zero!"]);
 
-                var fileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
+                var fileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.ToString().Trim('"');
                 var fileNameWithoutExtension = Path.GetFileNameWithoutExtension(fileName);
                 var fileExtension = Path.GetExtension(fileName);
 

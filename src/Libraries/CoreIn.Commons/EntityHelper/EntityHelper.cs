@@ -150,29 +150,48 @@ namespace CoreIn.Commons.EntityHelper
             return result;
         }
 
-        public IQueryable<TDetail> GetDetails(TEntity entity, CultureInfo cultureInfo = null)
+        public IEnumerable<TDetail> GetDetails(TEntity entity, CultureInfo cultureInfo = null)
             => GetDetails(entity, cultureInfo?.Name);
 
-        public IQueryable<TDetail> GetDetails(TEntity entity, string cultureName, string defaultCultureName = null)
+        public IEnumerable<TDetail> GetDetails(TEntity entity, string cultureName, string defaultCultureName = null)
         {
-            var result = _detailRepository.Query(o => o.EntityId == entity.Id);
+            var details = _detailRepository.Query(o => o.EntityId == entity.Id);
 
-            var hasLanguage = result.Where(o => o.Language != null && o.Prefix == null).OrderBy(o => o.Language == cultureName);
-            var selectedFiels = new List<string>();
+            if (cultureName == null)
+                return details;
+
+            var hasLanguage = details.Where(o => o.Language != null && o.Prefix == null).OrderBy(o => o.Language == cultureName);
+            var selectedFields = new List<string>();
             foreach (var item in hasLanguage)
             {
-                if (selectedFiels.Contains(item.Field))
-                {
-                    result = result.Where(o => o.Id != item.Id);
+                if (selectedFields.Contains(item.Field))
                     continue;
-                }
 
-                selectedFiels.Add(item.Field);
+                selectedFields.Add(item.Field);
+            }
+
+            var result = details.Except(hasLanguage).ToList();
+            foreach (var item in hasLanguage.Where(o => o.Language == cultureName))
+            {
+                if (item.Value != null)
+                    result.Add(item);
+            }
+
+            foreach (var field in selectedFields)
+            {
+                if (!result.Select(o => o.Field).Contains(field))
+                {
+                    var fieldDetail = hasLanguage.FirstOrDefault(o => o.Language == defaultCultureName && o.Field == field);
+
+                    if (fieldDetail == null)
+                        continue;
+
+                    result.Add(fieldDetail);
+                }
             }
 
             return result;
         }
-
 
         public TDetail GetDetail(TEntity entity, string field)
             => GetDetails(entity).FirstOrDefault(o => o.Field == field);
@@ -203,6 +222,7 @@ namespace CoreIn.Commons.EntityHelper
 
         public void UpdateDetails(TEntity entity, IEnumerable<TDetail> details, User byUser, bool deleteExcept = true)
         {
+
             var currentEntityDetails = GetDetails(entity).ToList();
             var updatedDetails = new List<TDetail>();
             
@@ -214,21 +234,32 @@ namespace CoreIn.Commons.EntityHelper
                  {
                     if (currentDetail.Field == detail.Field
                         && currentDetail.TempId == detail.TempId
-                        && currentDetail.Language == detail.Language
                         && currentDetail.Group == detail.Group
                         && currentDetail.Suffix == detail.Suffix
                         && currentDetail.Prefix == detail.Prefix
                         )
                     {
-                        if (currentDetail.Value != detail.Value)
+                        if (currentDetail.Language != null && currentDetail.Language != detail.Language)
+                        {
+                            updatedDetails.Add(currentDetail);
+                            if(currentEntityDetails.FirstOrDefault(o => o.Field == detail.Field && o.Language == detail.Language) == null)
+                            {
+                                CreateDetail(entity, detail, byUser);
+                            }
+                        }
+                        else
                         {
                             currentDetail.Value = detail.Value;
+
+                            if (detail.Language != null)
+                                currentDetail.Language = detail.Language;
+
                             currentDetail.Modified = DateTime.UtcNow;
                             currentDetail.ModifiedById = byUser?.Id;
+
+                            var updatedDetail = _detailRepository.Update(currentDetail);
+                            updatedDetails.Add(updatedDetail);
                         }
-
-                        updatedDetails.Add(_detailRepository.Update(currentDetail));
-
                         detailPresent = true;
                     }
                 }
@@ -239,15 +270,8 @@ namespace CoreIn.Commons.EntityHelper
             {
                 var deletes = currentEntityDetails.Except(updatedDetails);
                 foreach (var item in deletes)
-                {
-                    if (true)
-                    {
-
-                    }
                     _detailRepository.SetState(item, EntityState.Deleted);
-                }
             }
-
         }
 
         public TEntity Add(TEntity entity, User user = null)

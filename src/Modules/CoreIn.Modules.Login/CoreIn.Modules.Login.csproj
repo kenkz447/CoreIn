@@ -1,21 +1,19 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp1.1</TargetFramework>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+    <ApplicationIcon />
+    <OutputType>Library</OutputType>
+    <StartupObject />
   </PropertyGroup>
-
-  <ItemGroup>
-    <Content Include="wwwroot\js\ci0786.js">
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
-  </ItemGroup>
 
   <ItemGroup>
     <Folder Include="Develop\Styles\" />
   </ItemGroup>
+
   <ItemGroup>
-    <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.0.0" />
-    <PackageReference Include="Microsoft.AspNetCore" Version="1.1.1" />
+    <None Include="wwwroot\js\ci0786.js" />
+    <None Include="wwwroot\js\login.js" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Libraries\CoreIn.App\CoreIn.App.csproj" />

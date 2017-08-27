@@ -1,5 +1,5 @@
 ﻿using CoreIn.Models.Infrastructure;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 
 namespace CoreIn.Models.Authentication
 {

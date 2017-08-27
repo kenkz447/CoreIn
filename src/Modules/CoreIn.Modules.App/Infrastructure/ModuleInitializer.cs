@@ -38,6 +38,7 @@ namespace CoreIn.Modules.App
             services.AddScoped(typeof(EntityControllerWithTaxonomy<,,,,>));
 
             var serviceProvider = services.BuildServiceProvider();
+
             this.InitDatabase(serviceProvider.GetService<UserManager<User>>(), serviceProvider.GetService<IMenuHelper>());
         }
     }
